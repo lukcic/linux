@@ -1,0 +1,13 @@
+/etc/yum.repos.d -directory that contains yum repositories
+
+
+yum install epel-release ????
+
+yum update
+yum search [NAME]
+yum install [NAME]
+
+yum is frontend for rpm package
+
+rpm -qa -list all packages in your system
+

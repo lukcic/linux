@@ -1,0 +1,25 @@
+w -lists currently logged users
+last -history of users logins
+passwd [USERNAME] -reset users password
+
+useradd 
+userdel
+usermod
+-L -locks account (adds! in /etc/shadow)
+
+id [USERNAME] -lists all user ids (uid, gid etc)
+
+/etc/skel -all folders created here will be added to new users home directories
+
+sticky bit -
+umask -0777 minus umask gives default permissions of newly created files
+
+rwx
+421
+
+chown [NEW_OWNER]:[NEW_GROUP] [FILE] -changing ownership of files
+
+chcon -t [CONTEX_NAME] [FILE] -change SELinux context 
+restorecon [FILE] -restore context
+
+

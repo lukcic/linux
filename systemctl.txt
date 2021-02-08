@@ -1,0 +1,58 @@
+sysv (init) - only one process at once while booting, obsolte, now systemd. 
+Each service has a number and this number indicates order of starting services. In systemctl order is written in startscripts.
+runlevel - shows current runlevel
+
+0- halt
+1- user text mode
+2- not used (user definable)
+3- full multi-user text mode
+4- not used (user definable)
+5- full multi-user graphical mode (GUI)
+6- reboot
+
+N- runlevel was not changed since the system was booted
+
+/usr/lib/systemd/system - target files (replaces SysV Init Runlevels)
+They allow to start system with only needed services depends of server purpose. 
+
+systemctl get-default -returns default target filename
+systemctl isolate [name.target] -change target (runlevel) immediately
+systemctl set-default [target.name] -change default target 
+______________________________________________________________________________________________________________
+
+systemctl status -lists all servicess
+systemctl start/stop/restart [PROCESS NAME]
+systemctl enable/disable [PROCESS NAME] - run service after boot
+systemctl is-enabled [PROCESS NAME] - check status
+______________________________________________________________________________________________________________
+
+New service:
+/etc/systemd/system/newservice.service
+
+[Unit]
+Description=Service name
+
+[Service]
+ExecStart=/path/to/script/script.sh
+
+[Install]
+WantedBy=multi-user.target
+
+Add execute privilages to script!
+sudo systemctl start newservice
+sudo systemctl enable newservice
+
+______________________________________________________________________________________________________________
+
+systemctl poweroff - shutdown
+reboot
+shutdown [OPTIONS] [TIME]
+-h  -power off
+-r -reset
+-c -cancell
+TIME:
+ default= +1, +5, now, hh:mm
+ ______________________________________________________________________________________________________________
+
+/etc/sysctl.conf -changes written here will be done while booting
+sysctl -p -lists commands written in sysctl.conf

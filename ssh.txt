@@ -1,0 +1,30 @@
+Packages:
+openssh             -tools like ssh-keygen
+openssh-server      -server
+openssh-clients     -command line ssh client
+rsync               -synchronize data between 2 machines using ssh
+
+/etc/ssh/ssh_config     -client config file
+/etc/ssh/sshd_config    -server config file
+~/.ssh                  -user individual config
+~/.ssh/known_hosts      -stores the accepted remote server keys
+
+PermitRootLogin no
+Port 2222
+PasswordAuthentication no
+X11Forwarding no -GUI exporting
+
+Keys:
+ssh-keygen -creating key pair.
+ssh-copy-id -instalation public keys on the server 
+.ssh/authorized_keys -here should be added clients public keys
+
+Tuneling:
+tar cvfz - [DIRECTORY] | ssh [HOSTNAME] "tar xvfz - [PATH]"
+tar cvfz - [DIRECTORY] | ssh [HOSTNAME] "cat >[FILE].tar.gz"
+
+rsync -avz -e ssh [HOSTNAME]:[REMOTEPATH] [LOCALPATH]
+
+
+
+

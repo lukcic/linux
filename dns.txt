@@ -1,0 +1,58 @@
+Port 53 UDP and TCP (zone tranfers).
+
+BIND - all host names ends with . Bigger group on the right. Some types of record may have more tha 1 vale - priority and value.
+
+Packages:
+bind
+bind-utils
+
+Directories:
+/etc/named.conf -bind conf file
+/var/named -dns zones 
+/var/named/data -zones controlled by you
+/var/named/slaves -your secondary/slave zones
+
+named.conf
+zone "domain.ext" {
+    type master;
+    file "domain.ext.zone"
+};
+
+Record types:
+dns     IN  A   10.10.10.10     #name to ipv4 address
+dns     IN  AAAA ::1            #name to ipv6 address
+mail    IN  A   10.10.10.10     
+@       IN  MX  5   mail
+pop     IN  CNAME   mail        #CNAMA -alias
+imap    IN  CNAME   mail
+mail    IN  TXT     "v=spf1 ipv4:10.0.0.0/8 ~all"   #spf used to tell which machine are allowe to send mail with this domain
+
+Forward zones - name to iIP
+$TTL 3h;                                        #Time to live
+@   IN  NS dns.domain.ext.                      #@ -for the entire zone, NS -nameserver, needs A record
+@   IN SOA domain.ext. root.domain.ext. (       #root@domain.ext - admin email address
+    YYYYMMDD00 ; serial                         #serial number of every change in zone
+    10800; refresh                              #time in seconds
+    3600; retry
+    604800; expire
+    86400; default TTL
+    )
+
+dns IN  A    IPADDR
+
+Reverse zones -IP to name
+$TTL 3h;                                        #Time to live
+@   IN  NS dns.domain.ext.                      #@ -for the entire zone, NS -nameserver, needs A record
+@   IN SOA domain.ext. root.domain.ext. (       #root@domain.ext - admin email address
+    YYYYMMDD00 ; serial                         #serial number of every change in zone
+    10800; refresh                              #time in seconds
+    3600; retry
+    604800; expire
+    86400; default TTL
+    )
+$ORIGIN 0.168.192.in-addr.arpa.
+0   IN  PTR     network.domain.ext.
+1   IN  PTR     gateway.domain.ext.
+
+
+

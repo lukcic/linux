@@ -1,0 +1,311 @@
+.. -up
+. -current directory
+- -previous directory
+
+echo [STRING] - displays STRING
+
+touch [FILE] -creates empty file or timestamps of existing file
+
+cat -concatenate (powiązać), forward STDIN to STDOUT. Displays choosen file. CTRL + D to end.
+cat [FILE1] [FILE2] - shows content of files
+-n -add line numbers of text
+-e -shows eol
+-T -show tabs
+cat > [FILE] - will wait for text and save it in FILE (^D ends)
+cat [TEXT] > [FILE] - override a FILE with TEXT
+cat [TEXT] >> [FILE] - append a TEXT to FILE
+
+______________________________________________________________________________________________________________
+man -k [phrase] -searching for a phrase in man pages
+info [command] -new version of command help
+______________________________________________________________________________________________________________
+
+> redirect with overriding the file (always makes a file)
+>> redirect with appending to a file
+| (pipe) - redirect standard output from 1 command to standard input of another
+
+command > file
+command1 | command2
+
+0 - standard input (stdin)
+1 - standard output (stdout)
+2 - standard error (stderr)
+2> redirect standard error
+&> redirect both, standard output and standard error
+2>&1 - redirect standard error to standard output to catch output or error 
+ls -ly >> log.txt 2>&1
+
+sort < [FILE] > [SORTED FILE]
+______________________________________________________________________________________________________________
+
+ls
+-l -shows properties
+-a -show all files (with hidden)
+-d -shows only directories
+-r -show files in reverse
+-R -shows files inside subfolders (recursive)
+-S -shows files sorted by SIZE (--sort=size)
+-t -shows files sorted by time (--sort=time)
+-u -shows files sorted by usage time (--sort=use)
+-X -shows files sorted by extension (--sort=extension)
+-I[pattern] - ignore fles with this pattern
+-Z -shows file context (SELinux)
+
+Directory:
+Read on directory - only listing content of directory.
+Execute on directory - acces to files in directory.
+
+umask 022 - new files can be accessed by everyone
+umask 077 -new files can be accessed only by user
+______________________________________________________________________________________________________________
+
+ALT + . -repeat last argument
+CTRL + A -moves cursor to left side
+CTRL + E -moves cursor to the right side
+CTRL + W -delete word
+CTRL + U -cut to bash clipboard (from cursor to left side)
+CTRL + K -cut to bash clipboard (from cursor to right side)
+CTRL + Y -paste from clipboard
+CTRL + T -change place of 2 letters (mistakes correction)
+______________________________________________________________________________________________________________
+
+tar [OPTIONS] [ARCHIVE] [FILES]
+-f -file, use archive filetype
+-v -verbose (gadatliwy) lists procesed files
+-c -creates archive from multiple files
+-x -extract files from archive
+-z -zip (compress archive)
+-t -list table of contents 
+-p -extracted files have own permissions (not umask)
+______________________________________________________________________________________________________________
+
+mkdir [NAME]
+-p -creates directories recursively
+-m 777 -creates direcotry with specified permissions
+
+rm [FILE/DIR]
+-r -removes files and dirs recursively
+-f -removes non empty dirs (forced)
+-i -asks before removing
+
+ln [SOURCE] [DEST] -creates hard link to file. Hard link increase link counter. File can be deleted when all hard links are unlinked.  
+ln -s [SOURCE] [DEST] -creates symbolic link (shortcut), do not increase link conuter. 
+unlink [FILE] -deletes link
+Hard link points to the same address of memmory (disk place) of target file, 
+symbolic link points to filename of target file.
+
+file [FILE]-shows type of file (binary, text)
+stat [FILE] -shows information about disk usage of file
+
+wc -summary of lines, words and characters in file
+
+tail -displays end lines of file
+-3 -shows last 3 lines
+-f -shows file changes in live mode (logs etc.)
+______________________________________________________________________________________________________________
+
+grep [OPTION] "text" [file/dir]
+-i -ignore cause sensitive
+-n -returns the line number with text
+-v -inverse (odwrócenie)
+-E -extender regular expressions
+^# -line starts with this sigh - hash (carrot)
+word$ -line ends with 'word'
+dot[Cc]om -both versions of word
+
+grep -E '(a+)' - a one ore more times
+grep 'C...y' - words starts with C and ends with y
+______________________________________________________________________________________________________________
+
+whereis [process name] - search for path of binary in $PATH
+
+find [where] -name [name] -type [f/d/l]
+-iname [name] -ignores CauseSensitive
+-user [username] -search for files that [user] is owner
+-mtime +5 -search files modified more than 5 days ago
+-mmin -5 -search files modified in last 5 minutes
+-atime [value] -files accesed (opened) in [value] days
+-perm [0664]  -searches for files with this permissions
+-maxdepth [1] - maximum depth of recursiving dirs
+-size +100M -searches files larger than 100 MBytes
+
+find [where] -name [name] -or -name [name2]
+find [where] -name [name] -and -not -name [name2]
+find [where] -name "pa*" -and -name "*wd"
+
+find [where] [parameter] [value] -exec [command] {} \;
+{} - here find will insert searched filenames
+\; - obligatory with -exec
+
+find /home -type f -user [USERNAME] -exec mv {} {}_old \;
+-search files where [USERNAME] is owner and change their name (add _old) 
+-ok -the same as exec but needs 
+
+find [where] -iname [name] -exec grep -i -n [text] {} + | tee [file]
+tee - print output on the screen and stores in file
+
+locate [filename] -search for all files that name contains [filename]
+locate -b '\[FILENAME]' -search for files with exactly [FILENAME]
+-i -ignore CauseSensitive
+-c -count searched files
+
+locate -S -status of files database
+updatedb -refresh db of files
+
+______________________________________________________________________________________________________________
+
+^R (CTRL+R) - searching in bash history
+
+^R
+enter text
+^R - next propositions
+^O - execute searched command
+^G leave searching
+
+HISTIGNORE in .bashrc - add ls and similar commands
+export HISTIGNORE="ls:ps:history"
+
+env -lists environment variables
+
+______________________________________________________________________________________________________________
+gcc compiler
+
+gcc [FILE.c] -o [OUTPUT_FILENAME]
+
+./[OUTPUT_FILENAME]
+
+Makefile:
+[PROGRAMNAME]: [FILE.c]
+    gcc [FILE.c] -o [OUTPUT_FILENAME]
+
+clean:
+    rm [OUTPUT_FILENAME]
+
+make
+
+make clean -use function 'clean' from Makefile
+
+make -compiles file to binary
+______________________________________________________________________________________________________________
+
+crontab -e -open cron editor
+
+5 fields:
+-minute 0-59
+-hour 0-23
+-day of a month 1-31
+-month 1-12 or names
+-day of a week 0-7 or names (sunday is 0 and 7)
+
+* * * * * [COMMAND_ABSOLUTE_PATH]
+______________________________________________________________________________________________________________
+CTRL+ALT+F1 - switch from GUI/CONSOLE mode
+CTRL+ALT+F2
+______________________________________________________________________________________________________________
+
+nfs-utils
+rpcbind.service -Remote Procedure Call service (required by nfs). Port 111 TCP & UDP. 
+systemctl start rpcbind.service
+systemctl start nfs-server.service -NFS uses 2049 port TCP & UDP.
+
+Exporting directories are stored in /etc/exports
+Shares need permissions.
+exportfs -exporting directories
+
+NFS exports must be allowed by firewall:
+firewall-cmd --zone=public --add-service=rpc-bind --permanent
+firewall-cmd --zone=public --add-service=nfs --permanent
+firewall-cmd --list-all  
+
+Mounting nfs share:
+mount [REMOTE_SERVER]:[SHARE] [MOUNTPOINT]
+______________________________________________________________________________________________________________
+
+SAMBA packages:
+samba -install samba and dependencies
+samba-client -navigata through remote samba clients
+cifs-utils -mount samba shares
+
+smb.service
+firewall-cmd --zone=public --add-service=samba --permanent
+
+/etc/samba
+
+smb.conf example:
+[SHARENAME]
+comment = "Comment"
+path = [PATH]
+public = yes
+writable = yes
+printable = no
+
+Samba SELinux context:
+chcon -t samba_share_t [FILENAME]
+______________________________________________________________________________________________________________
+
+httpd -Apache service
+mod_ssl -HTTPS fo Apache
+
+Main configuration file:
+/etc/httpd/conf/httpd.conf
+
+Additional configurations:
+/etc/httpd/conf.d
+
+Web pages location:
+/var/www/html
+
+SELinus context types:
+httpd_sys_content_t -System Web Pages
+httpd_sys_script_exec_t -System CGI Scripts or executables files
+httpd_user_content_t -User Web Pages
+httpd_user_script_exec_t -User CGI Scripts or executable files
+______________________________________________________________________________________________________________
+
+MariaDB
+No default root password.
+
+Packages:
+mariadb -client programs
+mariadb-server -server software
+MySQL-python -MySQL Python Interface
+
+/etc/my.cnf.d -configuration directories
+
+write basic commands!
+
+______________________________________________________________________________________________________________
+
+Terminals -devices used to sending data between system and input\outpu devices (printing text on screen).
+In the past they were devices like typingmachines. 
+
+PseudoTermianl devices - kernel is communicating with programmed i/o interface (eg. shell) instead real terminal device.
+
+/dev/tty1 -first virtual console
+dev/pts/0 -first pseudoterminal device
+
+Linux have many virtual consoles. 
+ALT + Fx - changing console (text mode)
+ALT + F1 - /dev/tty1
+ALT + F2 - /dev/tty2
+CTRL + ALT + Fx - changing console (gui mode)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,16 @@
+lspci - lists all pci devices
+-v  -verbose
+-s  -select device
+-k  -check kernem module associated with device (works with -s) 
+
+lsusb - lists all usb devices
+
+uname -a -system version info
+uname -redhat -check kernel
+cat /proc/version -check kernel
+lsb_release -a      -check Debian version
+cat /etc/redhat-release -check RedHat verion
+
+lsmod -list kernel modules (/lib/modules)
+
+grub2-mkconfig -o /boot/grub2/grub.cfg.new

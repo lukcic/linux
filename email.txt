@@ -1,0 +1,11 @@
+Directories:
+/etc/postfix        -Postfix config files
+/var/spool/mail     -contains file for each user with his email messages
+/var/spool/postfix  -here postfix stores data where is used as a email serer
+/var/log/maillog    -here email trobleshoot logs are stored
+
+Postfix is default installed in CentOS, ut is listening localy. Using TCP port 25. Is not using /etc/hosts, only DNS.
+/etc/postfix.main.cfg
+inet_interfaces = all
+
+

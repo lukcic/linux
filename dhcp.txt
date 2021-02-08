@@ -1,0 +1,28 @@
+Ports 68 and 67 UDP.
+
+Messages:
+-DISCOVERY
+-OFFER
+-REQUEST
+-ACKNOWLEDGE
+
+Directories:
+/etc/dhcp -dhcpd conf files
+/etc/sysconfig/network-scripts/ifcfg-eth0 -information about interface configuration
+/var/lib/dhcpd/dhcpd.leases -DHCP leases information
+
+/etc/dhcp/dhcp.conf
+option domain-name "example.com";
+option domain-name-servers 8.8.8.8;
+default-lease-time 300;
+max-lease-time 1200;
+subnet 10.10.0.0 netmask 255.255.0.0. {
+    range 10.10.0.100 10.10.0.150;
+    option routers 10.10.0.1;
+}
+
+Reservations:
+host pronter [
+    hardware ethernet 00:11:22:33:44:55;
+    fixed-address 10.10.10.10;
+]

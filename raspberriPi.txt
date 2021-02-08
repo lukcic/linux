@@ -1,0 +1,4 @@
+Turning off cursor:
+/etc/lightdm/lightdm.conf
+
+xserver-command=X -nocursor

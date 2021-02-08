@@ -1,0 +1,71 @@
+______________________________________________________________________________________________________________
+netstat -lnpt -shows open TCP ports
+netstat -tuna
+l – tells netstat to only show listening sockets.
+t – tells it to display tcp connections.
+n – instructs it show numerical addresses.
+p – enables showing of the process ID and the process name.
+netstat -ltnp | grep -w ':80' - shows which process listning on port 80
+______________________________________________________________________________________________________________
+
+nmap localhost -list all open ports on localhost
+nmap [IP_ADDRES] -shows open ports from outside
+______________________________________________________________________________________________________________
+
+ip a - shows all network interfaces
+ip addr -shows all network interfaces
+
+ip a add/del [ip address] dev [interface name] - adding/removing ip address
+ip link set {device name] up/down - enabling/disabling interface
+
+ip link set dev [device name] address [mac address] - adding MAC addres
+ip link set dev eth0 promisc on - enebling promiscous mode
+
+Static IP:
+/etc/network/interfaces
+auto eth0
+iface eth0 inet static
+        address 192.0.2.7
+        netmask 255.255.255.0
+        gateway 192.0.2.254
+
+mtr -r -w -c 10 google.com
+______________________________________________________________________________________________________________
+ 
+firewalld is a frontend of iptables. 
+Stores xml service description in /usr/lib/firewalld/services.
+Zones (describes accepted services for incoming connection) are stored in /etc/firewalld.
+
+firewall-cmd --list-all
+firewall-cmd --add-service=[SERVICENAME] -adding service temporarly
+firewall-cmd --add-service=[SERVICENAME] --permanent -adding service permanently
+firewall-cmd --remove-service=[SERVICENAME] --permanent -deletes service permanently
+firewall-cmd --get-services -list known services
+firewall-cmd --add-port=[PORT/tcp] --permanent -adding open port permanently
+______________________________________________________________________________________________________________
+
+SNMP -Simple Network Managment Protocol
+Ports 161 and 162 UDP.
+
+Managment Information Base (MIB)
+OID - Object Identifier. Adress of each individual element of information, hierarchial, dotted decimal numner.
+
+OID have names, eg. hostname: 1.3.6.1.2.1.1.5.0 = system.sysName.0
+
+comunity string -password needed to access information.
+public -for read only information
+private -for read-write
+
+Packages:
+net-snmp -server
+net-snmp-utils -utilities for performing queries and making changes
+
+/etc/snmp/snmpd.conf
+
+com2sec notConfigUser default public
+change to:
+com2sec notConfigUser default [PASSWORD]
+
+Commands:
+smnpget localhost -v 2c -c [PASSWORD] sysName.0
+snmpwalk localhost -v 2c -c [PASSWORD] system

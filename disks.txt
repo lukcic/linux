@@ -1,0 +1,60 @@
+lsscsi - lists scsi devices
+lsblk -list block devices (disks with partitions)
+lsusb -list connected USB devices
+lspci -list PCI devices
+-v -driver details (-vv too)
+______________________________________________________________________________________________________________
+
+du -h [DIRECTORY] -disk usage of files in directory in readable format
+-a -disk usage of all files & dirs  in directory
+-c -total disk usage of dirs in directory
+-s -summary disk usage of directory
+-m -disk usage  in MB
+--exclude="*text*" - excludes text
+--time - shows modification time
+______________________________________________________________________________________________________________
+
+df -h [DIRECTORY] - shows used and free space of directory
+-a - all
+-T - shows filesystem type
+______________________________________________________________________________________________________________
+
+quota -shows disks limits
+______________________________________________________________________________________________________________
+
+parted -text programm for MBR & GPT partition tables
+gparted -GUI programm for MBR & GPT partition tables
+gdisk -text version of fdisk with only GPT support
+fdisk - text program, only MBR partiotion tables
+-l -lists disk
+
+mkfs.[TYPE] [PARTITION] -format partition in specific filesystem type
+ls -l /sbin/mkfs.*
+
+tune2fs [PARTITION] [LABEL] -add label to the partition
+
+mount [DEVICE] [MOUNT_POINT] -mounting partition, when is in fstab, only one parameter
+unmnount [DEVICE/MOUNT_POINT] -unmounting partition
+______________________________________________________________________________________________________________
+
+Device files:
+b -block device. Programs can read data from block devices only in constant size blocks.
+c -character device. Works on data strings. Programs can read/write characters from it. Dont have size. 
+p -pipe device. Works on strings, but on the end there is another process not device.
+s -socket device. Interface to make communication between two processess.
+______________________________________________________________________________________________________________
+
+File System Table:
+/etc/fstab
+[DEVICE] [MOUNT_POINT] [TYPE] [OPTIONS] [DUMP] [FSCK]
+______________________________________________________________________________________________________________
+
+dd - read data from file or string and save this data to output file/string. dd copy data in blocks with given size.
+
+dd if=/dev/zero of=[OUTPUT_FILE] bs=1024 count=1
+
+/dev/zero - endless string of zeros
+
+______________________________________________________________________________________________________________
+
+

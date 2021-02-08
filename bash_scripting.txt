@@ -1,0 +1,203 @@
+'tekst' - zwykły cudzysłow
+"tekst" - uwzględnia zmienne w treśći cudzysłowia
+
+chmod +x [FILENAME] -add execution permission for file (for all 755)
+
+#! /usr/bin/bash -shebang for bash (check which bash)
+
+$[NAME] -variable
+${[NAME]} - variable
+
+read -p "Text" [VARIABLE] -prompt user for input data to variable NAME
+___________________________________________________________________________
+
+IF statement:
+
+if [ "$NAME" == "Brad"]
+then
+    echo "Your name is Brad"
+fi
+
+IF-ELSE statement:
+if [ "$NAME" == "Brad"]
+then
+    echo "Your name is Brad"
+else
+    echo "Your name is not Brad"
+fi
+
+ELSE-IF (elif) statement
+if [ "$NAME" == "Brad"]
+then
+    echo "Your name is Brad"
+elif [ "$NAME" == "Jack"]
+then
+    echo "Your name is Jack"
+else
+    echo "Your name is not Brad or Jack"
+fi
+___________________________________________________________________________
+
+COMPARISONS:
+
+-eq -equal, returns True if value1 = value2
+-ne -not equal, returs True if value1 != value2
+-gt -greather than, returns True if value 1 > value2
+-ge -greather or equal, return True if value1 >= value2
+-lt -less than, returns True if value1 < value2
+-le -less equal, returns True if value1 =< value2
+
+NUM1=3
+NUM2=5
+
+if [ "$NUM1" -gt "$NUM2" ]
+then
+    echo "$NUM1 is greather tahn $NUM2"
+else
+    echo "$NUM1 is less than $NUM2"
+fi
+___________________________________________________________________________
+
+FILE CONDOTIONS:
+
+-d [FILE] -True if the FILE is a directory
+-e [FILE] -True if the FILE is exists
+-f [FILE] -True if the provided string is a file
+-g [FILE] -True if the FILE have set group ID
+-r [FILE] -True if the FILE is readable
+-s [FILE] -True if the FILE has non zero size
+-u [FILE] -True if the FILE have set user ID
+-w [FILE] -True if the FILE is writable
+-x [FILE] -True if the FILE is executable
+
+FILE="teext.txt"
+if [ -f "$FILE" ]
+then
+    echo "$FILE is a file."
+else
+    echo "$FILE is not a file."
+fi
+___________________________________________________________________________
+
+CASE STATEMENTS:
+
+read -p "Are you 21 or over? Y/N" ANSWER
+case "$ANSWER" in
+    [yY] | [yY][eE][sS])
+     echo "You can have a beer :)"
+     ;;
+    [nN] | [nN][oO])
+     echo "Sorry you can not have a beer :("
+     ;;
+    *)
+     echo "Please answer y/yes or n/no"
+     ;;
+esac
+
+___________________________________________________________________________
+
+FOR LOOP:
+
+NAMES="Brad Kevin Alice Mark"
+for NAME in $NAMES
+    do
+        echo "Hello $NAME"
+done
+
+FILES=$(ls *.txt)
+NEW="new"
+for file in $FILES
+    do
+        echo "Renaming $FILE to new-$FILE"
+        mv $FILE $NEW-$FILE
+done
+
+WHILE LOOP:
+
+LINE=1
+while read -r CURRENT_LINE
+    do
+        echo "$LINE: $CURRENT_LINE"
+        ((LINE++))
+done < "./file.txt"         #reading from file.txt
+
+___________________________________________________________________________
+
+FUNCTIONS:
+
+function sayHello() {
+    echo "Hello World!"    
+}
+
+sayHello
+
+
+FUNCTION with PAREMETERS:
+
+function greet() {
+    echo "Hello, I am $! and I am $2."
+}
+
+greet "Brad" "36"
+
+
+PARAMETER types:
+$0 - name of the script
+$1 - $9 - firsth to ninth argument
+$@ - all arguments
+$# - number of arguments
+$$ - PID of the script
+!! - repeat last command (sudo !!)
+$_ - last argument of the last command
+$? - return code of the prev command
+___________________________________________________________________________
+
+WRITE to a FILE:
+
+echo "Hello World" >> "text.txt"
+
+___________________________________________________________________________
+
+Return code (how command execution went):
+0 (boolean) - its OK
+1 (boolean) - error occurs
+
+True - always 0 return code
+False - always 1 return code
+echo always return 0 (ok)
+
+Operators:
+&& - and
+|| - or
+; - just separate commands in one line
+
+0 - standard input (stdin)
+1 - standard output (stdout)
+2 - standard error (stderr)
+
+2> redirect standard error
+&> redirect both, standard output and standard error
+2>&1 - redirect standard error to standard output (to use pipe)
+___________________________________________________________________________
+Command substitution:
+$(command) - execute the command and place the output to the variable
+
+for file in $(ls)
+executes the ls command, iterates the values  
+
+Using the output of ls to get filenames is a bad idea. It can lead to malfunctioning and even dangerous scripts. This is because a filename can contain any character except / and the nullcharacter, and ls does not use either of those characters as delimiters, so if a filename has a space or a newline, you will get unexpected results.
+
+There are two very good ways of iterating over files. Here, I've used simply echo to demonstrate doing something with the filename; you can use anything, though.
+
+The first is to use the shell's native globbing features.
+
+
+for dir in */; do
+  echo "$dir"
+done
+
+The shell expands */ into separate arguments that the for loop reads; even if there is a space, newline, or any other strange character in the filename, for will see each complete name as an atomic unit; it's not parsing the list in any way.
+
+If you want to go recursively into subdirectories, then this won't do unless your shell has some extended globbing features (such as bash's globstar. If your shell doesn't have these features, or if you want to ensure that your script will work on a variety of systems, then the next option is to use find.
+
+find . -type d -exec echo '{}' \;

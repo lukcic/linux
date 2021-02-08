@@ -1,0 +1,30 @@
+[COMMAND] & -returns PID od process
+
+[COMMAND] & -run process in background (unzip eg.)
+
+jobs - lists background processes with numbers
+fg [PROCESS_NUMBER] -takes process from background to foreground
+bg [PROCESS_NUMBER] -takes process from foreground to background
+______________________________________________________________________________________________________________
+
+ps -list foreground processes (user only)
+ps aux -lists processes of all users
+
+kill -STOP [pid] 
+kill -CONT [pid]
+
+
+kill -15 [PID] -terminate process
+kill -9 [PID] -kill process
+______________________________________________________________________________________________________________
+
+nohup [COMMAND] [OPTIONS] -run command immune to hangups (non tty output). Process works after closing terminal.
+______________________________________________________________________________________________________________
+
+top
+sorting
+k -kill process
+______________________________________________________________________________________________________________
+
+/proc -fake directory, interface to the kernel, stores viariables.
+
