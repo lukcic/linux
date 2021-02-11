@@ -1,3 +1,8 @@
+Debian installation:
+apt install openssh-server
+systemctl status ssh
+
+
 Packages:
 openssh             -tools like ssh-keygen
 openssh-server      -server
@@ -9,16 +14,37 @@ rsync               -synchronize data between 2 machines using ssh
 ~/.ssh                  -user individual config
 ~/.ssh/known_hosts      -stores the accepted remote server keys
 
+/etc/ssh/sshd_config:
 PermitRootLogin no
 Port 2222
 PasswordAuthentication no
 X11Forwarding no -GUI exporting
 
+______________________________________________________________________
 Keys:
-ssh-keygen -creating key pair.
-ssh-copy-id -instalation public keys on the server 
-.ssh/authorized_keys -here should be added clients public keys
+~/.ssh/id_rsa (Private key)
+~/.ssh/id_rsa.pub (Public Key)
+Public key goes into server ".ssh/authorized_keys" file
 
+Generating keys:
+ssh-keygen -t rsa
+
+Private key must be 0700!
+
+Sending generated public key to server:
+cat ~/.ssh/id_rsa.pub | ssh user@server "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >>  ~/.ssh/authorized_keys"
+
+or:
+ssh-copy-id -instalation public keys on the server 
+
+eval `ssh-agent -s`                     #????????
+ssh-add "C:\Users\user\.ssh\id_rsa"     #????????
+______________________________________________________________________
+Connection:
+ssh user@host
+
+ssh -i 'private_key_path' user@host
+______________________________________________________________________
 Tuneling:
 tar cvfz - [DIRECTORY] | ssh [HOSTNAME] "tar xvfz - [PATH]"
 tar cvfz - [DIRECTORY] | ssh [HOSTNAME] "cat >[FILE].tar.gz"
