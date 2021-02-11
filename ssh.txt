@@ -29,6 +29,10 @@ Public key goes into server ".ssh/authorized_keys" file
 Generating keys:
 ssh-keygen -t rsa
 
+Adding generated private key to local repository:
+eval 'ssh-agent -s'     #https://www.ssh.com/ssh/agent
+ssh-add [keyfile]
+
 Private key must be 0700!
 
 Sending generated public key to server:
@@ -37,20 +41,30 @@ cat ~/.ssh/id_rsa.pub | ssh user@server "mkdir -p ~/.ssh && chmod 700 ~/.ssh && 
 or:
 ssh-copy-id -instalation public keys on the server 
 
-eval `ssh-agent -s`                     #????????
-ssh-add "C:\Users\user\.ssh\id_rsa"     #????????
+Storing local session paraphrase:
+ssh-agent bash
+ssh-add
 ______________________________________________________________________
 Connection:
 ssh user@host
 
 ssh -i 'private_key_path' user@host
 ______________________________________________________________________
+Copying files by ssh:
+scp [file] [user}@[server]:[location]
+
+SFTP:
+sftp [user]@[server]
+get [FILE]
+put [FILE]
+bye
+______________________________________________________________________
 Tuneling:
 tar cvfz - [DIRECTORY] | ssh [HOSTNAME] "tar xvfz - [PATH]"
 tar cvfz - [DIRECTORY] | ssh [HOSTNAME] "cat >[FILE].tar.gz"
 
 rsync -avz -e ssh [HOSTNAME]:[REMOTEPATH] [LOCALPATH]
-
+______________________________________________________________________
 
 
 
