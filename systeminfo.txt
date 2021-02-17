@@ -1,10 +1,35 @@
+Hardware:
+
 lspci - lists all pci devices
 -v  -verbose
--s  -select device
--k  -check kernem module associated with device (works with -s) 
+-s [addrress] -select device
+-k  -check kernem module associated with device (works with -s)
+- - - - - - - - - - - - - - - - - - 
+Install
+sudo apt install pciutils -y
 
 lsusb - lists all usb devices
+-s [addrress] -select device
+-d [addrress] -device inspection
+-t -shows connections tree
 
+Install:
+sudo apt install usbutils -y
+- - - - - - - - - - - - - - - - - - 
+lsmod - shows all currently loaded kernel modules
+size -amount of ram occupied by module
+
+modinfo [module name] -show info about module
+-p -shows module parameters
+Parameters are stored in /etc/modprobe.confor in individual files with the extension.conf
+
+modprobe -r [module name] -unload module (--remove) 
+- - - - - - - - - - - - - - - - - - 
+cat /proc/cpuinfo - detailed information about the CPUs stored by os
+cat /proc/interrupts -number of interrupts per IO device for each CPUs
+cat /proc/ioports -list of registered input and output ports in use
+cat /proc/dma - list of registered DMA (Direct Memory Access) channels in use
+_____________________________________________________________________
 uname -a -system version info
 uname -redhat -check kernel
 cat /proc/version -check kernel

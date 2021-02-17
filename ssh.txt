@@ -18,8 +18,10 @@ rsync               -synchronize data between 2 machines using ssh
 PermitRootLogin no
 Port 2222
 PasswordAuthentication no
+PubkeyAuthentication yes
 X11Forwarding no -GUI exporting
 
+systemctl restart sshd.service
 ______________________________________________________________________
 Keys:
 ~/.ssh/id_rsa (Private key)
@@ -30,7 +32,7 @@ Generating keys:
 ssh-keygen -t rsa
 
 Adding generated private key to local repository:
-eval 'ssh-agent -s'     #https://www.ssh.com/ssh/agent
+eval 'ssh-agent -s'     
 ssh-add [keyfile]
 
 Private key must be 0700!
@@ -42,7 +44,7 @@ or:
 ssh-copy-id -instalation public keys on the server 
 
 Storing local session paraphrase:
-ssh-agent bash
+ssh-agent bash          #https://www.ssh.com/ssh/agent
 ssh-add
 ______________________________________________________________________
 Connection:
