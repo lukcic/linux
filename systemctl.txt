@@ -1,16 +1,55 @@
-sysV (init) - only one process at once while booting, obsolte, now systemd. 
+Service manager (sysV or systemd) has always PID = 1.
+
+sysV (init) - only one process at once while booting, obsolte, now systemd. Program: /sbin/init
 Each service has a number and this number indicates order of starting services. In systemctl order is written in startscripts.
-runlevel - shows current runlevel (0-6)
+
+runlevel - shows current runlevel (0-6), N- runlevel was not changed since the system was booted
+runlevel [0-6]  -changes the actualrunlevel
 
 0- halt
-1- user text mode
+1- single user (text) mode (s or single) without network or other non-essential capabilites (maintenance mode)
 2- not used (user definable)
-3- full multi-user text mode
+3- full multi-user text mode, users can log in by network or console
 4- not used (user definable)
 5- full multi-user graphical mode (GUI)
 6- reboot
 
-N- runlevel was not changed since the system was booted
+/etc/inittab - stored definition of runlevels and default runlevel
+id:runlevels:action:process
+
+The action term defines how init will execute the process indicated by the termprocess. 
+The available actions are:
+-boot       -The process will be executed during system initialization. The fieldrunlevelsis ignored.
+-bootwait   -The process will be executed during system initialization and init will  wait  until  it  finishes  to continue. The field runlevels is ignored.
+-sysinit    -The process will be executed after system initialization, regardless of runlevel. The field runlevels is ignored.
+-wait       -The process will be executed for the given runlevels andinitwill wait until it finishes to continue.
+-respawn    -The process will be restarted if it is terminated.
+-ctrlaltdel -The process will be executed when the init process receives the SIGINT signal, triggered when the key sequence of Ctrl+Alt+Del is pressed.
+
+telinit q   -reload init configuration (after any changes in /etc/inittab)
+
+/etc/init.d -directory, stores scripts that init is using to setup each runlevel
+Every runlevel has an associated directory in /etc/, named /etc/rc0.d/, /etc/rc1.d/, /etc/rc2.d/, etc., 
+with the scripts that should be executed when the corresponding runlevel starts. 
+As the same script can be used by different runlevels, the files in those directories are just symbolic links to the actual scripts in/etc/init.d/. 
+
+______________________________________________________________________________________________________________
+systemd units -consists of a name, a type and a corresponding configuration file.
+
+systemd unit types:
+-service    -system resources that can be initiated, interrupted and reloaded
+-socket     -may be a filesystem socket or network socket, always have corresponding service unit, loaded whet the socked receives a request
+-device     -is associated with hardware device (identified by the kernel), device will be an unit only when udev rule for this purpose exist
+-mount      -mount point definition, similar to the /etc/fstab
+-automount  -mount point definition mounted automaticly, always have corresponding mount unit which is initiated when the automount mount point is accessed
+-target     -grouping other units, managed as a single units
+-snapshot   -saved state of systemd manager (not in every linux distribution)
+
+Unit tasks:
+systemctl start/stop/restart unit.service       -start/stop/restart
+systemctl status unit.service                   -shows status of unit, without unit will list all servicess
+systemctl enable/disable unit.service           -run service after boot
+systemctl is-enabled unit.service               -check status of enable/disable
 
 /usr/lib/systemd/system - target files (replaces SysV Init Runlevels)
 They allow to start system with only needed services depends of server purpose. 
@@ -18,12 +57,9 @@ They allow to start system with only needed services depends of server purpose.
 systemctl get-default -returns default target filename
 systemctl isolate [name.target] -change target (runlevel) immediately
 systemctl set-default [target.name] -change default target 
-______________________________________________________________________________________________________________
 
-systemctl status -lists all servicess
-systemctl start/stop/restart [PROCESS NAME]
-systemctl enable/disable [PROCESS NAME] - run service after boot
-systemctl is-enabled [PROCESS NAME] - check status
+
+
 ______________________________________________________________________________________________________________
 
 New service:
