@@ -1,6 +1,6 @@
-sysv (init) - only one process at once while booting, obsolte, now systemd. 
+sysV (init) - only one process at once while booting, obsolte, now systemd. 
 Each service has a number and this number indicates order of starting services. In systemctl order is written in startscripts.
-runlevel - shows current runlevel
+runlevel - shows current runlevel (0-6)
 
 0- halt
 1- user text mode
@@ -56,3 +56,5 @@ TIME:
 
 /etc/sysctl.conf -changes written here will be done while booting
 sysctl -p -lists commands written in sysctl.conf
+
+
