@@ -1,0 +1,20 @@
+Grub options (kernel parameters):
+-acpi           -ACPI support, for example: 'acpi=on'
+-init           -sets the alternative system initiator, for example 'init=/bin/bash'
+-systemd.unit   -systemd target, for example: 'systemd.unit=graphical.target', may be runlevel number
+-mem            -set the available ram for the system (for VMs)
+-maxcpus        -set the limit number of processors (or cores)
+-quiet          -hides most booot messages
+-vga            -select video mode
+-root           -sets the root partition, eg.'root=/dev/sda3'
+-rootflags      -mount options for the root filesystem
+-root           -initial mount of filesystem as read-only
+-rw             -initial mount of filesystem as read write
+
+Kernel params shoud be write in /etc/default/grub/ in the line GRUB_CMDLINE.
+Later new configuration file should be generated:
+grub-mkconfig -o /boot/grub/grub.configuration
+
+Live view of actual kernel parameters are saved in '/proc/cmdline'
+_______________________________________________________________________
+
