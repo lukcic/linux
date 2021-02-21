@@ -1,3 +1,67 @@
+DPKG - The Debian Package Tool
+
+dpkg -i [PACKAGE_NAME] -install package from .deb file
+dpkg -r [PACKAGE_NAME] -unistall package
+dpkg -P [PACKAGE_NAME] -unistall package with configuration files (purge)
+dpkg -I [PACKAGE_NAME] -information about package
+
+dpkg --get-selections -list installed packages
+dpkg -L [PACKAGE_NAME] -list of files installed by specific package
+dpkg-query -S [FILE] -check wchich package is owning file
+dpkg-reconfigure [PACKAGE_NAME] -make post-install package again (reinstall) 
+_____________________________________________________________________________
+APT - Advanced Package Tool
+
+apt-get     -used to downoad, install, upgrade or remove packages 
+apt-cache   -used to perform operations, like searches in the package index
+apt-file    -used for searching files inside the packages
+
+apt-get update  -updating the package index - retrive informations about new and updated packages in reposietories
+apt-get install [PACKAGE_NAME] -installing the package
+apt-get remove [PACKAGE_NAME]  -removing the package
+apt-get purge [PACKAGE_NAME] -removing package with configuration files
+
+apt-get install -f -repair missing dependencies of installed software
+
+apt-get upgrade -upgrading installed packages to the newest versions (first update inex!)
+apt-get upgrade [PACKAGE_NAME] -upgrading particular (single) package
+
+When package is installed or updated .de package is downloadet to local cache: /var/cache/apt/ archives.
+apt-get clean -cleaning the local cache 
+
+apt-cache search [PATTERN] -searching for packages with particular PATTERN
+apt-cache show [PACKAGE_NAME] -description of particular PATTERN
+
+The sources list:
+/etc/apt/sources.list
+
+deb http://deb.debian.org/debian/ buster main
+
+-archive type   -types of repository (ready-to-run software: binary packages, type .deb or source packages, type deb-src)
+-URL            -url of the repository
+-distribution   -the name of codename of distribution for which packages are provided
+-components     -component is a set of packages, component types are typical for different distributions
+
+Ubuntu components types:
+-main           -officialy supported, open-source packages
+-restricted     -officialy supported, closed-source packages like drivers
+-universe       -community maintained open-source software
+-multiverse     -unsupported, closed-source or pattern-encumbered software
+
+Debian components types:
+-main           -sofware that is part of Debian distribution, non rely on software outside this area to operate
+-contrib        -contains DFSG-compilant packages that depent on other software, that is not in main
+-non-free       -contains software that is not compliant with the DFSG (Debian Free Software Guidelines)
+-security       -contains security updates
+-backports      -contains more up-to-date versions of main packages
+
+Directory /etc/apt/sources.list.d contains additional repositories dscription files to use with apt. Must have .list extension.
+
+apt-file update  -update the packages cache
+apt-file list [PACKAGE_NAME] -list contents of package
+apt-file search [FILENAME]  -seraches for packages that include particulat file
+
+_____________________________________________________________________________
 /etc/yum.repos.d -directory that contains yum repositories
 
 

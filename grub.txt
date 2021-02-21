@@ -1,4 +1,27 @@
-Grub options (kernel parameters):
+Boot partiotion:
+-config file        -stores configuration parameters for Linux kernel, generated automaticly, when new kernel is compiled, should not be edited by user
+-system map         -this file is a table that match symbol names to its memmory position, used when kernel panic
+-linux kernel       -file with system kernel (vmlinuz means, that is compressed)
+-initial ram disk   -(initrd.img) contains minimal root filesystem loaded in ram disk, containing utilities and kernel modules needed for mounting real root filesystem 
+-boot loader files  -grub configuration file (/boot/grub/grub.cfg or /boot/grub/menu.lst for legacy grub), modules (in/boot/grub/i386-pc), translation files (in/boot/grub/locale) and fonts (in/boot/grub/fonts)
+
+Installing GRUB2
+With non booting system, first boot form live CD, mount boot partition from disk and run grub-install.
+Searching boot partiotion:
+fdisk -l [disk]
+
+grub-install --boot-directory=[boot partition mountpoint] [boot partition]
+grub-install --boot-directory=/mnt/tmp /dev/sda1
+
+Configuring GRUB2
+File /boot/grub/grub.cfg is automaticaly generated, to make changes edit: /etc/default/grub, and then run update-grub (grub-mkconfig -o /boot/grub/grub.cfg)
+
+/etc/default/grub options:
+-GRUB_DEFAULT=      -default menu entry to boot, count from 0
+-GRUB_SAVEDEFAULT=  -if this option is set to true and GRUB_DEFAULT= is set to saved, then the default boot option will always be the last one selected in the boot menu.
+-GRUB_TIMEOUT=      -The timeout, in seconds, before the default menu entry is selected. If set to0the system will boot the default entry without showing a menu. If set to-1the system will wait until the user selects an option, no matter how long it takes.
+-GRUB_CMDLINE_LINUX= -kernel parameters:
+
 -acpi           -ACPI support, for example: 'acpi=on'
 -init           -sets the alternative system initiator, for example 'init=/bin/bash'
 -systemd.unit   -systemd target, for example: 'systemd.unit=graphical.target', may be runlevel number
@@ -8,13 +31,23 @@ Grub options (kernel parameters):
 -vga            -select video mode
 -root           -sets the root partition, eg.'root=/dev/sda3'
 -rootflags      -mount options for the root filesystem
--root           -initial mount of filesystem as read-only
+-ro             -initial mount of filesystem as read-only
 -rw             -initial mount of filesystem as read write
 
-Kernel params shoud be write in /etc/default/grub/ in the line GRUB_CMDLINE.
-Later new configuration file should be generated:
-grub-mkconfig -o /boot/grub/grub.configuration
-
 Live view of actual kernel parameters are saved in '/proc/cmdline'
+
+-GRUB_CMDLINE_LINUX_DEFAULT=    -by default, two menu entries are generated for each Linux kernel, one with the default options and one entry for recovery. With this option you can add extra parameters that will be added only to the default entry.
+-GRUB_ENABLE_CRYPTODISK=        -if set toy, commands likegrub-mkconfig,update-grubandgrub-installwill look for encrypted disks and add the commands needed to access them during boot. This disables automatic booting (GRUB_TIMEOUT=with any value other than-1) because a passphrase is needed to decrypt the disks before they can be accessed.
+
+GRUB menu entries:
+/etc/grub.d/40_custom
+
+Interacting with GRUB 2
+To edit an option, select it with the arrow keys and pressE. This will show an editor window with the contents of themenuentryassociated with that option, as defined in/boot/grub/grub.cfg.After editing an option, typeCtrl+XorF10to boot, orEscto return to the menu.To enter the GRUB 2 shell, pressCon the menu screen (orCtrl+C) on the editing window). You will see a command prompt like this:grub >
+50Typehelpto see a list of all available commands, or pressEscto exit the shell and return to the menu screen
+
+GRUB Shell - type c
+
+
 _______________________________________________________________________
 
