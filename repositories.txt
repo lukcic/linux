@@ -55,25 +55,58 @@ Debian components types:
 -security       -contains security updates
 -backports      -contains more up-to-date versions of main packages
 
-Directory /etc/apt/sources.list.d contains additional repositories dscription files to use with apt. Must have .list extension.
+Directory /etc/apt/sources.list.d contains additional repositories description files to use with apt. Must have .list extension.
 
 apt-file update  -update the packages cache
 apt-file list [PACKAGE_NAME] -list contents of package
-apt-file search [FILENAME]  -seraches for packages that include particulat file
+apt-file search [FILENAME]  -seraches for packages that include particular file
 
 _____________________________________________________________________________
-/etc/yum.repos.d -directory that contains yum repositories
 
+RPM package manager
+Developed by Red Hat, used in: Red Hat, CentOS, Fedora, Oracle Linux, openSUSE.
 
-yum install epel-release ????
+rpm -i [PACKAGE_NAME] -installation of .rpm package
+rpm -U [PACKAGE_NAME] -update .rpm package
+rpm -e [PACKAGE_NAME] -unistall (erase) the package
+rpm -qa  -listing installed packages (query all)
+rpm -qf  -finding out which package contains specific file (query file)
+rpm -qi [PACKAGE_NAME] -view info about package (query info)
+rpm -ql [PACKAGE_NAME] -list files inside package (query list)
+-p      -info/list of liles of not installed (yet) package
+-v      -verbose output
+-h      -progress bar 
 
-yum update
-yum search [NAME]
-yum install [NAME]
+_____________________________________________________________________________
+YUM - YellowDog Updater Modified
 
-yum is frontend for rpm package
+yum search [PATTERN] - search for package with particular pattern
+yum install [PACKAGE_NAME] -installation of package with dependencies
+yum check-update [PACKAGE_NAME] -check if there in a newer version of package, without PACKAGE_NAME it check all installed packages
+yum update [PACKAGE_NAME] -UPGRADE of package, without PACKAGE_NAME it upgrade all installed packages
+yum remove [PACKAGE_NAME] -removing of package
+yum whatprovides [FILE] -check which package provides specific file
+yum info [PACKAGE_NAME] -view info about package
 
-rpm -qa -list all packages in your system
+Software reposietories:
+/etc/yum.repos.d -directory that contains yum repositories (.repo files)
+
+yum-config-manager -package to mainaining yum repos
+
+yum repolist all                                            -list all yum reppositories
+yum-config-manager --add-repo [https://url/name.repo]       -adding repo to yum
+yum-config-manager --enable/disable [repo id firsth part]   -enable/disable repo
+
+yum clean packages/metadata -clean packages or metadata sotred in /var/cache/yum
+________________________________________________
+EPEL (Extra Packages for Enterprise Linux) is an open-source and free community-based repository project from Fedora team, 
+which provides 100% high-quality add-on software packages for Linux distribution including RHEL, CentOS, and Scientific Linux.
+
+yum install epel-release
+________________________________________________
+DNF - dnf is the package management tool used on Fedora, and is a fork of yum.
+ZYPPER - is the package management tool used on SUSE Linux and OpenSUSE.
+
 ________________________________________________
 Ubuntu
 do-release-upgrade
