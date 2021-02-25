@@ -4,7 +4,8 @@
 
 echo [STRING] - displays STRING
 
-touch [FILE] -creates empty file or timestamps of existing file
+touch [FILE]            -creates empty file or timestamps of existing file
+touch my\ big\ file     -making files with special charachters in name (spaces)
 
 cat -concatenate (powiązać), forward STDIN to STDOUT. Displays choosen file. CTRL + D to end.
 cat [FILE1] [FILE2] - shows content of files
@@ -15,9 +16,13 @@ cat > [FILE] - will wait for text and save it in FILE (^D ends)
 cat [TEXT] > [FILE] - override a FILE with TEXT
 cat [TEXT] >> [FILE] - append a TEXT to FILE
 
+zcat [FILE] -view contents of ziped file (gzip)
+
 ______________________________________________________________________________________________________________
 man -k [phrase] -searching for a phrase in man pages
+apropos [phrase] -search through the man pages names and descriptions
 info [command] -new version of command help
+type [command] -similar to wchich
 ______________________________________________________________________________________________________________
 
 > redirect with overriding the file (always makes a file)
@@ -97,7 +102,7 @@ symbolic link points to filename of target file.
 file [FILE]-shows type of file (binary, text)
 stat [FILE] -shows information about disk usage of file
 
-wc -summary of lines, words and characters in file
+wc [FILE]-summary of lines, words and characters in FILE
 
 tail -displays end lines of file
 -3 -shows last 3 lines
@@ -165,8 +170,24 @@ enter text
 HISTIGNORE in .bashrc - add ls and similar commands
 export HISTIGNORE="ls:ps:history"
 
-env -lists environment variables
+bash -will start new bash session that is chaild of main bash process
+______________________________________________________________________________________________________________
+Variables:
+set can see shell-local variables, env cannot.
 
+Shells can have variables of 2 types: locals, which are only accessible from the current shell, and (exported) environment variables, which are passed on to every executed program.
+Since set is a built-in shell command, it also sees shell-local variables (including shell functions). 
+env on the other hand is an independent executable; it only sees the variables that the shell passes to it, or environment variables.
+When you type a line like a=1 then a local variable is created (unless it already existed in the environment). 
+Environment variables are created with export a=1
+
+env -lists environment variables
+cat $PATH   -show value of PATH variable
+
+[var name]=[value]
+export [var name] -saving new environment variable 
+set - 
+unset [var name] -deleting variable
 ______________________________________________________________________________________________________________
 gcc compiler
 

@@ -39,3 +39,19 @@ cat /etc/redhat-release -check RedHat verion
 lsmod -list kernel modules (/lib/modules)
 
 grub2-mkconfig -o /boot/grub2/grub.cfg.new
+
+_____________________________________________________________________
+The D-Bus Machine ID
+
+Many Linux installations will utilize a machine identification number generated at install time, called theD-Bus machine ID. 
+However, if a virtual machine isclonedto be used as a template for other virtual machine installations, 
+a new D-Bus machine ID would need to be created to ensure that system resources from the hypervisor get directed to the appropriate guest system.
+
+dbus-uuidgen --ensure           -check if D-Bus machine id exist
+dbus-uuidgen --get              -list D-Bus machine id
+
+The D-Bus machine ID is located at/var/lib/dbus/machine-idand is symbolically linked to/etc/machine-id.
+
+If 2 VMs have the same id generate new one:
+rm -f /etc/machine-id
+dbus-uuidgen --ensure=/etc/machine-id

@@ -1,3 +1,7 @@
+DHCP:
+dhclient -r        release addres
+dhclient           -take address
+
 ______________________________________________________________________________________________________________
 netstat -lnpt -shows open TCP ports
 netstat -tuna
