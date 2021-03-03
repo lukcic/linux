@@ -48,13 +48,16 @@ File System Table:
 /etc/fstab
 [DEVICE] [MOUNT_POINT] [TYPE] [OPTIONS] [DUMP] [FSCK]
 ______________________________________________________________________________________________________________
-
 dd - read data from file or string and save this data to output file/string. dd copy data in blocks with given size.
 
+dd if=oldFile of=newFile
+
 dd if=/dev/zero of=[OUTPUT_FILE] bs=1024 count=1
-
 /dev/zero - endless string of zeros
+conv=ucase  -capitalise texth when copying
 
+dd if=/dev/sda of=backup.dd bs=4096
+this command will make abackup of disk and save it in file
 ______________________________________________________________________________________________________________
 
 

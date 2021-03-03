@@ -17,7 +17,8 @@ cat [TEXT] > [FILE] - override a FILE with TEXT
 cat [TEXT] >> [FILE] - append a TEXT to FILE
 
 zcat [FILE] -view contents of ziped file (gzip)
-
+bzcat - ---||--- (bzip2)
+xzcat - ---||--- (xz)
 ______________________________________________________________________________________________________________
 man -k [phrase] -searching for a phrase in man pages
 apropos [phrase] -search through the man pages names and descriptions
@@ -32,13 +33,15 @@ ________________________________________________________________________________
 command > file
 command1 | command2
 
-0 - standard input (stdin)
-1 - standard output (stdout)
-2 - standard error (stderr)
+0 - standard input (/dev/stdin) 
+1 - standard output (/dev/stdout)
+2 - standard error (/dev/stderr)
+1> redirect standard output
 2> redirect standard error
 &> redirect both, standard output and standard error
-2>&1 - redirect standard error to standard output to catch output or error 
-ls -ly >> log.txt 2>&1
+1>&2 - redirect standard output to standard error
+2>&1 - redirect standard error to standard output to catch output of error 
+ls -ly > log.txt 2>&1
 
 sort < [FILE] > [SORTED FILE]
 ______________________________________________________________________________________________________________
@@ -46,6 +49,7 @@ ________________________________________________________________________________
 ls
 -l -shows properties
 -a -show all files (with hidden)
+-h -show size in humar readable format
 -d -shows only directories
 -r -show files in reverse
 -R -shows files inside subfolders (recursive)
@@ -73,6 +77,7 @@ CTRL + K -cut to bash clipboard (from cursor to right side)
 CTRL + Y -paste from clipboard
 CTRL + T -change place of 2 letters (mistakes correction)
 ______________________________________________________________________________________________________________
+Archives:
 
 tar [OPTIONS] [ARCHIVE] [FILES]
 -f -file, use archive filetype
@@ -82,31 +87,70 @@ tar [OPTIONS] [ARCHIVE] [FILES]
 -z -zip (compress archive)
 -t -list table of contents 
 -p -extracted files have own permissions (not umask)
-______________________________________________________________________________________________________________
 
+tar -czvf archive.tar.gz [FILES] -archive files with compression
+tar -xzvf archive.tar.gz -C [LOCATION] -decompress files
+
+gzip [FILE-TO-COMPRESS]
+gunzip [FILE-TO-DECOMPRESS]
+
+ls | cpio -o > archive.cpio -archive listed files 
+cpio -id < archive.cpio -unarchive files
+-o -create output file
+-i -extract
+-d -create destination directory
+______________________________________________________________________________________________________________
 mkdir [NAME]
 -p -creates directories recursively
 -m 777 -creates direcotry with specified permissions
+
 
 rm [FILE/DIR]
 -r -removes files and dirs recursively
 -f -removes non empty dirs (forced)
 -i -asks before removing
 
+
 ln [SOURCE] [DEST] -creates hard link to file. Hard link increase link counter. File can be deleted when all hard links are unlinked.  
 ln -s [SOURCE] [DEST] -creates symbolic link (shortcut), do not increase link conuter. 
 unlink [FILE] -deletes link
+
 Hard link points to the same address of memmory (disk place) of target file, 
 symbolic link points to filename of target file.
+______________________________________________________________________________________________________________
 
-file [FILE]-shows type of file (binary, text)
+file [FILE] -shows type of file (binary, text)
 stat [FILE] -shows information about disk usage of file
 
-wc [FILE]-summary of lines, words and characters in FILE
+wc [FILE] -(word count) summary of lines, words and characters in FILE
+-l  -sum lines
+-w  -sum words
+-c  -sum characters
 
 tail -displays end lines of file
 -3 -shows last 3 lines
 -f -shows file changes in live mode (logs etc.)
+
+head - display beginning of file
+-n X -shows first X lines
+
+cut - print (or cut) columns of text files ordered by character separators
+
+paste -join files in columns ordered by character separatos
+
+split -split larger files into smaller 
+
+sort -sorting the output (alphabeticaly, rev alph, random)
+
+uniq -list (and count) matching strings, this command can find and delete repeated lines in the file
+uniq [FILE] -cat FILE without repeated lines
+-c -shows how many times line exists
+-D -shows only repeated lines
+
+nl -numbering lines
+
+tr -(translate) replace characters, removes and compress repeating characters
+
 ______________________________________________________________________________________________________________
 
 grep [OPTION] "text" [file/dir]
@@ -121,11 +165,27 @@ dot[Cc]om -both versions of word
 grep -E '(a+)' - a one ore more times
 grep 'C...y' - words starts with C and ends with y
 ______________________________________________________________________________________________________________
+SED - stream editor for filtering and transformation text. A common use of sed is to find and replace the text within a file.
 
+sed -n /[PATTERN]/p < ftu.txt
+-n -no output (by default sed print everything)
+p -print PATTERN
+d -delete PATTERN from output
+
+sed s/[PATTERN]/[NEW_PATTERN] <[FILE.txt] -replacing PATTERN to NEW_PATTERN in whole FILE
+sed -i.backup s/[PATTERN]/[NEW_PATTERN]/ [FILE.txt] -replacing PATTERNS with making backup file
+-i -sed will work on oryginal file
+-i.backup -sed will make a backup file
+
+______________________________________________________________________________________________________________
+Searching:
 whereis [process name] - search for path of binary in $PATH
+
+finf [STARTING_PATH] [OPTION] [EXPRESSION]
 
 find [where] -name [name] -type [f/d/l]
 -iname [name] -ignores CauseSensitive
+-not  -show opposite results
 -user [username] -search for files that [user] is owner
 -mtime +5 -search files modified more than 5 days ago
 -mmin -5 -search files modified in last 5 minutes
@@ -311,8 +371,16 @@ ALT + F1 - /dev/tty1
 ALT + F2 - /dev/tty2
 CTRL + ALT + Fx - changing console (gui mode)
 
+______________________________________________________________________________________________________________
+Checksum:
 
+sha256sum [FILE] -generating chacksum SHA256 (others: md5sum and sha512sum)
+sha256sum -c [FILE_WITH_CHECKSUM] -comparing file with a text file that contains another checksum in plaintext
 
+oc [FILE] -octal dump od FILE
+command is listing file in octal format
+-x  -view file in hex format
+-c  -view file in character format (with non printed signs)
 
 
 

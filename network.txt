@@ -73,3 +73,10 @@ com2sec notConfigUser default [PASSWORD]
 Commands:
 smnpget localhost -v 2c -c [PASSWORD] sysName.0
 snmpwalk localhost -v 2c -c [PASSWORD] system
+
+______________________________________________________________________________________________________________
+
+ethtool [interface] -show 1st layer info
+
+
+
