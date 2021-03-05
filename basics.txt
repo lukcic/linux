@@ -151,6 +151,14 @@ nl -numbering lines
 
 tr -(translate) replace characters, removes and compress repeating characters
 
+tee -command output is redirected both to the file and for stdout
+-a -append data to file
+
+xargs -command used to send output of first command as the parameters to second command
+-n X -how many arguments at the time will be send to second command
+-L -how many lines can be used as aruments per command execution
+-0 -tells the xargs that null character must be used as the separator (find -print0)
+
 ______________________________________________________________________________________________________________
 
 grep [OPTION] "text" [file/dir]

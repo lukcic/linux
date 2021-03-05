@@ -1,14 +1,27 @@
-[COMMAND] & -returns PID od process
-
+Jobs:
 [COMMAND] & -run process in background (unzip eg.)
 
-jobs - lists background processes with numbers
-fg [PROCESS_NUMBER] -takes process from background to foreground
-bg [PROCESS_NUMBER] -takes process from foreground to background
-______________________________________________________________________________________________________________
+jobs - lists background processes with job ID
+-p -show process ID
+-r -how only running jobs
+-s -how only stopped jobs
 
++ -means current, default job (sended to backgruond last)
+%2 -select job #2
+%?[STRING] -job which name is [STRING]
+
+fg [JOB_ID] -takes process from background to foreground
+bg [JOB_ID] -takes process from foreground to background
+______________________________________________________________________________________________________________
 ps -list foreground processes (user only)
-ps aux -lists processes of all users
+ps -aux -lists processes of all users
+-a -show processes attached to a tty termial
+-u [USERNAME] -list process owned by USER
+-x -show processes that are not attached to a tty termian
+______________________________________________________________________________________________________________
+pgrep [PROCESS_NAME] -returns PID of process (pidof does the same)
+pkill [PROCESS_NAME] -kills process with given name
+killall [PROCESS_NAME] -kill all processes wtih given name
 
 kill -STOP [pid] 
 kill -CONT [pid]
@@ -17,11 +30,25 @@ kill -CONT [pid]
 kill -15 [PID] -terminate process
 kill -9 [PID] -kill process
 ______________________________________________________________________________________________________________
+watch [COMMAND] -runs command periodycally (2 seconds by default)
+-n X -time of repeating (default 2s)
 
 nohup [COMMAND] [OPTIONS] -run command immune to hangups (non tty output). Process works after closing terminal.
 ______________________________________________________________________________________________________________
+top na htop
+M -sort by memmory usage
+N -sort by process ID
+T -sort by running time
+P -sort by % of CPU usage
+R -reverse sorting
+V -forest hierarchy of processes
 
-top
+k -kill process
+f -renice (change a priority of process) ?????????????????
+u -show processes of given user (all by default)
+
+
+
 sorting
 k -kill process
 ______________________________________________________________________________________________________________
