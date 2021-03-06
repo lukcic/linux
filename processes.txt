@@ -47,11 +47,21 @@ k -kill process
 f -renice (change a priority of process) ?????????????????
 u -show processes of given user (all by default)
 
-
-
-sorting
-k -kill process
 ______________________________________________________________________________________________________________
+tmux new -s [nazwa_sesji]
+exit
 
-/proc -fake directory, interface to the kernel, stores viariables.
+CTRL + B - wywołanie komend
+D - minimalizacja sesji (detach)
 
+Ctrl+b ” – podzielenie terminala w poziomie
+Ctrl+b % – podzielenie terminala w pionie
+Ctrl+b strzałki – poruszanie się pomiędzy panelami
+Ctrl+b c – stworzenie nowego okna
+Ctrl+b n – przełączenie na następne okno
+Ctrl+b p – przełączenie na poprzednie okno
+Ctrl+b i bez puszczania tej kombinacji strzałki – zmiana wymiarów paneli
+Ctrl+b d – uśpienie danej sesji (przywołanie przez polecenie tmux attach)
+
+tmux ls - listowanie sesji
+tmux attach -t [nazwa_sesji] - podłączenie sesji
