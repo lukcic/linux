@@ -68,7 +68,7 @@ umask 022 - new files can be accessed by everyone
 umask 077 -new files can be accessed only by user
 ______________________________________________________________________________________________________________
 
-ALT + . -repeat last argument
+ALT + . -repeat argument from last command
 CTRL + A -moves cursor to left side
 CTRL + E -moves cursor to the right side
 CTRL + W -delete word
@@ -76,6 +76,11 @@ CTRL + U -cut to bash clipboard (from cursor to left side)
 CTRL + K -cut to bash clipboard (from cursor to right side)
 CTRL + Y -paste from clipboard
 CTRL + T -change place of 2 letters (mistakes correction)
+
+sudo !! -repeat last command with sudo
+
+less +F [LOGFILE] -will open the last log lines and move backwards
+
 ______________________________________________________________________________________________________________
 Archives:
 
