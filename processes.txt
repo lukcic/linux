@@ -46,7 +46,33 @@ V -forest hierarchy of processes
 k -kill process
 f -renice (change a priority of process) ?????????????????
 u -show processes of given user (all by default)
+______________________________________________________________________________________________________________
+Priorities:
+0-99    -real time processes
+100-139 -normal processes, lower value, higher priority
 
+Standard priority of normal process: 120.
+
+/proc/[PROCESS_ID]/sched  -file that contains info about process, for example static priority (prio)
+
+ps -el  -list priorities of all processes (PRI column), ps -Al works similar
+Priorities listed that way have priority values reduced (always -40) for historical reasons!
+
+Priorities viewed by top command have priority value substracted by 100 (-100), so real time processes have negative value.
+Normal processes have value 0 - 39.
+
+Nice:
+0                 -default process starts with nice 0 (priority 120).
+from -20 to 19    -nice values, -20 -less nice process (higher priority), 19 -more nice process (lower priority)
+
+nice [PROCESS_NAME] - start process with non standard priority (default 10)
+-n [X]  -specific nice value
+
+renice [PROCESS_NAME] -change nice of running process
+-X      -specific nice value
+-p [PID] -specific PID
+-u [USERNAME] -specific processes of given user
+-g [GROUPNAME] -specific processes of given group
 ______________________________________________________________________________________________________________
 tmux new -s [nazwa_sesji]
 exit
