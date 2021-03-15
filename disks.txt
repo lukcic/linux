@@ -21,20 +21,76 @@ ________________________________________________________________________________
 
 quota -shows disks limits
 ______________________________________________________________________________________________________________
+Partisions:
 
-parted -text programm for MBR & GPT partition tables
-gparted -GUI programm for MBR & GPT partition tables
-gdisk -text version of fdisk with only GPT support
+extended partiotion - container for logical partitions (MBR)
+primary partition - in bootable disc, first partiotion in MBR must be primary, max 4 primary partitions (MBR)
+
 fdisk - text program, only MBR partiotion tables
 -l -lists disk
+fdisk /dev/sda  -edition first disk
 
-mkfs.[TYPE] [PARTITION] -format partition in specific filesystem type
-ls -l /sbin/mkfs.*
+Commands:
+q   -quit witout saving changes
+w   -write changes
+p   -print current partition table
+F   -check unallocated space
+n   -create partition (eg.: +300G)
+d   -delete partition
+t   -change partition type (not filesystem type!), 83 - Linux, 82 - Linux SWAP
+
+gdisk -text version of fdisk with only GPT support (commands the same)
+s   -sort partition numbers
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - -
+parted -text programm for MBR & GPT partition tables
+gparted -GUI programm for MBR & GPT partition tables
+
+parted /dev/sda -editing disk
+select /dev/sdb -changing disk to edit
+print       -information about selected disk
+print devices  -information about all block devices
+print free   -show free space
+
+Creating partition table:
+mklabel msdos   -create MBR
+mklabel gpt     -create GPT
+
+Creating partiotin:
+mkpart [PARTTYPE] [FSTYPE] [START] [END]
+eg. 
+(parted) mkpart primary ext4 1m 100m
+
+PARTTYPE: primary, logical, extended
+FSTYPE: parted will only make a flag, not create the filesystem, here should be SWAP (linux-swap) assigned too
+START: beggining of partition in s(sectors), m(megabytes), B(bytes), %
+END: end of partition in s(sectors), m(megabytes), B(bytes), %
+
+rm [number] -delete a partiotin with selected number
+______________________________________________________________________________________________________________
+Filesystems:
+
+mkfs.[TYPE] [PARTITION] -format partition in specific filesystem type, eg.: 
+mkfs.ext4 /dev/sdb1
+or
+mke2fs-t ext4 /dev/sdb1
+-L [LABEL]   -add label to partition
+
+ls -l /sbin/mkfs.* -list available filesystem types
 
 tune2fs [PARTITION] [LABEL] -add label to the partition
 
 mount [DEVICE] [MOUNT_POINT] -mounting partition, when is in fstab, only one parameter
 unmnount [DEVICE/MOUNT_POINT] -unmounting partition
+
+SWAP:
+mkswap /dev/sda2
+swapon /dev/sda2
+
+SWAP as file:
+dd if=/dev/zero of=myswap bs=1M count=1024
+mkswap myswap
+Add swap file to /etc/fstab.
 ______________________________________________________________________________________________________________
 
 Device files:
@@ -59,5 +115,12 @@ conv=ucase  -capitalise texth when copying
 dd if=/dev/sda of=backup.dd bs=4096
 this command will make abackup of disk and save it in file
 ______________________________________________________________________________________________________________
+BTRFS:
+mkfs.btrfs /dev/sdb1
 
+Subvolumes:
+btrfs subvolume create /mnt/disk/BKP
 
+Snapshots:
+btrfs subvolume snapshot /mnt/disk /mnt/disk/snap
+btrfs subvolume show /mnt/disk/BKP/
