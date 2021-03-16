@@ -20,6 +20,19 @@ zcat [FILE] -view contents of ziped file (gzip)
 bzcat - ---||--- (bzip2)
 xzcat - ---||--- (xz)
 ______________________________________________________________________________________________________________
+Linux main directories:
+/bin                -binaries (essential executables: ls, gzip, curl)
+/sbin               -system binaries (executables that should be run only by root user - they needs sudo)
+/lib                -shared libaries
+/usr/bin            -non-essential installed binaries
+/usr/local/bin      -binaries locally compiled by users
+/etc                -editable text configuration (et cetra)
+/boot               -files needed to boot the system (kernel etc)
+/dev                -device files
+/opt                -optional software
+/var                -variable files (logs, cache)
+/proc               -files created by kernel in fly to manage processes
+______________________________________________________________________________________________________________
 man -k [phrase] -searching for a phrase in man pages
 apropos [phrase] -search through the man pages names and descriptions
 info [command] -new version of command help

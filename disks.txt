@@ -5,18 +5,20 @@ lspci -list PCI devices
 -v -driver details (-vv too)
 ______________________________________________________________________________________________________________
 
-du -h [DIRECTORY] -disk usage of files in directory in readable format
--a -disk usage of all files & dirs  in directory
--c -total disk usage of dirs in directory
+du -h [DIRECTORY] -disk usage of files in directory and subdirectories in readable format
 -s -summary disk usage of directory
+-a -disk usage of all files & dirs in directory severally
+-c -total disk usage of dirs in directory
 -m -disk usage  in MB
---exclude="*text*" - excludes text
+--exclude="*PATTERN*" - excludes files with given pattern (eg. "**.tmp*")
 --time - shows modification time
 ______________________________________________________________________________________________________________
 
 df -h [DIRECTORY] - shows used and free space of directory
 -a - all
 -T - shows filesystem type
+
+df -hx tmpfs        -show disk free space excluding temp filesystems
 ______________________________________________________________________________________________________________
 
 quota -shows disks limits
@@ -77,11 +79,11 @@ mke2fs-t ext4 /dev/sdb1
 -L [LABEL]   -add label to partition
 
 ls -l /sbin/mkfs.* -list available filesystem types
-
-tune2fs [PARTITION] [LABEL] -add label to the partition
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 mount [DEVICE] [MOUNT_POINT] -mounting partition, when is in fstab, only one parameter
 unmnount [DEVICE/MOUNT_POINT] -unmounting partition
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 SWAP:
 mkswap /dev/sda2
@@ -91,6 +93,30 @@ SWAP as file:
 dd if=/dev/zero of=myswap bs=1M count=1024
 mkswap myswap
 Add swap file to /etc/fstab.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+fsck [FILESYETEM] -check filesystem integrity, UNMOUNT FIRST!!!
+This utylity check teh filesystem type and run corresponding check
+-A  -check all filesystem listed in /etc/fstab
+-C  -show progress bar
+-R  -used with -A will skip the root filesystem
+-V  -verbose mode
+
+e2fsck [FILESYETEM] -check ext2-4 filesystems
+-p   -automatically repair errors (possible to repair)
+-y   -will answer 'yes' to all questions
+-n   -will answer 'no' to all questions
+-f   -will force check
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+tune2fs -setting parameters to ext2-4 filesystems
+-l [FILESYSTEM]  -will show info about device
+-c X             -set amount of fs mounts without checking, after this value fs will be checked while booting
+-i Xd            -set time (days), after this fs will be checked while booting
+-L [LABEL]       -set the label (max 16ch.)
+-U               -set the UUID
+-e [BEHAVIOUR]   -defines the kernel behaviour, when the error is found (continue, remount-ro, panic)
+-j [FILESYETM]   -convert ext2 to ext3 (add journal)
+
 ______________________________________________________________________________________________________________
 
 Device files:
