@@ -45,12 +45,13 @@ systemctl list-unit-files       -list all units
 --type=target                   -list only targets
  
 /lib/systemd/system -configuration files of all units (include targets)
+/etc/systemd/system
 
 systemd unit types:
 -service    -system resources that can be initiated, interrupted and reloaded
 -socket     -may be a filesystem socket or network socket, always have corresponding service unit, loaded whet the socked receives a request
 -device     -is associated with hardware device (identified by the kernel), device will be an unit only when udev rule for this purpose exist
--mount      -mount point definition, similar to the /etc/fstab
+-mount      -mount point definition, similar to the /etc/fstab, have .mount extension
 -automount  -mount point definition mounted automaticly, always have corresponding mount unit which is initiated when the automount mount point is accessed
 -target     -grouping other units, managed as a single units
 -snapshot   -saved state of systemd manager (not in every linux distribution)

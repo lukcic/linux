@@ -1,6 +1,10 @@
 lsscsi - lists scsi devices
+
 lsblk -list block devices (disks with partitions)
+-f [FILESYSTEM] -query information about filesystem, eg. UUID
+
 lsusb -list connected USB devices
+
 lspci -list PCI devices
 -v -driver details (-vv too)
 ______________________________________________________________________________________________________________
@@ -79,10 +83,22 @@ mke2fs-t ext4 /dev/sdb1
 -L [LABEL]   -add label to partition
 
 ls -l /sbin/mkfs.* -list available filesystem types
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Mounting:
+
+mount   -list mounted filesystems with  options
 mount [DEVICE] [MOUNT_POINT] -mounting partition, when is in fstab, only one parameter
+-t [TYPE]       -specific type of fs
+-a              -will mount all filesystem stored in fstab
+-o [OPTIONS]    -mount fs with specified options   
+-r              -mount fs as read olny
+-w              -mount fs as writable
+
 unmnount [DEVICE/MOUNT_POINT] -unmounting partition
+-f              -forced, eg. when remote fs is not accessible
+
+lsof [PARTITION]  -list open files from specific partition
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 SWAP:
@@ -129,6 +145,26 @@ ________________________________________________________________________________
 File System Table:
 /etc/fstab
 [DEVICE] [MOUNT_POINT] [TYPE] [OPTIONS] [DUMP] [FSCK]
+DEVICE - the device  containing the filesystem to be mounted. Instead of the device, you can specify the UUID or label of the partition.
+MOUNT_POINT - Where the filesystem will be mounted.
+TYPE - The filesystem type.
+OPTIONS - Mount options that will be passed to mount.
+DUMP - Indicates  whether  any  ext2,  ext3  or  ext4  filesystems  should  be  considered  for  backup  by thedumpcommand. Usually it is zero, meaning they shouldbe ignored.
+FSCK - When non-zero, defines the order in which the filesystems will be checked on bootup. Usually it is zero.
+
+OPTIONS:
+atime and noatime - by  default,  every  time  a  file  is  read  the  access  time  information  is  updated.  Disabling  this (with noatime)  can  speed up  disk  I/O.  Do  not  confuse  this with the modification  time,  which  is updated every time a file is written to.
+auto and noauto - whether the filesystem can (or can not) be mounted automatically withmount -a.
+defaults - this will pass the options rw,suid,dev,exec,auto,nouser and async to mount.
+dev and nodev - whether character or block devices in the mounted filesystem should be interpreted.
+exec andn oexec - allow or deny permission to execute binaries on the filesystem.
+user and nouser - allows (or not) an ordinary user to mount the filesystem.
+group - allows a user to mount the filesystem if the user belongs to the same group which owns the device containing it.
+owner - allows a user to mount a filesystem if the user owns the device containing it.
+suid and nosuid - allow, or not, SETUID and SETGID bits to take effect.
+ro and rw - mount a filesystem as read-only or writable.
+remount - this will attempt to remount an already mounted filesystem. This is not used on/etc/fstab, but as a parameter to mount -o. For example, to remount the already mounted partition /dev/sdb1 as read-only, you could use the command mount -o remount,ro /dev/sdb1. When remounting, you do not need to specify the filesystem type, only the device nameorthe mount point.
+sync and async - whether  to  do  all  I/O  operations  to  the  filesystem  synchronously  or  asynchronously. asyncis usually  the  default.  The  manual  page  for mount warns  that  using sync on  media  with  a  limited number of write cycles (like flash drives or memory cards) may shorten the life span of the device.
 ______________________________________________________________________________________________________________
 dd - read data from file or string and save this data to output file/string. dd copy data in blocks with given size.
 
