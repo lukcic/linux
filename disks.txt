@@ -136,10 +136,10 @@ tune2fs -setting parameters to ext2-4 filesystems
 ______________________________________________________________________________________________________________
 
 Device files:
-b -block device. Programs can read data from block devices only in constant size blocks.
-c -character device. Works on data strings. Programs can read/write characters from it. Dont have size. 
+b -block device.Phisical or virtual device (disk and other storage devices). Programs can read data from block devices only in constant size blocks.
+c -character device (virtual or phisical): terminals or serial ports). Works on data strings. Programs can read/write characters from it. Dont have size. 
 p -pipe device. Works on strings, but on the end there is another process not device.
-s -socket device. Interface to make communication between two processess.
+s -socket device. Interface to make communication between two processess (programs).
 ______________________________________________________________________________________________________________
 
 File System Table:
