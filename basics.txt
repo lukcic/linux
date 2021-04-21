@@ -32,6 +32,7 @@ Linux main directories:
 /opt                -optional software
 /var                -variable files (logs, cache)
 /proc               -files created by kernel in fly to manage processes
+/tmp                -temporary files deleted after reboot (/var/tmp - that doesn`t)
 ______________________________________________________________________________________________________________
 man -k [phrase] -searching for a phrase in man pages
 apropos [phrase] -search through the man pages names and descriptions
@@ -65,6 +66,7 @@ ls
 -h -show size in humar readable format
 -d -shows only directories
 -r -show files in reverse
+-i -shows inode number
 -R -shows files inside subfolders (recursive)
 -S -shows files sorted by SIZE (--sort=size)
 -t -shows files sorted by time (--sort=time)
@@ -83,7 +85,8 @@ umask 077 -new files can be accessed only by user
 
 umask have different values than files and folders octal mode.
 
-Sticky bit - directories with t instead x on 'others' permissions (1 on beggining in octal). With Sticky bit only owner can delete or rename the file in this dir.
+Sticky bit - directories with "t" instead x on 'others' permissions (1 on beggining in octal). 
+With Sticky bit only owner can delete or rename the file in this dir.
 
 SGID (set GID) - +s on group x, octal value 2 before permission number. 
 Given for executable files - gives possibility to run file with permissions of group who owns the file (eg. root group). 
@@ -142,11 +145,15 @@ rm [FILE/DIR]
 
 
 ln [SOURCE] [DEST] -creates hard link to file. Hard link increase link counter. File can be deleted when all hard links are unlinked.  
-ln -s [SOURCE] [DEST] -creates symbolic link (shortcut), do not increase link conuter. 
+ln -s [SOURCE] [DEST] -creates symbolic link (shortcut), do not increase link conuter. Always use absolute (full) path!
 unlink [FILE] -deletes link
 
-Hard link points to the same address of memmory (disk place) of target file, 
+Hard link points to the same address of memmory (inode - disk place) of target file, 
 symbolic link points to filename of target file.
+
+Aninodeis a data structure that stores attributes for an object (like a file or directory) on a filesystem. 
+Among those attributes are permissions, ownership and on which blocks of the disk the data for the object is stored. 
+Think of it as an entry on an index, hence the name, which comes from “index node”.
 ______________________________________________________________________________________________________________
 
 file [FILE] -shows type of file (binary, text)
