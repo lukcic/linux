@@ -52,6 +52,9 @@ ssh user@host
 
 ssh -i 'private_key_path' user@host
 ______________________________________________________________________
+Executing command:
+ssh name@server 'command'
+______________________________________________________________________
 Copying files by ssh:
 scp [file] [user}@[server]:[location]
 
