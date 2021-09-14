@@ -88,7 +88,7 @@ yum remove [PACKAGE_NAME] -removing of package
 yum whatprovides [FILE] -check which package provides specific file
 yum info [PACKAGE_NAME] -view info about package
 
-Software reposietories:
+Software repositories:
 /etc/yum.repos.d -directory that contains yum repositories (.repo files)
 
 yum-config-manager -package to mainaining yum repos
@@ -108,5 +108,8 @@ DNF - dnf is the package management tool used on Fedora, and is a fork of yum.
 ZYPPER - is the package management tool used on SUSE Linux and OpenSUSE.
 
 ________________________________________________
-Ubuntu
-do-release-upgrade
+Ubuntu:
+do-release-upgrade      #upgrade distribution do latest
+
+lsb_release -a          #Show distribution infos
+lsb_release -cs         #show distribution code name (c) in short format (s)
