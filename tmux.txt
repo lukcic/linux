@@ -1,0 +1,18 @@
+tmux new -s [nazwa_sesji]
+exit
+
+CTRL + B - wywołanie komend
+D - minimalizacja sesji (detach)
+
+Ctrl+b ” – podzielenie terminala w poziomie (Shift + ')'
+Ctrl+b % – podzielenie terminala w pionie
+Ctrl+b strzałki – poruszanie się pomiędzy panelami
+
+Ctrl+b c – stworzenie nowego okna
+Ctrl+b n – przełączenie na następne okno
+Ctrl+b p – przełączenie na poprzednie okno
+Ctrl+b i bez puszczania tej kombinacji strzałki – zmiana wymiarów paneli
+Ctrl+b d – uśpienie danej sesji (przywołanie przez polecenie tmux attach)
+
+tmux ls - listowanie sesji
+tmux attach -t [nazwa_sesji] - podłączenie sesjin
