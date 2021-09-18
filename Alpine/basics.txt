@@ -1,0 +1,19 @@
+https://alpinelinux.org/downloads/
+
+Virtual iso is live cd, sa must be installed.
+1. root
+2. setup-alpine
+3. Installing docker:
+
+apk add vim
+vim /etc/apk/repositories  #uncomment line with ...community
+apk update
+apk add doker
+rc-update add docker boot  #adding docker service to autostart
+reboot
+
+Stering this docker host by another using API.
+Opening Docker communication by TCP:
+Edit /etc/conf.d/docker and add line:
+DOCKER_OPTS="-H tcp://0.0.0.0:2376 -H unix:///var/run/docker.sock"
+reboot
