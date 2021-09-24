@@ -1,42 +1,206 @@
-DHCP:
-dhclient -r        release addres
-dhclient           -take address
+ifconfig command (obsolete)
+
+ifconfig #show interfaces
+-a       #show disabled
+
+ifconfig [UP/DOWN] [INTERFACE]  #enabling/disabling given interface, needs sudo
+ifconfig up eth0   
 
 ______________________________________________________________________________________________________________
-netstat -lnpt -shows open TCP ports
-netstat -tuna
-l – tells netstat to only show listening sockets.
-t – tells it to display tcp connections.
-n – instructs it show numerical addresses.
-p – enables showing of the process ID and the process name.
-netstat -ltnp | grep -w ':80' - shows which process listning on port 80
+ip comand (actual)
+
+ip addr         #shows all network interfaces
+ip a            #short version   
+
+ip link set [INTERFACE] [UP/DOWN]               #enabling/disabling interface
+ip addr [ADD/DEL] [IP_ADDRESS] dev [INTERFACE]  #adding/removing ip address
+
+
+ip link set dev [INTERFACE] address [MAC_ADDRESS] #adding MAC addres
+ip link set dev eth0 promisc on                   #enebling promiscous mode
 ______________________________________________________________________________________________________________
-
-nmap localhost -list all open ports on localhost
-nmap [IP_ADDRES] -shows open ports from outside
-______________________________________________________________________________________________________________
-
-ip a - shows all network interfaces
-ip addr -shows all network interfaces
-
-ip a add/del [ip address] dev [interface name] - adding/removing ip address
-ip link set {device name] up/down - enabling/disabling interface
-
-ip link set dev [device name] address [mac address] - adding MAC addres
-ip link set dev eth0 promisc on - enebling promiscous mode
-
 Static IP:
+
+Debian & Ubuntu 16.04:
 /etc/network/interfaces
+"""
 auto eth0
 iface eth0 inet static
         address 192.0.2.7
         netmask 255.255.255.0
         gateway 192.0.2.254
+        dns-nameservers 8.8.8.8
+"""
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Ubuntu 20.04
+/etc/netplan/00-installer-config.yaml
 
-mtr -r -w -c 10 google.com
+Ubuntu 18.04 
+/etc/netplan/01-netcfg.yaml
+'''
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    ens33:
+      dhcp4: no
+      dhcp6: no
+      addresses: [192.168.1.100/24]
+      gateway4: 192.168.1.1
+      nameservers:
+        addresses: [8.8.8.8,8.8.4.4]
+'''
+sudo netplan apply
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
 ______________________________________________________________________________________________________________
- 
-firewalld is a frontend of iptables. 
+
+DHCP:
+
+dhclient -r        #release addres
+dhclient           #take address
+
+Debian & Ubuntu 16.04:
+/etc/network/interfaces
+"""
+auto lo eth0
+iface lo inet loopback
+iface eth0 inet dynamic
+"""
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Ubuntu 20.04
+/etc/netplan/00-installer-config.yaml
+
+Ubuntu 18.04 
+/etc/netplan/01-netcfg.yaml
+'''
+network:
+ version: 2
+ renderer: networkd
+ ethernets:
+   ens33:
+     dhcp4: yes
+     dhcp6: yes
+'''
+sudo netplan apply
+______________________________________________________________________________________________________________
+
+Disabling IPv6:
+Edit:  /etc/default/grub
+
+'''
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash ipv6.disable=1"
+GRUB_CMDLINE_LINUX="ipv6.disable=1"
+'''
+
+sudo update-grub
+______________________________________________________________________________________________________________
+
+ETHTOOL:
+
+ethtool [interface] #show Ethernet layer info
+______________________________________________________________________________________________________________
+
+TRACEROUTE:
+sudo apt install traceroute
+
+Traceroute by default use udp packets. If output gives only *. try --icmp parameter - will use icmp packets like Windows Tracert.
+
+traceroute [DESTINATION_IP]     #check hops to given address
+--icmp                          #use icmp
+______________________________________________________________________________________________________________
+
+MTR (My traceroute)
+Cobines ping and traceroute tools. Gives reponse times for all hops in path for given IP. q for quit.
+
+mtr [IP]
+-c 5    #send just 5 pings
+______________________________________________________________________________________________________________
+
+ROUTE
+
+route #show host routing table
+route add default gw [IP]                               #assign default gateway
+route add -net [NETWORK_IP] gw [GATEWAY_IP] [INTERFACE] #add new route
+route del -net [NETWORK_IP]                             #delete given route
+______________________________________________________________________________________________________________
+NMCLI - Network Manager Client
+
+nmcli             #list devices and cofig
+nmcli device show #complete information about devices
+cncli dev status  #show connections on all devices
+______________________________________________________________________________________________________________
+
+SS - Socket Statiscics:
+
+ss -tapun
+-t      # tcp ports
+-a      # show all sockets
+-p      # show process (use with sudo)
+-u      # udp ports
+-n      # do not resolve port names
+______________________________________________________________________________________________________________
+
+NETSTAT (obsolete):
+sudo apt install net-tools
+
+netstat -tulpn #shows open TCP and udp ports
+l       # show listening sockets
+t       # display tcp connections
+n       # show numerical addresses
+p       # showing process ID and process name
+netstat -ltnp | grep -w ':80' - shows which process listning on port 80
+
+netstat -r # show routing table
+______________________________________________________________________________________________________________
+
+NC (NetCat) also referred to as the “Network Swiss Army knife”, is a powerful utility used for almost any task related to TCP, UDP, or UNIX-domain sockets. 
+It is used to open TCP connections, listen on arbitrary TCP and UDP ports, perform port scanning plus more.
+
+You can also use it as a simple TCP proxy, for network daemon testing, to check if remote ports are reachable, and much more. 
+Furthermore, you can employ nc together with pv command to transfer files between two computers.
+______________________________________________________________________________________________________________
+
+DNS
+
+HOST - resolves domain name to IPv4 & IPv6 (A record), also show some DNS entries (MX) if available.
+host [DOMAIN_NAME]
+
+DIG - Domain Information Grouper. 
+dig [DOMAIN_NAME]
+
+NSLOOKUP forward and reverse resolving
+nslookup [DOMAIN_NAME]
+nslookup [IP]
+______________________________________________________________________________________________________________
+
+TCPDump - commandline network sniffer. 
+
+tcpdump -i [INTERFACE]  #listening on given interface
+-c 5                    #packet limit (5)
+-w [FILENAME]           #save output to file
+______________________________________________________________________________________________________________
+
+BMON - commandline graph of network interface usage
+sudo apt install bmon
+bmon
+______________________________________________________________________________________________________________
+
+NMAP:
+
+nmap localhost -list all open ports on localhost
+nmap [IP_ADDRES] -shows open ports from outside
+______________________________________________________________________________________________________________
+
+IPTABLES - pilot for Linux Firewall (Netfilter). 
+
+https://www.tecmint.com/basic-guide-on-iptables-linux-firewall-tips-commands/
+https://www.tecmint.com/linux-iptables-firewall-rules-examples-commands/
+https://www.tecmint.com/configure-iptables-firewall/
+https://www.tecmint.com/block-ping-icmp-requests-to-linux/
+______________________________________________________________________________________________________________ 
+
+FIREWALLD - pilot for linux Firewall (Netfilter). In new RHEL firewalld replace iptables.
 Stores xml service description in /usr/lib/firewalld/services.
 Zones (describes accepted services for incoming connection) are stored in /etc/firewalld.
 
@@ -46,6 +210,19 @@ firewall-cmd --add-service=[SERVICENAME] --permanent -adding service permanently
 firewall-cmd --remove-service=[SERVICENAME] --permanent -deletes service permanently
 firewall-cmd --get-services -list known services
 firewall-cmd --add-port=[PORT/tcp] --permanent -adding open port permanently
+
+https://www.tecmint.com/firewalld-rules-for-centos-7/
+https://www.tecmint.com/configure-firewalld-in-centos-7/
+https://www.tecmint.com/start-stop-disable-enable-firewalld-iptables-firewall/
+https://www.tecmint.com/setup-samba-file-sharing-for-linux-windows-clients/
+______________________________________________________________________________________________________________
+
+UFW - Uncomplicated Firewall. Debian & Ubuntu firewall software 
+
+ufw status              #check firewall status
+ufw enable/disable      #enaling/disabling ufw firewall
+
+https://www.tecmint.com/setup-ufw-firewall-on-ubuntu-and-debian/
 ______________________________________________________________________________________________________________
 
 SNMP -Simple Network Managment Protocol
@@ -75,8 +252,3 @@ smnpget localhost -v 2c -c [PASSWORD] sysName.0
 snmpwalk localhost -v 2c -c [PASSWORD] system
 
 ______________________________________________________________________________________________________________
-
-ethtool [interface] -show 1st layer info
-
-
-

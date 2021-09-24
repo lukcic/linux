@@ -1,3 +1,5 @@
+sudo raspi-config
+
 Turning off cursor:
 /etc/lightdm/lightdm.conf
 
