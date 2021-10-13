@@ -34,10 +34,18 @@ Linux main directories:
 /proc               -files created by kernel in fly to manage processes
 /tmp                -temporary files deleted after reboot (/var/tmp - that doesn`t)
 ______________________________________________________________________________________________________________
-man -k [phrase] -searching for a phrase in man pages
-apropos [phrase] -search through the man pages names and descriptions
+man -k [phrase]     -searching for a phrase in all man pages
+apropos [phrase]    -searching for a phrase in all man pages
 info [command] -new version of command help
 type [command] -similar to wchich
+
+Reloading man pages:
+mandb       #Ubuntu
+makewhatis  #RHEL
+
+[ -x ]           -optional
+{ a | b }       -choose a or b
+filename ...    -may be more than one filename
 ______________________________________________________________________________________________________________
 
 > redirect with overriding the file (always makes a file)
@@ -198,9 +206,18 @@ xargs -command used to send output of first command as the parameters to second 
 
 ______________________________________________________________________________________________________________
 Searching:
-whereis [process name] - search for path of binary in $PATH
+which [process name]        -search for path of process binary
+whereis [process name]      -search for path of binary in $PATH
 
-finf [STARTING_PATH] [OPTION] [EXPRESSION]
+locate [filename]           -search for all files that name contains [filename]  #install mlocate pakage
+locate -b '\[FILENAME]'     -search for files with exactly [FILENAME]
+-i -ignore CauseSensitive
+-c -count searched files
+
+locate -S -status of files database
+updatedb -refresh db of files
+
+find [STARTING_PATH] [OPTION] [EXPRESSION]
 
 find [where] -name [name] -type [f/d/l]
 -iname [name] -ignores CauseSensitive
@@ -228,13 +245,6 @@ find /home -type f -user [USERNAME] -exec mv {} {}_old \;
 find [where] -iname [name] -exec grep -i -n [text] {} + | tee [file]
 tee - print output on the screen and stores in file
 
-locate [filename] -search for all files that name contains [filename]
-locate -b '\[FILENAME]' -search for files with exactly [FILENAME]
--i -ignore CauseSensitive
--c -count searched files
-
-locate -S -status of files database
-updatedb -refresh db of files
 
 ______________________________________________________________________________________________________________
 
@@ -268,7 +278,7 @@ export [var name] -saving new environment variable
 set - 
 unset [var name] -deleting variable
 ______________________________________________________________________________________________________________
-gcc compiler
+gcc - GNU C Compiler
 
 gcc [FILE.c] -o [OUTPUT_FILENAME]
 

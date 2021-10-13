@@ -113,3 +113,11 @@ do-release-upgrade      #upgrade distribution do latest
 
 lsb_release -a          #Show distribution infos
 lsb_release -cs         #show distribution code name (c) in short format (s)
+
+________________________________________________
+Install from binary code (C lang):
+
+./configure         #prepare code to installation
+--help              #info about compilation options
+make                #compilation
+sudo make install   #moving binaries to right path
