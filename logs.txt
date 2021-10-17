@@ -3,9 +3,17 @@ ________________________________________________________________________________
 dmesg -list the startup log from loading kernel (stored in "kernel ring buffer")
 -H  -paging the output
 
-journalctl -shows system journal
--b -1       -shows the information from previous boot (0 or nothing for actual)
+journalctl  -shows system journal
+
 -k          -shows only kernel messages (--dmesg)
---list-boots    -shows info of stored boot logs
 
 journalctl -D [path to /log/journal] - reading logs from offline filesystem
+
+Configure journalctl to save journal from past booting:
+/etc/systemd/journald.conf:
+[Journal]
+Storage=persistent
+
+journalctl --list-boots    #shows info of past boot logs
+journalctl -b -1           #shows the information from previous boot (0 or nothing for actual)
+journalctl -u [service]    #shows only entries from given  service 

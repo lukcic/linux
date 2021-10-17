@@ -1,9 +1,19 @@
-Boot partiotion:
--config file        -stores configuration parameters for Linux kernel, generated automaticly, when new kernel is compiled, should not be edited by user
--system map         -this file is a table that match symbol names to its memmory position, used when kernel panic
--linux kernel       -file with system kernel (vmlinuz means, that is compressed)
--initial ram disk   -(initrd.img) contains minimal root filesystem loaded in ram disk, containing utilities and kernel modules needed for mounting real root filesystem 
--boot loader files  -grub configuration file (/boot/grub/grub.cfg or /boot/grub/menu.lst for legacy grub), modules (in/boot/grub/i386-pc), translation files (in/boot/grub/locale) and fonts (in/boot/grub/fonts)
+Boot partiotion (/boot):
+-config file (config-4.19.0-10-cloud-amd64)
+#Stores configuration parameters for Linux kernel, generated automaticly, when new kernel is compiled, should not be edited by user
+
+-system map (System.map-4.19.0-14-cloud-amd64)  
+#This file is a table that match symbol names to its memmory position, used when kernel panic
+
+-linux kernel (vmlinuz-4.19.0-10-cloud-amd64)   
+#File with system kernel (vmlinuz means, that is compressed)
+
+-initial ram disk (initrd.img-4.19.0-10-cloud-amd64) 
+#Contains minimal root filesystem loaded in ram disk, containing utilities and kernel modules needed for mounting real root filesystem 
+
+-boot loader files  
+#grub configuration file (/boot/grub/grub.cfg or /boot/grub/menu.lst for legacy grub), modules (in/boot/grub/i386-pc), 
+#translation files (in/boot/grub/locale) and fonts (in/boot/grub/fonts)
 
 Installing GRUB2
 With non booting system, first boot form live CD, mount boot partition from disk and run grub-install.
@@ -14,16 +24,28 @@ grub-install --boot-directory=[boot partition mountpoint] [boot partition]
 grub-install --boot-directory=/mnt/tmp /dev/sda1
 
 Configuring GRUB2
-File /boot/grub/grub.cfg is automaticaly generated, to make changes edit: /etc/default/grub, and then run update-grub (grub-mkconfig -o /boot/grub/grub.cfg)
+File /boot/grub/grub.cfg is automaticaly generated.
+#To make changes edit: /etc/default/grub, and then run update-grub (grub-mkconfig -o /boot/grub/grub.cfg), in RHEL family grub2-mkconfig.
 
 /etc/default/grub options:
--GRUB_DEFAULT=      -default menu entry to boot, count from 0
--GRUB_SAVEDEFAULT=  -if this option is set to true and GRUB_DEFAULT= is set to saved, then the default boot option will always be the last one selected in the boot menu.
--GRUB_TIMEOUT=      -The timeout, in seconds, before the default menu entry is selected. If set to0the system will boot the default entry without showing a menu. If set to-1the system will wait until the user selects an option, no matter how long it takes.
--GRUB_CMDLINE_LINUX= -kernel parameters:
+-GRUB_DEFAULT=      
+#name of title of default menu entry to boot (count from 0)
 
+-GRUB_SAVEDEFAULT=  
+#if this option is set to true and GRUB_DEFAULT= is set to saved, then the default boot option will always be the last one selected in the boot menu.
+
+-GRUB_TIMEOUT=      
+#The timeout, in seconds, before the default menu entry is selected. 
+#If set to 0 the system will boot the default entry without showing a menu. 
+#If set to -1 the system will wait until the user selects an option, no matter how long it takes.
+
+-GRUB_CMDLINE_LINUX= 
+#Kernel parameters:
+
+-debug          -enable kernel debug
+single          -boot in single user mode
 -acpi           -ACPI support, for example: 'acpi=on'
--init           -sets the alternative system initiator, for example 'init=/bin/bash'
+-init           -sets the alternative system initiator, for example 'init=/bin/bash', usefull when fuckup
 -systemd.unit   -systemd target, for example: 'systemd.unit=graphical.target', may be runlevel number
 -mem            -set the available ram for the system (for VMs)
 -maxcpus        -set the limit number of processors (or cores)
@@ -36,8 +58,19 @@ File /boot/grub/grub.cfg is automaticaly generated, to make changes edit: /etc/d
 
 Live view of actual kernel parameters are saved in '/proc/cmdline'
 
--GRUB_CMDLINE_LINUX_DEFAULT=    -by default, two menu entries are generated for each Linux kernel, one with the default options and one entry for recovery. With this option you can add extra parameters that will be added only to the default entry.
--GRUB_ENABLE_CRYPTODISK=        -if set toy, commands likegrub-mkconfig,update-grubandgrub-installwill look for encrypted disks and add the commands needed to access them during boot. This disables automatic booting (GRUB_TIMEOUT=with any value other than-1) because a passphrase is needed to decrypt the disks before they can be accessed.
+-GRUB_CMDLINE_LINUX_DEFAULT=    
+#by default, two menu entries are generated for each Linux kernel, one with the default options and one entry for recovery. 
+#With this option you can add extra parameters that will be added only to the default entry.
+
+-GRUB_ENABLE_CRYPTODISK=        
+#if set to y, commands like grub-mkconfig, update-grub and grub-install will look for encrypted disks and add the commands needed to access them during boot. 
+#This disables automatic booting (GRUB_TIMEOUT=with any value other than-1) because a passphrase is needed to decrypt the disks before they can be accessed.
+
+-GRUB_BACKGROUND=
+#Backgroud image (.png, .jpg)
+
+-GRUB_DISABLE_RECOVERY=
+#Prevent making recovery menu entries.
 
 GRUB menu entries:
 /etc/grub.d/40_custom
@@ -46,8 +79,18 @@ Interacting with GRUB 2
 To edit an option, select it with the arrow keys and pressE. This will show an editor window with the contents of themenuentryassociated with that option, as defined in/boot/grub/grub.cfg.After editing an option, typeCtrl+XorF10to boot, orEscto return to the menu.To enter the GRUB 2 shell, pressCon the menu screen (orCtrl+C) on the editing window). You will see a command prompt like this:grub >
 50Typehelpto see a list of all available commands, or pressEscto exit the shell and return to the menu screen
 
-GRUB Shell - type c
+GRUB Shell - type "c" while booting.
 
+Tab - will show short list of commands:
+boot        #boot from given kernel image
+help        #show command help
+linux       #load linux kernel
+reboot      #reboot
+search      #search devices with file, fs label or UUID
+
+https://gnu.org/software/grub/manual
 
 _______________________________________________________________________
-
+Removing unused linux Kernels (Ubuntu):
+sudo dpkg --list | egrep 'linux-image|linux-headers'
+sudo apt purge --auto-remove
