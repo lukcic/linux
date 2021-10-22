@@ -1,0 +1,104 @@
+setuid & setgid - set user id, group id, mode (set special bit) used to giving program higher priviledges, for example: sudo, passwd (setting uid of user who password must be changed)
+May be disable with mount option: nosuid.
+
+SUID (set Used ID) - +s on user x, octal value 4.
+Given only for executable files.  gives possibility to run file with permissions of user who owns the file (eg. root).
+
+SGID (set GID) - +s on group x, octal value 2 before permission number. 
+Given for executable files - gives possibility to run file with permissions of group who owns the file (eg. root group). 
+Given for executable dirs -  newly created files have group inherited from directory. 
+
+umask - gives default permissions of newly created files, umask have different values than files and folders octal mode.
+umask -S  -show umask in readable mode
+umask 022 - new files can be accessed by everyone
+umask 077 -new files can be accessed only by user
+
+Sticky bit - directories with "t" instead x on 'others' permissions (1 on beggining in octal). 
+With Sticky bit only owner can delete or rename the file in this dir.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+su user         #will run ~/.bashrc
+su - user       #will run ~/.bash_profile
+
+sudo !!         #repeat last command with sudo
+
+root user with 'su - username' can log on any account without usng password!
+
+sudo
+/etc/suoders
+
+visudo                                      #command must be used to edit suoders!
+Host_Alias  SERVERS = srv1, srv2, srv3      #Host groups Alias definition
+Host_Alias  PCs = PC01, PC02, PC03
+
+Cmnd_Alias SHELLS = /bin/bash, /bin/sh     #Command groups Alias definition, must be full path to binary!
+Cmnd_Alias DUMP = /sbin/dump, /sbin/restore
+
+#USER HOSTs = (AS USER) COMMANDS 
+admin ALL = (ALL) ALL                       #admin can run every command as anybody on all hosts
+admin1, admin2  SERVERS = ALL               #both admins can run every command on all servers from group "SERVERS"
+
+admin3  PCs = /usr/sbin/tcpdump : SERVERS = (operator) DUMP     #admin3 can run tcpdump on all "PCs"
+                                                                #and commands from group DUMP on SERVERS but with "operator" priviledges (not root) like:
+                                                                #sudo -u operator /usr/sbin/dump 0u /dev/sda
+
+%wheel ALL, !SERVERS = NOPASSWD: WATCHDOG   #users form wheel group may run watchdog command without password as a root on all computers, but no on "SERVERS" 
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+w -lists currently logged users
+last -history of users logins
+
+passwd [USERNAME] -reset users password
+passwd -l root      #will disable root account (add ! in password hash)
+
+useradd 
+userdel
+usermod
+-L -locks account (adds! in /etc/shadow)
+
+id [USERNAME] -lists all user ids (uid, gid etc)
+
+/etc/skel -all folders created here will be added to new users home directories
+
+rwx
+421
+
+chown [NEW_OWNER]:[NEW_GROUP] [FILE] -changing ownership of files
+
+chcon -t [CONTEX_NAME] [FILE] -change SELinux context 
+restorecon [FILE] -restore context
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+PAM - Pluggable Access Module
+Access control mechanism that use many types of login methods. If program wants to authenticate user, asks PAM for it.
+
+Kerberos -network kryptographic access control mechanism that works with PAM. 
+You are auhenticacing on server, thats gives information to host about pass you or not. 
+
+ACL - Access COntrol list. You can give file permissions to individual users (like in Windows), not only owner, group and everybody. 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+LSM -Linux Security Modules (SELinux, AppArmor, Smack, TOMOYO and Yama)
+This modules use API LSM and works as additional kernel modules used to access control.
+
+Mandatory Access Control (MAC) -admins can use own centralised access control rules, 
+for example only user can view his home folder even if he changed 'other' permission to read. 
+
+SELinux - one of the oldest MAC mechanism. Used in Android. To protect daemon, SELinux policy must include all files and dirs used by this process.
+seedit.sourceforge.net  - config editor for SELinux
+
+/etc/selinux/config:
+SELINUX=enforcing       #enforcing - policy must be active and unauthorizes access is blocked
+                        #permissive - policy can be violated (pogwałcony), but everything will be logged (used to testing rules)
+                        #disabled - SELinux is disabled
+SELINUXTYPE=targeted    #policy database name (dir in /etc/selinux), only one at once. Targeted - used in RedHat, focus on choosen daemons only (rest is not checked)
+
+AppArmor - Canonical product used in Ubuntu and Debian and even Suse
+Tis MAC module is extension for traditional access mechanism in Linux. 
+It concentrates on protecting daemons by filtering their work by AppArmon profile.
+By default AppArmon discards all requests, so you must configure what given process can do. 
+Apps without profie works the same like without AppArmor. Profiles are stored in  /etc/apparmor.d.
+They include files list, that daemon can work on with permissions. 
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

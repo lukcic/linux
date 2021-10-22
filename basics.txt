@@ -86,22 +86,6 @@ ls
 Directory:
 Read on directory - only listing content of directory.
 Execute on directory - acces to files in directory.
-
-umask -S  -show umask in symbolic mode
-umask 022 - new files can be accessed by everyone
-umask 077 -new files can be accessed only by user
-
-umask have different values than files and folders octal mode.
-
-Sticky bit - directories with "t" instead x on 'others' permissions (1 on beggining in octal). 
-With Sticky bit only owner can delete or rename the file in this dir.
-
-SGID (set GID) - +s on group x, octal value 2 before permission number. 
-Given for executable files - gives possibility to run file with permissions of group who owns the file (eg. root group). 
-Given for executable dirs -  newly created files have group inherited from directory. 
-
-SUID (set Used ID) - +s on user x, octal value 4.
-Given only for executable files.  gives possibility to run file with permissions of user who owns the file (eg. root).
 ______________________________________________________________________________________________________________
 
 ALT + . -repeat argument from last command
@@ -165,7 +149,12 @@ Think of it as an entry on an index, hence the name, which comes from “index n
 ______________________________________________________________________________________________________________
 
 file [FILE] -shows type of file (binary, text)
-stat [FILE] -shows information about disk usage of file
+stat [FILE] -shows information about file (disk usage, timestamps, access)
+
+There are 3 kind of "timestamps":
+Access - the last time the file was read
+Modify - the last time the file was modified (content has been modified)
+Change - the last time meta data of the file was changed (e.g. permissions)
 
 wc [FILE] -(word count) summary of lines, words and characters in FILE
 -l  -sum lines

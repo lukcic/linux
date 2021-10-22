@@ -16,3 +16,14 @@ Ctrl+b d – uśpienie danej sesji (przywołanie przez polecenie tmux attach)
 
 tmux ls - listowanie sesji
 tmux attach -t [nazwa_sesji] - podłączenie sesjin
+
+Terminal - device (keyboard and printer) without screen.
+TTY - teletypewriter. When you write on it, text is pronted and send to computer. When computer answers, tty prints text on paper.
+When we refer to a Terminal in the software sense, we are referring to a literal software version of a TTY.
+
+Console - device (printer and screen). Technically the Console is the device and the Terminal is now the software program inside the Console.
+In the software world a Terminal and a Console are, for all intents, synonymous.
+
+Shell is the program that the terminal sends user input to. The shell generates output and passes it back to the terminal for display.
+
+Pseudo terminal is program like tmux that emulates real device and sends your input to shell.

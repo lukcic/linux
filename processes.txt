@@ -1,3 +1,12 @@
+Process have one or more threads. Processes are created by clonning another process (fork function) and (not always) replacing program in this process.
+Parent process id is called PPID. Kernel is starting init or systemd (PID 1), that is parent of most processes. 
+If parrent process is killed, kernel gives child processes to init or systemd to managing. 
+
+UID - identify number of user who created process (parent UID copy). Process can be modyfied by his owner and superuser
+EUID - effective UID. EUID and UID are the same, excluding processes that used setuid. Differences between identity and permissions 
+
+GID and EGID - the same as above, but for groups (setgid)
+______________________________________________________________________________________________________________
 Jobs:
 [COMMAND] & -run process in background (unzip eg.)
 
@@ -19,21 +28,71 @@ ps -aux -lists processes of all users
 -u [USERNAME] -list process owned by USER
 -x -show processes that are not attached to a tty termian
 ______________________________________________________________________________________________________________
-pgrep [PROCESS_NAME] -returns PID of process (pidof does the same)
-pkill [PROCESS_NAME] -kills process with given name
-killall [PROCESS_NAME] -kill all processes wtih given name
+SIGNALS
+Signals are interrup requests (żadania przerwania) on processes.
+-can be send betweenn processes as communication form
+-can be send by terminal to kill, stop or hang program (CTRL +C, CTRL +D)
+-can be send by admin (kill)
+-can be send by kernel to cumminicate with process or when process try unallowable instruction (divide by 0)
 
-kill -STOP [pid] 
-kill -CONT [pid]
+Process can handle signal (if it has this function) or kernel will do standard signal procedure.
+After capturing and handling, process will continue it`s work. 
+Processes can block or ignore signals (without KILL and STOP). 
+
+number  name    description             default action  captured    blocked     mem dump
+1       HUP     disconnectiing          termination     yes         yes         no
+2       INT     interruption            termination     yes         yes         no
+3       QUIT    quit                    termination     yes         yes         yes
+9       KILL    kill                    termination     no          no          no
+10      BUS     bus error               termination     yes         yes         yes      
+11      SEGV    segmentation error      termination     yes         yes         yes      
+15      TERM    program termiantion     termination     yes         yes         no
+17      STOP    termination             termination     no          no          no
+18      TSTP    stop from keybord       termiantion     yes         yes         no
+19      CONT    continue after stop     ignoring        yes         no          no  
+28      WINCH   change window size      ignoring        yes         yes         no
+30      USR1    user definied           termiantion     yes         yes         no   
+
+kill -l                 -list all signals
+
+kill -[SIGANL] [PID]    -sending signal to pid
+kill [PID]              -by default TERM signal is send
+
+TSTP - light STOP, sended by user (CTRL + Z), process is cleaning and sending STOP to himself
+
+KILL - is non blocked and kills process by kernel, cannot be captured and handled 
+kill -KILL [PID]
+kill -9 [PID] 
+
+INT - send by terminal (CTRL + C), process should stop actual operation. 
+If signal is captured, process should terminate himslef, if not process should let be killed (default action)
+Programs with commandline sholuld stop actual task and wait for new data input. 
+
+TERM -request of imidiatelly termination. Program shuold clean ant terminate himself.
+kill -TRM [PID]
+kill -15 [PID] 
+
+STOP -stopping the process till CONT signal comes 
+kill -STOP [PID] 
+
+CONT - awake process after STOP
+kill -CONT [PID]
+
+HUP -some deamons after this signal will reload configuration (reset).
+Hang up - reset of terminal. 
+
+QUIT - similar to TERM, but with mem dump
 
 
-kill -15 [PID] -terminate process
-kill -9 [PID] -kill process
+pgrep [PROCESS_NAME]    -returns PID of process (pidof does the same)
+killall [PROCESS_NAME]  -kill all processes wtih given name
+pkill [PROCESS_NAME]    -kills process with given name
+pkill -u [USERNAME]     -kills all USER processes
 ______________________________________________________________________________________________________________
 watch [COMMAND] -runs command periodycally (2 seconds by default)
 -n X -time of repeating (default 2s)
 
-nohup [COMMAND] [OPTIONS] -run command immune to hangups (non tty output). Process works after closing terminal.
+nohup [COMMAND] [OPTIONS] -no nahg up, run command immune to hangups (non tty output). Process works after closing your terminal.
 ______________________________________________________________________________________________________________
 top na htop
 M -sort by memmory usage
@@ -73,21 +132,5 @@ renice [PROCESS_NAME] -change nice of running process
 -p [PID] -specific PID
 -u [USERNAME] -specific processes of given user
 -g [GROUPNAME] -specific processes of given group
-______________________________________________________________________________________________________________
-tmux new -s [nazwa_sesji]
-exit
 
-CTRL + B - wywołanie komend
-D - minimalizacja sesji (detach)
-
-Ctrl+b ” – podzielenie terminala w poziomie
-Ctrl+b % – podzielenie terminala w pionie
-Ctrl+b strzałki – poruszanie się pomiędzy panelami
-Ctrl+b c – stworzenie nowego okna
-Ctrl+b n – przełączenie na następne okno
-Ctrl+b p – przełączenie na poprzednie okno
-Ctrl+b i bez puszczania tej kombinacji strzałki – zmiana wymiarów paneli
-Ctrl+b d – uśpienie danej sesji (przywołanie przez polecenie tmux attach)
-
-tmux ls - listowanie sesji
-tmux attach -t [nazwa_sesji] - podłączenie sesji
+p. 142!

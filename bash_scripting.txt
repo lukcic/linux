@@ -3,7 +3,7 @@
 
 chmod +x [FILENAME] -add execution permission for file (for all 755)
 
-#! /usr/bin/bash -shebang for bash (check which bash)
+#! /usr/bin/bash -shebang for bash (check 'which bash')
 
 $[NAME] -variable
 ${[NAME]} - variable
