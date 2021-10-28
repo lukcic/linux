@@ -75,6 +75,7 @@ grep [OPTION] "text" [file/dir]
 -f -indicate a file that contains regex
 -H -given line includes filename
 -z -neded with find -print0 (no endline mark)
+-l -show file names instead of file contents portions.
 -1 -gives extra empty lines between matches (-C 1)
 
 ^# -line starts with this sigh - hash (carrot)
@@ -83,6 +84,8 @@ dot[Cc]om -both versions of word
 
 grep -E '(a+)' - a one ore more times
 grep 'C...y' - words starts with C and ends with y
+
+grep -iR "linux" /home/user/Documents
 ______________________________________________________________________________________________________________
 SED - stream editor for filtering and transformation text. A common use of sed is to find and replace the text within a file.
 

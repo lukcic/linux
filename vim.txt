@@ -1,4 +1,6 @@
 vimtutor
+Forget sudo: :w !sudo tee %
+https://stackoverflow.com/questions/2600783/how-does-the-vim-write-with-sudo-trick-work
 
 normal mode
 insert mode (i)

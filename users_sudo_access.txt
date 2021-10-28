@@ -77,6 +77,24 @@ Kerberos -network kryptographic access control mechanism that works with PAM.
 You are auhenticacing on server, thats gives information to host about pass you or not. 
 
 ACL - Access COntrol list. You can give file permissions to individual users (like in Windows), not only owner, group and everybody. 
+getfacl [FILE] -show permissions
+
+$ setfacl -m u:tecmint1:rwx example/
+$ setfacl -m u:tecmint2:r-- example/
+$ setfacl -m  other:--- example/
+$ getfacl example/
+
+# file: example
+# owner: tecmint1
+# group: tecmint1
+user::rwx
+user:tecmint1:rwx
+user:tecmint2:r--
+group::r-x
+mask::rwx
+other::---
+
+https://www.tecmint.com/secure-files-using-acls-in-linux/
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 LSM -Linux Security Modules (SELinux, AppArmor, Smack, TOMOYO and Yama)

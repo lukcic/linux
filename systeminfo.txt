@@ -1,3 +1,9 @@
+_____________________________________________________________________
+uptime -show uptime and average amount of processes from 1 minute, 5 and 15 minutes 
+        (should be less tan amount of processor cores, if is highter, then system is overloaded)
+
+uptime -s -time, when computer was booted
+
 Hardware:
 
 lspci - lists all pci devices
@@ -55,5 +61,3 @@ The D-Bus machine ID is located at/var/lib/dbus/machine-idand is symbolically li
 If 2 VMs have the same id generate new one:
 rm -f /etc/machine-id
 dbus-uuidgen --ensure=/etc/machine-id
-
-uptime -s -time, when computer was booted

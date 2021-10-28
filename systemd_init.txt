@@ -181,7 +181,7 @@ systemctl suspend   -put system in low power mode, keeping current data in memor
 systemctl hibernate -copy all memory data to disk, that current state of the system can be restored after boot up
 
 acpi daemon -main power manager for linux, features as hibernating, suspending, actions with laptop lid, battery chaning, etc. 
- ______________________________________________________________________________________________________________
+______________________________________________________________________________________________________________
 
 /etc/sysctl.conf -changes written here will be done while booting
 sysctl -p -lists commands written in sysctl.conf

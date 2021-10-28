@@ -234,7 +234,6 @@ find /home -type f -user [USERNAME] -exec mv {} {}_old \;
 find [where] -iname [name] -exec grep -i -n [text] {} + | tee [file]
 tee - print output on the screen and stores in file
 
-
 ______________________________________________________________________________________________________________
 
 ^R (CTRL+R) - searching in bash history
@@ -285,18 +284,7 @@ make
 make clean -use function 'clean' from Makefile
 
 make -compiles file to binary
-______________________________________________________________________________________________________________
 
-crontab -e -open cron editor
-
-5 fields:
--minute 0-59
--hour 0-23
--day of a month 1-31
--month 1-12 or names
--day of a week 0-7 or names (sunday is 0 and 7)
-
-* * * * * [COMMAND_ABSOLUTE_PATH]
 ______________________________________________________________________________________________________________
 CTRL+ALT+F1 - switch from GUI/CONSOLE mode
 CTRL+ALT+F2
@@ -360,7 +348,6 @@ httpd_sys_script_exec_t -System CGI Scripts or executables files
 httpd_user_content_t -User Web Pages
 httpd_user_script_exec_t -User CGI Scripts or executable files
 ______________________________________________________________________________________________________________
-
 MariaDB
 No default root password.
 
@@ -372,22 +359,6 @@ MySQL-python -MySQL Python Interface
 /etc/my.cnf.d -configuration directories
 
 write basic commands!
-
-______________________________________________________________________________________________________________
-
-Terminals -devices used to sending data between system and input\outpu devices (printing text on screen).
-In the past they were devices like typingmachines. 
-
-PseudoTermianl devices - kernel is communicating with programmed i/o interface (eg. shell) instead real terminal device.
-
-/dev/tty1 -first virtual console
-dev/pts/0 -first pseudoterminal device
-
-Linux have many virtual consoles. 
-ALT + Fx - changing console (text mode)
-ALT + F1 - /dev/tty1
-ALT + F2 - /dev/tty2
-CTRL + ALT + Fx - changing console (gui mode)
 
 ______________________________________________________________________________________________________________
 Checksum:
@@ -409,20 +380,3 @@ Encode:
 cat [ENCRYPTED TEXT] | base64 -d
 cat [ENCRYPTED TEXT] | base64 --decode
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

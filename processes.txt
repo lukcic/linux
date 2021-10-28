@@ -23,10 +23,40 @@ fg [JOB_ID] -takes process from background to foreground
 bg [JOB_ID] -takes process from foreground to background
 ______________________________________________________________________________________________________________
 ps -list foreground processes (user only)
-ps -aux -lists processes of all users
--a -show processes attached to a tty termial
--u [USERNAME] -list process owned by USER
--x -show processes that are not attached to a tty termian
+ps aux -lists processes of all users
+a -show all processes (owned y other users too)
+u -show processes in format oriented to user
+x -show processes that are not attached to a tty terminal
+ww -unlimited column width
+
+Commands in [] are not processes, but kernel threads. 
+
+USER    -owner of process
+PID     -process identifier
+%CPU    -procentage usage of processor
+%MEM    -procenage usage of phisical memory
+VSZ     -virtual size of process
+RSS     -sites in memory 
+TTY     -steering terminal id
+STAT    -process status:    
+            R -running
+            D -uninterruply asleep
+            S -sleep (<20 seconds)
+            T -followed or stopped
+            Z -zombie
+            W -process is swapped (stronicowanie)
+            < -higher priority
+            N -lower priority
+            L -some pages are blocked in memory
+            s -process is a session leader
+TIME    -processor time used by process
+COMMAND -name of process and its arguments
+
+ps lax -more technical process info (l- long info)
+
+PPID    -parent process ID
+NI      -niece value
+WCHAN   -wait channel (type of resource that process is waiting)
 ______________________________________________________________________________________________________________
 SIGNALS
 Signals are interrup requests (żadania przerwania) on processes.
@@ -94,17 +124,21 @@ watch [COMMAND] -runs command periodycally (2 seconds by default)
 
 nohup [COMMAND] [OPTIONS] -no nahg up, run command immune to hangups (non tty output). Process works after closing your terminal.
 ______________________________________________________________________________________________________________
-top na htop
-M -sort by memmory usage
+TOP
+
+M -sort by memmory usage    #use Uppercase!
 N -sort by process ID
 T -sort by running time
 P -sort by % of CPU usage
 R -reverse sorting
 V -forest hierarchy of processes
+1 -show processesonly for 0 processor core
 
 k -kill process
 f -renice (change a priority of process) ?????????????????
 u -show processes of given user (all by default)
+
+HTOP #################################
 ______________________________________________________________________________________________________________
 Priorities:
 0-99    -real time processes
@@ -121,16 +155,23 @@ Priorities viewed by top command have priority value substracted by 100 (-100), 
 Normal processes have value 0 - 39.
 
 Nice:
+Nice of process - value that inform kernel how process will be regarded in relation to other processes that compete for processor time.
 0                 -default process starts with nice 0 (priority 120).
 from -20 to 19    -nice values, -20 -less nice process (higher priority), 19 -more nice process (lower priority)
 
 nice [PROCESS_NAME] - start process with non standard priority (default 10)
 -n [X]  -specific nice value
+nice -n 5 ~/bin/longtask
 
 renice [PROCESS_NAME] -change nice of running process
 -X      -specific nice value
 -p [PID] -specific PID
 -u [USERNAME] -specific processes of given user
 -g [GROUPNAME] -specific processes of given group
+sudo renice -5 8829
+______________________________________________________________________________________________________________
+STRACE - show wtah process is doing
+sudo strace -p [PID]
 
-p. 142!
+
+p. 152! rozdz 4.9
