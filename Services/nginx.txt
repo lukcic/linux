@@ -1,0 +1,106 @@
+https://www.tecmint.com/nginx-web-server-security-hardening-and-performance-tips/
+
+Nginx has one master process and several worker processes. 
+Master process is responsible for reading and evaluating (ocenianie) configuration and it`s managing (maintaining) worker processes. 
+Worker processes are handling (processing) requests. Number of worker processes is defined in config file or can be adjusted to processor cores number. 
+
+nginx.conf -  configuration file
+/usr/local/nginx/conf
+/etc/nginx
+/usr/local/etc/nginx
+
+nginx -s [signalname]
+-stop - fast shutdown
+-quit - graceful shutdown (bezpieczne zamkniecie), waits for worker process to finish requests (kill -s QUIT [pid])
+-reload - reload the configuration file, master process waits to workers finish requests and then reload the configuration
+-reopen - reopening the log files
+__________________________________________________________________________
+http {
+  server {
+      location / {
+          root /data/www;
+      }
+
+      location /images/ {
+          root /data;
+      }
+  }
+}
+
+This config is working server that is listening on port 80 and is accessible from http://localhost/. 
+In response to request with URIs starting with /images/ the serwer will sends files from the /data/images/. 
+
+Example:
+http://localhost/images/example.png
+gives
+/data/images/example.png
+
+If not exist, nginx will send response with 404 error.
+
+Request that are not starting with /images will be mapped on to /data/www directory. Example:
+http://localhost/some/example.html
+gives
+/data/www/some/exaplme.html
+__________________________________________________________________________
+/etc/nginx/sites-available/default
+server {  
+  listen 80 default_server; 
+
+  server_name localhost;  
+
+  root /usr/share/nginx/html;  
+  index index.html index.htm;  
+
+  location / {
+    try_files $uri $uri/ =404;
+  }
+}
+__________________________________________________________________________
+Errors:
+access.log or error.log in directory:
+/usr/local/nginx/logs
+/var/log/nginx
+__________________________________________________________________________
+SSL TLS certificates:
+
+Must include in config:
+listen 443 ssl;
+ssl_certificate /etc/nginx/ssl/nginx.crt;       #cert file
+ssl_certificate_key /etc/nginx/ssl/nginx.key;   #key file
+__________________________________________________________________________
+Setting Up a Simple Proxy Server
+One of the frequent uses of nginx is setting it up as a proxy server, which means a server that receives requests, 
+passes them to the proxied servers, retrieves responses from them, and sends them to the clients.
+
+Basic proxy server, which serves requests of images with files from the local directory and sends all other requests to a proxied server. 
+In this example, both servers are defined on a single nginx instance.
+
+server {
+    location / {
+        proxy_pass http://localhost:8080/;
+    }
+
+    location ~ \.(gif|jpg|png)$ {
+        root /data/images;
+    }
+}
+
+The parameter is a regular expression matching all URIs ending with .gif, .jpg, or .png. A regular expression should be preceded with ~. 
+The corresponding requests will be mapped to the /data/images directory.
+When nginx selects a location block to serve a request it first checks location directives that specify prefixes, 
+remembering location with the longest prefix, and then checks regular expressions. 
+If there is a match with a regular expression, nginx picks this location or, otherwise, it picks the one remembered earlier.
+
+This server will filter requests ending with .gif, .jpg, or .png and map them to the /data/images directory (by adding URI to the root directive’s parameter) 
+and pass all other requests to the proxied server configured above.
+__________________________________________________________________________
+Nginx uses the following load balancing methods:
+-round-robin (default method) – requests to the upstream servers are distributed in a round-robin fashion (in order of the list of servers in the upstream pool).
+-least-connected – here the next request is proxied to the server with the least number of active connections.
+-ip-hash – here a hash-function is used to determine what server should be selected for the next request (based on the client’s IP address).
+-Generic hash – under this method, the system administrator specifies a hash (or key) with the given text, variables of the request or runtime, or their combination. For example, the key may be a source IP and port, or URI. Nginx then distributes the load amongst the upstream servers by generating a hash for the current request and placing it against the upstream servers.
+-Least time (Nginx Plus) – assigns the next request to the upstream server with the least number of current connections but favors the servers with the lowest average response times.
+__________________________________________________________________________
+Reinstall:
+-remove  with purge nginx-common
+-remove nginx-core

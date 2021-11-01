@@ -1,5 +1,17 @@
-setuid & setgid - set user id, group id, mode (set special bit) used to giving program higher priviledges, for example: sudo, passwd (setting uid of user who password must be changed)
-May be disable with mount option: nosuid.
+Permissions in directories:
+-file`s write permission let user to change or delete content of file.
+-deleting and changing name of file depends of directory permissions.
+-in directory executable bit lets you go inside of direcoty, but for listing content of directowy you must have read an executable bit (both).  
+-save and ececutable bit together lets you to create, delete and renaming files inside directory.
+-to show dir permissions use 'ls -ld'
+
+9-bit permissions are mostly overrided by: ACLs, SELinux module or additiona permissions bits:
+
+setuid & setgid
+Set user id (4000), set group id (2000), mode (s- special bit, replace x in permissions) used to giving programs (executable files) higher priviledges, than their user have, 
+for example: sudo, passwd (setting uid of user who password must be changed). 
+If setgid is given to directory, then files created inside have group owner of directory group owner (not file creator`s group). It is used to work of directory as a group of users.
+setuid & setgig may be disable with mount option: nosuid.
 
 SUID (set Used ID) - +s on user x, octal value 4.
 Given only for executable files.  gives possibility to run file with permissions of user who owns the file (eg. root).
@@ -8,13 +20,38 @@ SGID (set GID) - +s on group x, octal value 2 before permission number.
 Given for executable files - gives possibility to run file with permissions of group who owns the file (eg. root group). 
 Given for executable dirs -  newly created files have group inherited from directory. 
 
-umask - gives default permissions of newly created files, umask have different values than files and folders octal mode.
+chmod [code] [FILE] -set permissions to file
+-R  -recursive (do not use on directories- find files)
+--reference=file1 file2  -set for file2 the same permission as file1 has
+
+chown [user] [file] -change file owner
+chgrp [group] [file] -change group owner
+chown [user]:[group] [file] -change both
+
+umask - gives default permissions of newly created files, umask have different values than files and folders octal mode (you set the permissions that are taken out).
 umask -S  -show umask in readable mode
 umask 022 - new files can be accessed by everyone
 umask 077 -new files can be accessed only by user
 
-Sticky bit - directories with "t" instead x on 'others' permissions (1 on beggining in octal). 
-With Sticky bit only owner can delete or rename the file in this dir.
+Sticky bit - directories with "t" instead x on 'others' permissions. 
+Sticky bit (1000) - if set on directory, then only file or directory owner (and root) can delete files inside directory (even if other users have permissions).
+
+Special file attributes:
+They depends of used filesystem type (E - ext3 and ext4, B- BTRFS, X - xfs):
+A -XBE - do not change access time (st_atime), used for better performance
+a -XBE - save only as APPEND
+C -B - turn off copy-on-write upgrade
+c -B - compress file
+D -BE - synchronized saving directories upgrade
+d -XBE - do not archive file (backup software should leave this file)
+i -XBE - file is unchangable and cannot be deleted (Windows read-only)
+J -E - save data change journal wit metadata
+S -XBE - synchronized saved changes (without buffering)
+X -X - do not compress data if it used by default
+
+
+lsattr -list special file attributes
+chattr -change special file attributes
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 su user         #will run ~/.bashrc
@@ -76,7 +113,10 @@ Access control mechanism that use many types of login methods. If program wants 
 Kerberos -network kryptographic access control mechanism that works with PAM. 
 You are auhenticacing on server, thats gives information to host about pass you or not. 
 
-ACL - Access COntrol list. You can give file permissions to individual users (like in Windows), not only owner, group and everybody. 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+S. 183
+ACL - Access Control list. You can give file permissions to individual users (like in Windows), not only owner, group and everybody. 
 getfacl [FILE] -show permissions
 
 $ setfacl -m u:tecmint1:rwx example/

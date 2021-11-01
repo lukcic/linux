@@ -15,9 +15,9 @@ p       -stream (potok) - FIFO files, communication between processes on local m
 l       -symbolic links (like Windows shorcuts), work even source is moved
 
 There are 3 kind of "timestamps":
-Access - the last time the file was read
-Modify - the last time the file was modified (content has been modified)
-Change - the last time meta data of the file was changed (e.g. permissions)
+Access - (atime) the last time the file was read
+Modify - (mtime) the last time the file was modified (content has been modified)
+Change - (ctime) the last time meta data of the file was changed (e.g. permissions)
 ______________________________________________________________________________________________________________
 echo [STRING] - displays STRING
 
