@@ -113,11 +113,16 @@ Hang up - reset of terminal.
 
 QUIT - similar to TERM, but with mem dump
 
-
 pgrep [PROCESS_NAME]    -returns PID of process (pidof does the same)
 killall [PROCESS_NAME]  -kill all processes wtih given name
 pkill [PROCESS_NAME]    -kills process with given name
 pkill -u [USERNAME]     -kills all USER processes
+
+fuser [OPTIONS] [PATH]  -command shows which process is using file or directory (like lsof)
+-m [FILE]               -show which proces is using a file
+-v                      -verbose
+-n tcp 80               -show which process is using tcp socket (80)
+-c [MOUNTPOINT]         -shows all processes that use any file from this filesystem , then use 'ps up [PID]' to check name of process, or use -v
 ______________________________________________________________________________________________________________
 watch [COMMAND] -runs command periodycally (2 seconds by default)
 -n X -time of repeating (default 2s)

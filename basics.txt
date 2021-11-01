@@ -2,6 +2,23 @@
 . -current directory
 - -previous directory
 
+file [FILE] -shows type of file (binary, text)
+stat [FILE] -shows information about file (disk usage, timestamps, access)
+
+Filetypes:
+-       -normal file (text, binary, library)
+d       -direcory
+c       -sign device (eg. pseudoterminal file /dev/tty)
+b       -block device (eg. disk file /dev/sda), this files are only contactpoints, not drivers
+s       -socket file - connections between processes to give them communicate, many types (most use network) and local Unix sockets  
+p       -stream (potok) - FIFO files, communication between processes on local machine (like local sockets used today)
+l       -symbolic links (like Windows shorcuts), work even source is moved
+
+There are 3 kind of "timestamps":
+Access - the last time the file was read
+Modify - the last time the file was modified (content has been modified)
+Change - the last time meta data of the file was changed (e.g. permissions)
+______________________________________________________________________________________________________________
 echo [STRING] - displays STRING
 
 touch [FILE]            -creates empty file or timestamps of existing file
@@ -20,19 +37,48 @@ zcat [FILE] -view contents of ziped file (gzip)
 bzcat - ---||--- (bzip2)
 xzcat - ---||--- (xz)
 ______________________________________________________________________________________________________________
+
+ls
+-l -shows properties
+-a -show all files (with hidden)
+-h -show size in humar readable format
+-d -shows only directories
+-r -show files in reverse
+-i -shows inode number
+-R -shows files inside subfolders (recursive)
+-S -shows files sorted by SIZE (--sort=size)
+-t -shows files sorted by time (--sort=time)
+-u -shows files sorted by usage time (--sort=use)
+-X -shows files sorted by extension (--sort=extension)
+-I[pattern] - ignore fles with this pattern
+-Z -shows file context (SELinux)
+
+Directory:
+Read on directory - only listing content of directory.
+Execute on directory - acces to files in directory.
+
+ls direcory/subdirectory        #listing relative path
+ls /direcory/subdirectowy       #listing absolute path
+______________________________________________________________________________________________________________
 Linux main directories:
-/bin                -binaries (essential executables: ls, gzip, curl)
+/bin                -binaries (basic executables: ls, gzip, curl)
 /sbin               -system binaries (executables that should be run only by root user - they needs sudo)
 /lib                -shared libaries
+/usr                -additional (users or less important) files hierarchy
+/usr/tmp            -additional temp (files are not deleted at startup)
 /usr/bin            -non-essential installed binaries
 /usr/local/bin      -binaries locally compiled by users
-/etc                -editable text configuration (et cetra)
+/etc                -editable configuration files and other files that system need to start
 /boot               -files needed to boot the system (kernel etc)
 /dev                -device files
-/opt                -optional software
+/opt                -optional software pachages
 /var                -variable files (logs, cache)
 /proc               -files created by kernel in fly to manage processes
 /tmp                -temporary files deleted after reboot (/var/tmp - that doesn`t)
+/mnt                -temp mount points
+/run                -contact points to running processes
+/srv                -files distributed by www or shared for another servers
+/sys                -kernel interfaces
 ______________________________________________________________________________________________________________
 man -k [phrase]     -searching for a phrase in all man pages
 apropos [phrase]    -searching for a phrase in all man pages
@@ -66,26 +112,6 @@ command1 | command2
 ls -ly > log.txt 2>&1
 
 sort < [FILE] > [SORTED FILE]
-______________________________________________________________________________________________________________
-
-ls
--l -shows properties
--a -show all files (with hidden)
--h -show size in humar readable format
--d -shows only directories
--r -show files in reverse
--i -shows inode number
--R -shows files inside subfolders (recursive)
--S -shows files sorted by SIZE (--sort=size)
--t -shows files sorted by time (--sort=time)
--u -shows files sorted by usage time (--sort=use)
--X -shows files sorted by extension (--sort=extension)
--I[pattern] - ignore fles with this pattern
--Z -shows file context (SELinux)
-
-Directory:
-Read on directory - only listing content of directory.
-Execute on directory - acces to files in directory.
 ______________________________________________________________________________________________________________
 
 ALT + . -repeat argument from last command
@@ -136,9 +162,9 @@ rm [FILE/DIR]
 -i -asks before removing
 
 
-ln [SOURCE] [DEST] -creates hard link to file. Hard link increase link counter. File can be deleted when all hard links are unlinked.  
-ln -s [SOURCE] [DEST] -creates symbolic link (shortcut), do not increase link conuter. Always use absolute (full) path!
-unlink [FILE] -deletes link
+ln [SOURCE] [DEST]      -creates hard link to file (to bits on disk). Hard link increase link counter. File can be deleted when all hard links are unlinked. One permissions and attributes to all inks.  
+ln -s [SOURCE] [DEST]   -creates symbolic link (shortcut to filename), do not increase link conuter. Do not have permissions
+unlink [FILE]           -deletes link
 
 Hard link points to the same address of memmory (inode - disk place) of target file, 
 symbolic link points to filename of target file.
@@ -147,14 +173,6 @@ Aninodeis a data structure that stores attributes for an object (like a file or 
 Among those attributes are permissions, ownership and on which blocks of the disk the data for the object is stored. 
 Think of it as an entry on an index, hence the name, which comes from “index node”.
 ______________________________________________________________________________________________________________
-
-file [FILE] -shows type of file (binary, text)
-stat [FILE] -shows information about file (disk usage, timestamps, access)
-
-There are 3 kind of "timestamps":
-Access - the last time the file was read
-Modify - the last time the file was modified (content has been modified)
-Change - the last time meta data of the file was changed (e.g. permissions)
 
 wc [FILE] -(word count) summary of lines, words and characters in FILE
 -l  -sum lines
@@ -288,78 +306,6 @@ make -compiles file to binary
 ______________________________________________________________________________________________________________
 CTRL+ALT+F1 - switch from GUI/CONSOLE mode
 CTRL+ALT+F2
-______________________________________________________________________________________________________________
-
-nfs-utils
-rpcbind.service -Remote Procedure Call service (required by nfs). Port 111 TCP & UDP. 
-systemctl start rpcbind.service
-systemctl start nfs-server.service -NFS uses 2049 port TCP & UDP.
-
-Exporting directories are stored in /etc/exports
-Shares need permissions.
-exportfs -exporting directories
-
-NFS exports must be allowed by firewall:
-firewall-cmd --zone=public --add-service=rpc-bind --permanent
-firewall-cmd --zone=public --add-service=nfs --permanent
-firewall-cmd --list-all  
-
-Mounting nfs share:
-mount [REMOTE_SERVER]:[SHARE] [MOUNTPOINT]
-______________________________________________________________________________________________________________
-
-SAMBA packages:
-samba -install samba and dependencies
-samba-client -navigata through remote samba clients
-cifs-utils -mount samba shares
-
-smb.service
-firewall-cmd --zone=public --add-service=samba --permanent
-
-/etc/samba
-
-smb.conf example:
-[SHARENAME]
-comment = "Comment"
-path = [PATH]
-public = yes
-writable = yes
-printable = no
-
-Samba SELinux context:
-chcon -t samba_share_t [FILENAME]
-______________________________________________________________________________________________________________
-
-httpd -Apache service
-mod_ssl -HTTPS fo Apache
-
-Main configuration file:
-/etc/httpd/conf/httpd.conf
-
-Additional configurations:
-/etc/httpd/conf.d
-
-Web pages location:
-/var/www/html
-
-SELinus context types:
-httpd_sys_content_t -System Web Pages
-httpd_sys_script_exec_t -System CGI Scripts or executables files
-httpd_user_content_t -User Web Pages
-httpd_user_script_exec_t -User CGI Scripts or executable files
-______________________________________________________________________________________________________________
-MariaDB
-No default root password.
-
-Packages:
-mariadb -client programs
-mariadb-server -server software
-MySQL-python -MySQL Python Interface
-
-/etc/my.cnf.d -configuration directories
-
-write basic commands!
-
 ______________________________________________________________________________________________________________
 Checksum:
 

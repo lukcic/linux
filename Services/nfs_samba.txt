@@ -1,0 +1,39 @@
+nfs-utils
+rpcbind.service -Remote Procedure Call service (required by nfs). Port 111 TCP & UDP. 
+systemctl start rpcbind.service
+systemctl start nfs-server.service -NFS uses 2049 port TCP & UDP.
+
+Exporting directories are stored in /etc/exports
+Shares need permissions.
+exportfs -exporting directories
+
+NFS exports must be allowed by firewall:
+firewall-cmd --zone=public --add-service=rpc-bind --permanent
+firewall-cmd --zone=public --add-service=nfs --permanent
+firewall-cmd --list-all  
+
+Mounting nfs share:
+mount [REMOTE_SERVER]:[SHARE] [MOUNTPOINT]
+______________________________________________________________________________________________________________
+
+SAMBA packages:
+samba -install samba and dependencies
+samba-client -navigata through remote samba clients
+cifs-utils -mount samba shares
+
+smb.service
+firewall-cmd --zone=public --add-service=samba --permanent
+
+/etc/samba
+
+smb.conf example:
+[SHARENAME]
+comment = "Comment"
+path = [PATH]
+public = yes
+writable = yes
+printable = no
+
+Samba SELinux context:
+chcon -t samba_share_t [FILENAME]
+______________________________________________________________________________________________________________

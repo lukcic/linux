@@ -26,6 +26,8 @@ df -hx tmpfs        -show disk free space excluding temp filesystems
 ______________________________________________________________________________________________________________
 
 quota -shows disks limits
+
+loop - filesystem type that can mount single file as device file (dvd iso eg.)
 ______________________________________________________________________________________________________________
 Partisions:
 
@@ -86,6 +88,8 @@ ls -l /sbin/mkfs.* -list available filesystem types
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 Mounting:
+Mounting is a process that assign mount point directory (in host filesystem) to root directory of connected filesystem.
+Mount is mostly alias of specific commands as mount.ntfs or mount.ext4.
 
 mount   -list mounted filesystems with  options
 mount [DEVICE] [MOUNT_POINT] -mounting partition, when is in fstab, only one parameter
@@ -96,7 +100,8 @@ mount [DEVICE] [MOUNT_POINT] -mounting partition, when is in fstab, only one par
 -w              -mount fs as writable
 
 unmnount [DEVICE/MOUNT_POINT] -unmounting partition
--f              -forced, eg. when remote fs is not accessible
+-l          #lazy unmount, filesystem will be unmounted when all programs ends interactions with files, no new files are accessed
+-f          #forced, eg. when remote fs is not accessible
 
 lsof [PARTITION]  -list open files from specific partition
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 

@@ -1,0 +1,18 @@
+
+httpd -Apache service
+mod_ssl -HTTPS fo Apache
+
+Main configuration file:
+/etc/httpd/conf/httpd.conf
+
+Additional configurations:
+/etc/httpd/conf.d
+
+Web pages location:
+/var/www/html
+
+SELinus context types:
+httpd_sys_content_t -System Web Pages
+httpd_sys_script_exec_t -System CGI Scripts or executables files
+httpd_user_content_t -User Web Pages
+httpd_user_script_exec_t -User CGI Scripts or executable files

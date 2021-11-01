@@ -1,9 +1,9 @@
 System managing daemon sysV or systemd has always PID = 1.
 
-sysV (init) - only one process at once while booting, obsolte, now systemd. Program: /sbin/init
+sysV (init) - only one process at once while booting, obsolte, now used systemd. Program: /sbin/init
 Each service has a number and this number indicates order of starting services. 
 In systemd order is written in startscripts (services can start simultaneously).
-init is still used in distros focesed on small sieze.
+init is still used in distros focesed on small size.
 
 runlevel - shows current runlevel (0-6), N- runlevel was not changed since the system was booted
 runlevel [0-6]  -changes the actualrunlevel
@@ -22,19 +22,19 @@ Init supervise many startup porcesses:
 -fs check
 -mounting filesystms
 -deleting files from /tmp
-setting networking
+-setting networking
 -applying firewall rules
 -starting daemons and other services.
 
 /etc/inittab - stored definition of runlevels and default runlevel
 id:runlevels:action:process
 
-The action term defines how init will execute the process indicated by the termprocess. 
+The action term defines how init will execute the process indicated by the term process. 
 The available actions are:
--boot       -The process will be executed during system initialization. The fieldrunlevelsis ignored.
+-boot       -The process will be executed during system initialization. The field runlevelsis ignored.
 -bootwait   -The process will be executed during system initialization and init will  wait  until  it  finishes  to continue. The field runlevels is ignored.
 -sysinit    -The process will be executed after system initialization, regardless of runlevel. The field runlevels is ignored.
--wait       -The process will be executed for the given runlevels andinitwill wait until it finishes to continue.
+-wait       -The process will be executed for the given runlevels and init will wait until it finishes to continue.
 -respawn    -The process will be restarted if it is terminated.
 -ctrlaltdel -The process will be executed when the init process receives the SIGINT signal, triggered when the key sequence of Ctrl+Alt+Del is pressed.
 
