@@ -185,5 +185,3 @@ ________________________________________________________________________________
 
 /etc/sysctl.conf -changes written here will be done while booting
 sysctl -p -lists commands written in sysctl.conf
-
-

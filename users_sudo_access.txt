@@ -115,18 +115,29 @@ You are auhenticacing on server, thats gives information to host about pass you 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-S. 183
 ACL - Access Control list. You can give file permissions to individual users (like in Windows), not only owner, group and everybody. 
+ACL are used to make Linux system compatible with Windows. This will not replace standard Unix file access control.
+For using acl, filesystem must be mounted witho option acl (noacl for disabling). Files with active acl have + in permissions (Ls -l)
+
+If process need access to file, checks effective UID of user and file owner. If they are the same, user:: acle entry is taken. 
+If not acl search for entry for given user. Next search for group entry (using mask). If there`s no entries other:: option is used.    
+
+-user:: and other:: are identical with user and other bits in traditional model, changing bits affects on acl entries and vice versa
+-minimal acl list have three entries 'ugo' like perrmission bits (don`t have mask)
+-in more complicated acls 'ugo' bits are called mask, mask is limiting permissions that can be given by acl (maximum)
+
+
+POSIC access list standard:
 getfacl [FILE] -show permissions
 
-$ setfacl -m u:tecmint1:rwx example/
-$ setfacl -m u:tecmint2:r-- example/
-$ setfacl -m  other:--- example/
+$ setfacl -m u:user1:rwx dir/           #-m -modify
+$ setfacl -m u:user22:r-- dir/          #-b -delete acl
+$ setfacl -m  other:--- dir/            #-n -do not regenerate mask
 $ getfacl example/
 
-# file: example
-# owner: tecmint1
-# group: tecmint1
+# file: dir
+# owner: user1
+# group: user1
 user::rwx
 user:tecmint1:rwx
 user:tecmint2:r--
@@ -134,7 +145,50 @@ group::r-x
 mask::rwx
 other::---
 
+default: -default acl entries (inherited)
+setfacl -dm     #set default entries
+
 https://www.tecmint.com/secure-files-using-acls-in-linux/
+
+
+NTFSv4 ACL:
+NTFSv4 acl standard that is extension of POSIX acl, so POSIX acl can be saved as NTFSv4 acl without loosing information. 
+New type of standard includes Windows ACLs too - they are more complex, includes negative permissionas and complicated inheritance (dziedziczenie).
+This type do not default: acl entries (every entry can be checked as inherited for files and dirs). 
+Do not use mask - mode must be exactly the same as acl`s owner@, group@ and everyone@. 
+ACE (Access list entry) can be allow or deny. In NTFSv4 acls entries order is important. 
+
+Additional permissions:
+-creating files in directory and creating subdirectories
+-apped to file bit
+-different permission for read and write on files, another for file attributes, for extended attributes and another for acls
+-permission for changing file owner
+
+r read_data         odczyt danych (plik) lub pobranie listy z zawartością katalogu (katalog)
+w write_data        zapis danych (plik) lub utworzenie pliku (katalog)
+x execute           wykonywanie jako program
+p append_data       dopisanie danych (plik) lub utworzenie podkatalogu (katalog)
+D delete_child      usunięcie potomka w obrębie katalogu
+d delete            usuwanie
+a read_attributes   odczyt atrybutów nierozszerzonych
+A write_attributes  zapis atrybutów nierozszerzonych
+R read_xattr        odczyt nazwanych („rozszerzonych”) atrybutów
+W write_xattr       zapis nazwanych („rozszerzonych”) atrybutów
+c read_acl          odczyt listy kontroli dostępu
+C write_acl         zapis listy kontroli dostępu
+o write_owner       zmiana własności
+s synchronize       dopuszczanie żądań synchronizacji operacji wejścia-wyjścia
+
+Traditional unix units:
+owner@
+group@
+everyone@
+
+Commands (only for files from nfs (not local)):
+nfs4_getfacl
+nfs4_setfacl
+nfs4_editfacl 
+
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 LSM -Linux Security Modules (SELinux, AppArmor, Smack, TOMOYO and Yama)

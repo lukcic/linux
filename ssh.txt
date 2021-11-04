@@ -30,6 +30,7 @@ Public key goes into server ".ssh/authorized_keys" file
 
 Generating keys:
 ssh-keygen -t rsa
+ssh-keygen -t ed25519
 
 Adding generated private key to local repository:
 eval 'ssh-agent -s'     
