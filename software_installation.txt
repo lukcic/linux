@@ -1,0 +1,155 @@
+Repositories
+
+Content:
+-release (wydanie) -upgrade type: beta, long term support etc.
+-component -subset of upgrades in release. Basic software accepted by distributor, additional community software, secirity updates.
+-architecture - hardware class for running binaries (x86_64, i686, arm etc.)
+-package - element of component
+
+_____________________________________________________________________________
+DPKG - The Debian Package Tool. Low-level package installation tool (cannot resolve dependencies).
+
+dpkg -i [PACKAGE_NAME] -install package from .deb file
+dpkg -r [PACKAGE_NAME] -unistall package
+dpkg -P [PACKAGE_NAME] -unistall package with configuration files (purge)
+dpkg -I [PACKAGE_NAME] -information about package
+
+dpkg --get-selections -list installed packages
+dpkg -L [PACKAGE_NAME] -list of files installed by specific package
+dpkg-query -S [FILE] -check wchich package is owning file
+dpkg-reconfigure [PACKAGE_NAME] -make post-install package again (reinstall) 
+_____________________________________________________________________________
+APT - Advanced Package Tool
+Highlevel package installation tool. Builded for easy managing packages with dependencies using repositories. 
+Apt con handel rpm packages!
+
+apt-get     -used to downoad, install, upgrade or remove packages 
+apt-cache   -used to perform operations, like searches in the package index
+apt-file    -used for searching files inside the packages
+
+apt-get update  -updating the package index - retrive informations about new and updated packages in reposietories
+apt-get install [PACKAGE_NAME] -installing the package
+apt-get remove [PACKAGE_NAME]  -removing the package
+apt-get purge [PACKAGE_NAME] -removing package with configuration files
+
+apt-get install -f -repair missing dependencies of installed software
+
+apt-get upgrade -upgrading installed packages to the newest versions (first update index!)
+apt-get upgrade [PACKAGE_NAME] -upgrading particular (single) package
+--download-only -download packages without installing
+
+When package is installed or updated .ded package is downloaded to local cache: /var/cache/apt/ archives.
+apt-get clean -cleaning the local cache 
+
+apt upgrade [IS NOT EQUAL] apt-get upgrade
+apt upgrade   =====    apt-get dist-upgrade --with-new-pkgs
+
+apt-cache search [PATTERN] -searching for packages with particular PATTERN
+apt-cache show [PACKAGE_NAME] -description of particular PATTERN
+
+apt autoclean -cleaning old packages from localmachine
+
+The sources (repositories) list:
+/etc/apt/sources.list
+
+deb http://deb.debian.org/debian/ buster main
+deb http://us.archive.ubuntu.com/ubuntu/ xenial multiverse
+
+-archive type   -types of packages (compiled binary packages: .deb, .rpm OR source packages: deb-src, rpm-src)
+-URL            -url of the repository
+-distribution   -codename of distribution for which packages are provided (Ubuntu: trusty, xenial, yakkety)
+-components     -component is a set of packages, component types are typical for different distributions
+
+Ubuntu components types:
+-main           -officialy supported, open-source packages
+-restricted     -officialy supported, closed-source packages like drivers
+-universe       -community maintained open-source software (with different licenses)
+-multiverse     -unsupported, closed-source or pattern-encumbered software
+
+Debian components types:
+-main           -sofware that is part of Debian distribution, non rely on software outside this area to operate
+-contrib        -contains DFSG-compilant packages that depent on other software, that is not in main
+-non-free       -contains software that is not compliant with the DFSG (Debian Free Software Guidelines)
+-security       -contains security updates
+-backports      -contains more up-to-date versions of main packages
+
+Directory /etc/apt/sources.list.d contains additional repositories description files to use with apt. Must have .list extension.
+
+apt-file update  -update the packages cache
+apt-file list [PACKAGE_NAME] -list contents of package
+apt-file search [FILENAME]  -seraches for packages that include particular file
+
+Own mirror server:
+apt install apt-mirror
+sudo apt-mirrod - download packages to mirror server
+
+/etc/apt/mirror.list    -file with mirrors config
+/var/spool/apt-mirror   -location of downloaded packages
+clean.sh                -cleaning script
+
+Base catalog must be shared using www t provide packages to machines, and every host should have updated sources.list file.
+_____________________________________________________________________________
+
+RPM Package Manager - lowlevel package manager, developed by Red Hat, used in: Red Hat, CentOS, Fedora, Oracle Linux, openSUSE, AmazonLinux.
+rpm is a set of other commands (depends on parameters).
+
+rpm -i [PACKAGE_NAME] -installation of .rpm package
+rpm -U [PACKAGE_NAME] -update .rpm package
+rpm -e [PACKAGE_NAME] -unistall (erase) the package
+rpm -qa  -listing installed packages (query all)
+rpm -q --whatrequires [PACKAGE_NAME]  -show package dependencies      
+rpm -qf  -finding out which package contains specific file (query file)
+rpm -qi [PACKAGE_NAME] -view info about package (query info)
+rpm -ql [PACKAGE_NAME] -list files inside package (query list)
+-p      -info/list of liles of not installed (yet) package
+-v      -verbose output
+-h      -progress bar 
+
+rpmbuild - building packages
+_____________________________________________________________________________
+YUM - YellowDog Updater Modified
+High-level package manager for RPM based systems.
+
+yum search [PATTERN] - search for package with particular pattern
+yum install [PACKAGE_NAME] -installation of package with dependencies
+yum check-update [PACKAGE_NAME] -check if there in a newer version of package, without PACKAGE_NAME it check all installed packages (like apt update!)
+yum update [PACKAGE_NAME] -UPGRADE of package, without PACKAGE_NAME it upgrade all installed packages (like apt upgrade!)
+yum remove [PACKAGE_NAME] -removing of package
+yum whatprovides [FILE] -check which package provides specific file
+yum info [PACKAGE_NAME] -view info about package
+
+/etc/yum.conf -config file
+
+Software repositories:
+/etc/yum.repos.d -directory that contains yum repositories (.repo files)
+
+yum-config-manager -package to mainaining yum repos
+
+yum repolist all                                            -list all yum reppositories
+yum-config-manager --add-repo [https://url/name.repo]       -adding repo to yum
+yum-config-manager --enable/disable [repo id firsth part]   -enable/disable repo
+
+yum clean packages/metadata -clean packages or metadata sotred in /var/cache/yum
+________________________________________________
+EPEL (Extra Packages for Enterprise Linux) is an open-source and free community-based repository project from Fedora team, 
+which provides 100% high-quality add-on software packages for Linux distribution including RHEL, CentOS, and Scientific Linux.
+
+yum install epel-release
+________________________________________________
+DNF - dnf is the package management tool used on Fedora, and is a fork of yum.
+ZYPPER - is the package management tool used on SUSE Linux and OpenSUSE.
+RHN - Red Hat Network (rhn.redhat.com) - Portal with automatic upgrades made by Red Hat support (paid subscription). 
+________________________________________________
+Ubuntu:
+do-release-upgrade      #upgrade distribution do latest
+
+lsb_release -a          #Show distribution infos
+lsb_release -cs         #show distribution code name (c) in short format (s)
+
+________________________________________________
+Install from binary code (C lang):
+
+./configure         #prepare code to installation
+--help              #info about compilation options
+make                #compilation
+sudo make install   #moving binaries to right path
