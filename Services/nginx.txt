@@ -1,3 +1,5 @@
+Web Server Gateway Interface (WSGI) - standard to connecting web aplications with different www servers (nginx. gunicorn etc.)
+
 https://www.tecmint.com/nginx-web-server-security-hardening-and-performance-tips/
 
 Nginx has one master process and several worker processes. 

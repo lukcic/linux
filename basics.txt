@@ -172,44 +172,6 @@ symbolic link points to filename of target file.
 Aninodeis a data structure that stores attributes for an object (like a file or directory) on a filesystem. 
 Among those attributes are permissions, ownership and on which blocks of the disk the data for the object is stored. 
 Think of it as an entry on an index, hence the name, which comes from “index node”.
-______________________________________________________________________________________________________________
-
-wc [FILE] -(word count) summary of lines, words and characters in FILE
--l  -sum lines
--w  -sum words
--c  -sum characters
-
-tail -displays end lines of file
--3 -shows last 3 lines
--f -shows file changes in live mode (logs etc.)
-
-head - display beginning of file
--n X -shows first X lines
-
-cut - print (or cut) columns of text files ordered by character separators
-
-paste -join files in columns ordered by character separatos
-
-split -split larger files into smaller 
-
-sort -sorting the output (alphabeticaly, rev alph, random)
-
-uniq -list (and count) matching strings, this command can find and delete repeated lines in the file
-uniq [FILE] -cat FILE without repeated lines
--c -shows how many times line exists
--D -shows only repeated lines
-
-nl -numbering lines
-
-tr -(translate) replace characters, removes and compress repeating characters
-
-tee -command output is redirected both to the file and for stdout
--a -append data to file
-
-xargs -command used to send output of first command as the parameters to second command
--n X -how many arguments at the time will be send to second command
--L -how many lines can be used as aruments per command execution
--0 -tells the xargs that null character must be used as the separator (find -print0)
 
 ______________________________________________________________________________________________________________
 Searching:
@@ -270,42 +232,45 @@ ________________________________________________________________________________
 Variables:
 set can see shell-local variables, env cannot.
 
-Shells can have variables of 2 types: locals, which are only accessible from the current shell, and (exported) environment variables, which are passed on to every executed program.
+Shells can have variables of 2 types: locals, which are only accessible from the current shell, and (exported) environment variables, 
+which are passed on to every executed program.
 Since set is a built-in shell command, it also sees shell-local variables (including shell functions). 
 env on the other hand is an independent executable; it only sees the variables that the shell passes to it, or environment variables.
 When you type a line like a=1 then a local variable is created (unless it already existed in the environment). 
 Environment variables are created with export a=1
 
 env -lists environment variables
+printenv -lists environment variables
 cat $PATH   -show value of PATH variable
 
-[var name]=[value]
-export [var name] -saving new environment variable 
+[VAR_NAME]=[VALUE]      -saving shell environment
+export [VAR_NAME]=[VALUE] -saving new environment variable 
 set - 
 unset [var name] -deleting variable
-______________________________________________________________________________________________________________
-gcc - GNU C Compiler
-
-gcc [FILE.c] -o [OUTPUT_FILENAME]
-
-./[OUTPUT_FILENAME]
-
-Makefile:
-[PROGRAMNAME]: [FILE.c]
-    gcc [FILE.c] -o [OUTPUT_FILENAME]
-
-clean:
-    rm [OUTPUT_FILENAME]
-
-make
-
-make clean -use function 'clean' from Makefile
-
-make -compiles file to binary
 
 ______________________________________________________________________________________________________________
+Shell functions
+Functios written in .bash_profile file for used in everyday work:
+
+function backup () {                        #function name
+ newname=$1.`date +%Y-%m-%d.%H%M.bak`;      #string newname will be: firsth arg.date.bak
+ mv $1 $newname;                            #rename file to newname
+ echo "Skopiowano $1 do $newname.";         #print info
+ cp -p $newname $1;                         #copy(-p = with saving permissions) backup file to old name 
+}
+
+Usage:
+backup ffile
+Copied ffile to ffile.2017-02-05.1454.bak.
+
+______________________________________________________________________________________________________________
+Alias:
+alias ls='ls -Fh'       #change ls to ls with arguments
+______________________________________________________________________________________________________________
+
 CTRL+ALT+F1 - switch from GUI/CONSOLE mode
 CTRL+ALT+F2
+
 ______________________________________________________________________________________________________________
 Checksum:
 

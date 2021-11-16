@@ -153,3 +153,25 @@ Install from binary code (C lang):
 --help              #info about compilation options
 make                #compilation
 sudo make install   #moving binaries to right path
+
+
+gcc - GNU C Compiler
+
+gcc [FILE.c] -o [OUTPUT_FILENAME]
+
+./[OUTPUT_FILENAME]
+
+Makefile:
+[PROGRAMNAME]: [FILE.c]
+    gcc [FILE.c] -o [OUTPUT_FILENAME]
+
+clean:
+    rm [OUTPUT_FILENAME]
+
+make
+
+make clean -use function 'clean' from Makefile
+
+make -compiles file to binary
+
+______________________________________________________________________________________________________________

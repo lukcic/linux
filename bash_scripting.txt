@@ -1,14 +1,104 @@
-'tekst' - zwykły cudzysłow
-"tekst" - uwzględnia zmienne w treśći cudzysłowia
+Scripting rules:
+-on the beginning of every script write description with informations needen (arguments, needed libraries etc.);
+-in case of no or wrong arguments, script should finish working and give feedback about proper use;
+-verify data sended to script (maybe rm -rf);
+-script should return 0 code if finished properly and non-0 with error;
+-script should use lock to prevent run script many times;   
+-use proper names inside script;
+-use quotation for inputed data (spaces in paths)
+-errors send to STDERR.
 
+Creating scripts:
+-write it as oneliner using pipes
+-send output to std output or file to not attempt changes on system
+-use fc command to save your work in file
+-run the script
+
+CTRL + P -will transform many commands to oneliner
+sh fc    -will send commands to file, only need to add shebang
+
+cat > superskrypt.sh << EOF ???????????????????????????????????/
+
+Bash - Bourne Again Shell - writed again, because original bash is still under closed AT&T license.
+
+schellcheck [file]  -command to check if script is written properly
+
+#!/bin/bash -shebang for bash (check 'which bash')
+
+Commands used after shebang
+set -u              #unassigned; if script is referring to variable that is not defined, immediately finish script
+set -e              #exitcode; if any command returned non-zero exit code, immidiately finish script
+set -ueo pipefail   #some commands after pipe (etc. sort) returns 0 even if has no input data, in this case $? equal 0, even if all commands combination fails
+                    #pipefail protect for this: $? with pipefail returns error code
+set -x              #debug every line 
+
+trap read debug     #with this command every line in script is executed only after acceptation: you see the line and accept it with enter (used with set -x)
+                    #cript may be stopped using CTRL+C (^C)
+
+Running bash scripts:
 chmod +x [FILENAME] -add execution permission for file (for all 755)
 
-#! /usr/bin/bash -shebang for bash (check 'which bash')
+./scriptname.sh             #.sh is optional
+-n -check commands before run
+-x -list commands used in script 
+
+sh scriptname.sh           #will run script in new instance of sh
+
+source scriptname.sh       #will run script in actual instance of sh
+___________________________________________________________________________
+
+INPUT/OUTPUT:
+
+'tekst' - normal quotation
+"tekst" - used when need env variables inside quotation
+``      -used to run command inside quotation
+echo "Plik passwd ma `wc -l < /etc/passwd` wierszy."
+#Plik /etc passwd ma 28 wierszy!.
 
 $[NAME] -variable
 ${[NAME]} - variable
 
 read -p "Text" [VARIABLE] -prompt user for input data to variable NAME
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Echo vs printf:
+
+$ echo "\taa\tbb\tcc\n"
+\taa\tbb\tcc\n
+$ printf "\taa\tbb\tcc\n"
+ aa bb cc
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+___________________________________________________________________________
+Checking script environment:
+
+Lock:
+if [-f /tmp/lock.file]; then       #-f checks if given file exists
+    echo "Wait until last script run ends work."
+    exit;
+fi
+
+touch /tmp/lock.file
+
+# script
+
+rm /tmp/lock.file  #if everything is ok
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Checking directory:
+
+cd "$1" || exit                     #$1 - firsth parameter (installation directory), must be in quotation fot paths with spaces; if failed exit (|| -OR)
+fileCounter = (ls * | wc -l)        
+if [ $fileCounter -gt 0 ]; then       #check if direcotry is empty
+    rm -rf "$1"/*                     #if not, delete everything
+fi
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Checking last command:
+
+if [ $? -ne 0 ]; then           #$? -last command
+    echo "Something went wrong"
+    exit;
+fi
 ___________________________________________________________________________
 
 IF statement:
@@ -16,6 +106,11 @@ IF statement:
 if [ "$NAME" == "Brad"]
 then
     echo "Your name is Brad"
+fi
+
+if [-z $1]; then      #if given parameter has zero lenght, then (-z -zero lenght, $1 - firsth parameter) 
+    echo "No destination directory";
+    exit; 
 fi
 
 IF-ELSE statement:
@@ -152,12 +247,6 @@ $_ - last argument of the last command
 $? - return code of the prev command
 ___________________________________________________________________________
 
-WRITE to a FILE:
-
-echo "Hello World" >> "text.txt"
-
-___________________________________________________________________________
-
 Return code (how command execution went):
 0 (boolean) - its OK
 1 (boolean) - error occurs
@@ -167,8 +256,8 @@ False - always 1 return code
 echo always return 0 (ok)
 
 Operators:
-&& - and
-|| - or
+&& - and (second will run only when first ends successfully)
+|| - or (second will run only when first fails)
 ; - just separate commands in one line
 
 0 - standard input (stdin)
@@ -178,6 +267,8 @@ Operators:
 2> redirect standard error
 &> redirect both, standard output and standard error
 2>&1 - redirect standard error to standard output (to use pipe)
+
+find / -name core > /tmp/plikicore 2> /dev/null #will serch for files with 'core' in name and save names in file, errors will be ignored
 ___________________________________________________________________________
 Command substitution:
 $(command) - execute the command and place the output to the variable
@@ -187,17 +278,22 @@ executes the ls command, iterates the values
 
 Using the output of ls to get filenames is a bad idea. It can lead to malfunctioning and even dangerous scripts. This is because a filename can contain any character except / and the nullcharacter, and ls does not use either of those characters as delimiters, so if a filename has a space or a newline, you will get unexpected results.
 
-There are two very good ways of iterating over files. Here, I've used simply echo to demonstrate doing something with the filename; you can use anything, though.
+There are two very good ways of iterating over files. Here, I`ve used simply echo to demonstrate doing something with the filename; you can use anything, though.
 
-The first is to use the shell's native globbing features.
+The first is to use the shell`s native globbing features.
 
 
 for dir in */; do
   echo "$dir"
 done
 
-The shell expands */ into separate arguments that the for loop reads; even if there is a space, newline, or any other strange character in the filename, for will see each complete name as an atomic unit; it's not parsing the list in any way.
+The shell expands */ into separate arguments that the for loop reads; even if there is a space, newline, or any other strange character in the filename, for will see each complete name as an atomic unit; it`s not parsing the list in any way.
 
-If you want to go recursively into subdirectories, then this won't do unless your shell has some extended globbing features (such as bash's globstar. If your shell doesn't have these features, or if you want to ensure that your script will work on a variety of systems, then the next option is to use find.
+If you want to go recursively into subdirectories, then this won`t do unless your shell has some extended globbing features (such as bash`s globstar. 
+If your shell doesn`t have these features, or if you want to ensure that your script will work on a variety of systems, then the next option is to use find.
 
 find . -type d -exec echo '{}' \;
+
+___________________________________________________________________________
+
+p. 243

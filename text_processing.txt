@@ -75,7 +75,7 @@ grep [OPTION] "text" [file/dir]
 -f -indicate a file that contains regex
 -H -given line includes filename
 -z -neded with find -print0 (no endline mark)
--l -show file names instead of file contents portions.
+-l -show file names instead of file contents portions
 -1 -gives extra empty lines between matches (-C 1)
 
 ^# -line starts with this sigh - hash (carrot)
@@ -86,6 +86,11 @@ grep -E '(a+)' - a one ore more times
 grep 'C...y' - words starts with C and ends with y
 
 grep -iR "linux" /home/user/Documents
+
+Return codes:
+0 - if grep found text
+1 - if grep didn`t found text
+2 - if critical exception
 ______________________________________________________________________________________________________________
 SED - stream editor for filtering and transformation text. A common use of sed is to find and replace the text within a file.
 
@@ -107,3 +112,71 @@ sed -i.backup s/[PATTERN]/[NEW_PATTERN]/ [FILE.txt] -replacing PATTERNS with mak
 
 sed -e "/^#/d" [FILENAME]] -shows the contents of the file without the lines beginning with #(comment lines).
 ______________________________________________________________________________________________________________
+
+CUT - divide text for columns separated by given character (Tab delault)
+
+cut -d[SEPARATOR] -f[COLUMNS]
+cut -d: -f1,6 /etc/passwd      #show column 1 and 6 (: is separator), will show usename and home direcotry of users
+______________________________________________________________________________________________________________
+
+SORT - sorting the input
+
+sort -t: -k3,3 -n /etc/group
+-r      -reverse
+-u      -only unique records (duplicates removed)
+-b      -ignore empty characters on the beginning
+-f      -ignore cause sensitive
+-h      -sort human-readable values (for sorting 'du -h' and 'df -h')
+-k      -columns that make sorting key
+-n      -change to integer sorting (by fefault dictionary sorting: 1, 10, 2 etc)
+-t      -change separator (empty signs as default)
+______________________________________________________________________________________________________________
+
+UNIQ -list (and count) matching strings, this command can find and delete repeated lines in the file
+
+uniq [FILE] -will show FILE without repeated lines
+-c -shows how many times line exists
+-d -shows only repeated lines
+-u -shows only unique lines
+
+cut -d: -f7 /etc/passwd | sort | uniq -c  #check how many users use different shell
+______________________________________________________________________________________________________________
+
+WC -word count
+
+wc [FILE] -(word count) summary of lines, words and characters in FILE
+-l  -sum lines
+-w  -sum words
+-c  -sum characters
+______________________________________________________________________________________________________________
+
+TAIL -displays end lines of file
+-3 -shows last 3 lines
+-f -shows file changes in live mode (logs etc.)
+______________________________________________________________________________________________________________
+
+HEAD - display beginning of file
+-3      -shows last 3 lines
+-n X    -shows first X lines
+______________________________________________________________________________________________________________
+
+TEE -command input is redirected in 2 places: input to output & input to file (or terminal)
+-a -append data to file
+
+find / -name core 2> /dev/null | tee /dev/tty | wc -l #this command will serch files namd 'core', list their paths and send output to 'wc' to count number of them
+______________________________________________________________________________________________________________
+
+______________________________________________________________________________________________________________
+
+paste -join files in columns ordered by character separatos
+
+split -split larger files into smaller 
+
+nl -numbering lines
+
+tr -(translate) replace characters, removes and compress repeating characters
+
+xargs -command used to send output of first command as the parameters to second command
+-n X -how many arguments at the time will be send to second command
+-L -how many lines can be used as aruments per command execution
+-0 -tells the xargs that null character must be used as the separator (find -print0)

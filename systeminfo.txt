@@ -38,8 +38,11 @@ cat /proc/dma - list of registered DMA (Direct Memory Access) channels in use
 _____________________________________________________________________
 uname -a -system version info
 uname -redhat -check kernel
+
+LSB - Linux Software Base 
+lsb_release -a      -distribution info
+
 cat /proc/version -check kernel
-lsb_release -a      -check Debian version
 cat /etc/redhat-release -check RedHat verion
 
 lsmod -list kernel modules (/lib/modules)
