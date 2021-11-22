@@ -1,0 +1,274 @@
+User in Linux is only 32-bit digit called UID. UID must be unique for organisation. 
+
+/etc/passwd     #read access for everyone 
+Name: character that is replacing encrypted password: UID: default GID: Gecos (personal data, phone): Home directory: default shell
+
+/etc/shadow     #readable only by root
+Name: encrypted password: date of last password change: minimal password change peroid: max password change peroid: how many days informs of passwd change: amount of days for password expiration: account expiration date: Reserved for future use 
+
+Password encryption types:
+$6$     -sha-512, 
+$5$     -sha256, 
+$md5$   -MD5
+
+Dates are written as amount of days (not seconds!) until 1970.
+
+Password are encrypted with salt (random values). If two users have the same password, encrypted representation in /etc/shadow will be different.
+
+chage -d O username     #block user password for change
+
+Password rules:
+/etc/pam.d/common-passwd
+
+Root = UID 0
+Root Group = GID 0 (system or wheel) 
+
+Pseudousers:
+bin, daemon 
+Config files owners, with low UIDs and /bin/false as shell to unable logging for this users. 
+This accounts are always on the beginning of etc/passwd. 
+
+Group definiotion - using GID value from etc/passwd
+/etc/group 
+
+chfn    #change Gecos 
+chsh    #change shell 
+vipw    #vi passwd, editing /etc/passwd, next use 'vipw -s' for update
+vigr    #vi group, editing /etc/group, next use 'vigr -s' for update
+pwconv  #sync passwd with shadow 
+
+sudo passwd [USER_NAME] #set password for new user
+
+Startup files:
+.rc (runn command) startup files 
+
+/etc/skel   #default startup files, after modification write them to /usr/local/etc/skel
+/etc/profile    #system startup files, later user startup files with lower priority
+
+.profile        #search path, terminal type, environment
+.bash_profile   #aliases, search path, umask, chpath, PS1
+.bashrc         #terminal type, biff, mesg, env variables
+
+useradd rozdz. 8.7 (p.301)
+adduser 
+usermod
+pw
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Permissions in directories:
+-file`s write permission let user to change or delete content of file.
+-deleting and changing name of file depends of directory permissions.
+-in directory executable bit lets you go inside of direcoty, but for listing content of directowy you must have read an executable bit (both).  
+-save and ececutable bit together lets you to create, delete and renaming files inside directory.
+-to show dir permissions use 'ls -ld'
+
+9-bit permissions are mostly overrided by: ACLs, SELinux module or additiona permissions bits:
+
+setuid & setgid
+Set user id (4000), set group id (2000), mode (s- special bit, replace x in permissions) used to giving programs (executable files) higher priviledges, than their user have, 
+for example: sudo, passwd (setting uid of user who password must be changed). 
+If setgid is given to directory, then files created inside have group owner of directory group owner (not file creator`s group). It is used to work of directory as a group of users.
+setuid & setgig may be disable with mount option: nosuid.
+
+SUID (set Used ID) - +s on user x, octal value 4.
+Given only for executable files.  gives possibility to run file with permissions of user who owns the file (eg. root).
+
+SGID (set GID) - +s on group x, octal value 2 before permission number. 
+Given for executable files - gives possibility to run file with permissions of group who owns the file (eg. root group). 
+Given for executable dirs -  newly created files have group inherited from directory. 
+
+chmod [code] [FILE] -set permissions to file
+-R  -recursive (do not use on directories- find files)
+--reference=file1 file2  -set for file2 the same permission as file1 has
+
+chown [user] [file] -change file owner
+chgrp [group] [file] -change group owner
+chown [user]:[group] [file] -change both
+
+umask - gives default permissions of newly created files, umask have different values than files and folders octal mode (you set the permissions that are taken out).
+umask -S  -show umask in readable mode
+umask 022 - new files can be accessed by everyone
+umask 077 -new files can be accessed only by user
+
+Sticky bit - directories with "t" instead x on 'others' permissions. 
+Sticky bit (1000) - if set on directory, then only file or directory owner (and root) can delete files inside directory (even if other users have permissions).
+
+Special file attributes:
+They depends of used filesystem type (E - ext3 and ext4, B- BTRFS, X - xfs):
+A -XBE - do not change access time (st_atime), used for better performance
+a -XBE - save only as APPEND
+C -B - turn off copy-on-write upgrade
+c -B - compress file
+D -BE - synchronized saving directories upgrade
+d -XBE - do not archive file (backup software should leave this file)
+i -XBE - file is unchangable and cannot be deleted (Windows read-only)
+J -E - save data change journal wit metadata
+S -XBE - synchronized saved changes (without buffering)
+X -X - do not compress data if it used by default
+
+
+lsattr -list special file attributes
+chattr -change special file attributes
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+su user         #will run ~/.bashrc
+su - user       #will run ~/.bash_profile
+
+sudo !!         #repeat last command with sudo
+
+root user with 'su - username' can log on any account without usng password!
+
+sudo
+/etc/suoders
+
+visudo                                      #command must be used to edit suoders!
+Host_Alias  SERVERS = srv1, srv2, srv3      #Host groups Alias definition
+Host_Alias  PCs = PC01, PC02, PC03
+
+Cmnd_Alias SHELLS = /bin/bash, /bin/sh     #Command groups Alias definition, must be full path to binary!
+Cmnd_Alias DUMP = /sbin/dump, /sbin/restore
+
+#USER HOSTs = (AS USER) COMMANDS 
+admin ALL = (ALL) ALL                       #admin can run every command as anybody on all hosts
+admin1, admin2  SERVERS = ALL               #both admins can run every command on all servers from group "SERVERS"
+
+admin3  PCs = /usr/sbin/tcpdump : SERVERS = (operator) DUMP     #admin3 can run tcpdump on all "PCs"
+                                                                #and commands from group DUMP on SERVERS but with "operator" priviledges (not root) like:
+                                                                #sudo -u operator /usr/sbin/dump 0u /dev/sda
+
+%wheel ALL, !SERVERS = NOPASSWD: WATCHDOG   #users form wheel group may run watchdog command without password as a root on all computers, but no on "SERVERS" 
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+w -lists currently logged users
+last -history of users logins
+
+passwd [USERNAME] -reset users password
+passwd -l root      #will disable root account (add ! in password hash)
+
+useradd 
+userdel
+usermod
+-L -locks account (adds! in /etc/shadow)
+
+id [USERNAME] -lists all user ids (uid, gid etc)
+
+/etc/skel -all folders created here will be added to new users home directories
+
+rwx
+421
+
+chown [NEW_OWNER]:[NEW_GROUP] [FILE] -changing ownership of files
+
+chcon -t [CONTEX_NAME] [FILE] -change SELinux context 
+restorecon [FILE] -restore context
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+PAM - Pluggable Access Module
+Access control mechanism that use many types of login methods. If program wants to authenticate user, asks PAM for it.
+
+Kerberos -network kryptographic access control mechanism that works with PAM. 
+You are auhenticacing on server, thats gives information to host about pass you or not. 
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+ACL - Access Control list. You can give file permissions to individual users (like in Windows), not only owner, group and everybody. 
+ACL are used to make Linux system compatible with Windows. This will not replace standard Unix file access control.
+For using acl, filesystem must be mounted witho option acl (noacl for disabling). Files with active acl have + in permissions (Ls -l)
+
+If process need access to file, checks effective UID of user and file owner. If they are the same, user:: acle entry is taken. 
+If not acl search for entry for given user. Next search for group entry (using mask). If there`s no entries other:: option is used.    
+
+-user:: and other:: are identical with user and other bits in traditional model, changing bits affects on acl entries and vice versa
+-minimal acl list have three entries 'ugo' like perrmission bits (don`t have mask)
+-in more complicated acls 'ugo' bits are called mask, mask is limiting permissions that can be given by acl (maximum)
+
+
+POSIX access list standard:
+getfacl [FILE] -show permissions
+
+$ setfacl -m u:user1:rwx dir/           #-m -modify
+$ setfacl -m u:user22:r-- dir/          #-b -delete acl
+$ setfacl -m  other:--- dir/            #-n -do not regenerate mask
+$ getfacl example/
+
+# file: dir
+# owner: user1
+# group: user1
+user::rwx
+user:tecmint1:rwx
+user:tecmint2:r--
+group::r-x
+mask::rwx
+other::---
+
+default: -default acl entries (inherited)
+setfacl -dm     #set default entries
+
+https://www.tecmint.com/secure-files-using-acls-in-linux/
+
+
+NTFSv4 ACL:
+NTFSv4 acl standard that is extension of POSIX acl, so POSIX acl can be saved as NTFSv4 acl without loosing information. 
+New type of standard includes Windows ACLs too - they are more complex, includes negative permissionas and complicated inheritance (dziedziczenie).
+This type do not default: acl entries (every entry can be checked as inherited for files and dirs). 
+Do not use mask - mode must be exactly the same as acl`s owner@, group@ and everyone@. 
+ACE (Access list entry) can be allow or deny. In NTFSv4 acls entries order is important. 
+
+Additional permissions:
+-creating files in directory and creating subdirectories
+-apped to file bit
+-different permission for read and write on files, another for file attributes, for extended attributes and another for acls
+-permission for changing file owner
+
+r read_data         odczyt danych (plik) lub pobranie listy z zawartością katalogu (katalog)
+w write_data        zapis danych (plik) lub utworzenie pliku (katalog)
+x execute           wykonywanie jako program
+p append_data       dopisanie danych (plik) lub utworzenie podkatalogu (katalog)
+D delete_child      usunięcie potomka w obrębie katalogu
+d delete            usuwanie
+a read_attributes   odczyt atrybutów nierozszerzonych
+A write_attributes  zapis atrybutów nierozszerzonych
+R read_xattr        odczyt nazwanych („rozszerzonych”) atrybutów
+W write_xattr       zapis nazwanych („rozszerzonych”) atrybutów
+c read_acl          odczyt listy kontroli dostępu
+C write_acl         zapis listy kontroli dostępu
+o write_owner       zmiana własności
+s synchronize       dopuszczanie żądań synchronizacji operacji wejścia-wyjścia
+
+Traditional unix units:
+owner@
+group@
+everyone@
+
+Commands (only for files from nfs (not local)):
+nfs4_getfacl
+nfs4_setfacl
+nfs4_editfacl 
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+LSM -Linux Security Modules (SELinux, AppArmor, Smack, TOMOYO and Yama)
+This modules use API LSM and works as additional kernel modules used to access control.
+
+Mandatory Access Control (MAC) -admins can use own centralised access control rules, 
+for example only user can view his home folder even if he changed 'other' permission to read. 
+
+SELinux - one of the oldest MAC mechanism. Used in Android. To protect daemon, SELinux policy must include all files and dirs used by this process.
+seedit.sourceforge.net  - config editor for SELinux
+
+/etc/selinux/config:
+SELINUX=enforcing       #enforcing - policy must be active and unauthorizes access is blocked
+                        #permissive - policy can be violated (pogwałcony), but everything will be logged (used to testing rules)
+                        #disabled - SELinux is disabled
+SELINUXTYPE=targeted    #policy database name (dir in /etc/selinux), only one at once. Targeted - used in RedHat, focus on choosen daemons only (rest is not checked)
+
+AppArmor - Canonical product used in Ubuntu and Debian and even Suse
+Tis MAC module is extension for traditional access mechanism in Linux. 
+It concentrates on protecting daemons by filtering their work by AppArmon profile.
+By default AppArmon discards all requests, so you must configure what given process can do. 
+Apps without profie works the same like without AppArmor. Profiles are stored in  /etc/apparmor.d.
+They include files list, that daemon can work on with permissions. 
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -1,2 +1,13 @@
+SSL certificates:
+-encryption of data transfered between server and browser
+-make sure that taken data are not changed
+-ensure that you connected right host
+
+SSL verification types:
+-DV -Domain Validation, make sure that domain is valid (Let`s Encrypt)
+-OV -Organization Validation, make sure that company is valid, company name seeing in browser 
+-EV -Extended Validation, make sure that you are owner of trademark (uded  by banks etc.) 
+
+
 openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj /CN=localhost -keyout files/nginx.key -out files/nginx.crt
 

@@ -89,7 +89,7 @@ Reloading man pages:
 mandb       #Ubuntu
 makewhatis  #RHEL
 
-[ -x ]           -optional
+[ -x ]          -optional
 { a | b }       -choose a or b
 filename ...    -may be more than one filename
 ______________________________________________________________________________________________________________
@@ -114,6 +114,21 @@ ls -ly > log.txt 2>&1
 sort < [FILE] > [SORTED FILE]
 ______________________________________________________________________________________________________________
 
+XAGRS - this command takes output list returned by one command (or from file) and send it as arguments of another command. 
+Without second command use 'echo' by default.
+
+command1 | xargs -0 command2
+-0 -used if spaces in filenames
+
+find /home -type f -size +1M -print0 | xargs -0 ls -l
+#will find files and list it using ls -l option
+
+find ~/Pictures -name "*.png" -type f -print0 | xargs -0 tar -cvzf images.tar.gz
+#will find all PNGs in Pictures folder and tar it to given archive
+
+https://www.tecmint.com/xargs-command-examples/
+______________________________________________________________________________________________________________
+
 ALT + . -repeat argument from last command
 CTRL + A -moves cursor to left side
 CTRL + E -moves cursor to the right side
@@ -127,6 +142,9 @@ sudo !! -repeat last command with sudo
 
 less +F [LOGFILE] -will open the last log lines and move backwards
 
+Shell globbing:
+wc -l *.pl
+wc -l ?.pl
 ______________________________________________________________________________________________________________
 Archives:
 
@@ -189,6 +207,7 @@ updatedb -refresh db of files
 find [STARTING_PATH] [OPTION] [EXPRESSION]
 
 find [where] -name [name] -type [f/d/l]
+-print0 -works fine with names that includes spaces
 -iname [name] -ignores CauseSensitive
 -not  -show opposite results
 -user [username] -search for files that [user] is owner
@@ -212,7 +231,7 @@ find /home -type f -user [USERNAME] -exec mv {} {}_old \;
 -ok -the same as exec but needs 
 
 find [where] -iname [name] -exec grep -i -n [text] {} + | tee [file]
-tee - print output on the screen and stores in file
+tee - print output on the screen and stores in file (duplicates output)
 
 ______________________________________________________________________________________________________________
 
@@ -263,6 +282,13 @@ Usage:
 backup ffile
 Copied ffile to ffile.2017-02-05.1454.bak.
 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+~/.bash_profile:
+ssh() {
+    /usr/bin/ssh -p 7988 $*
+}
+
+In this case ssh command will always use port 7988 instead 22.
 ______________________________________________________________________________________________________________
 Alias:
 alias ls='ls -Fh'       #change ls to ls with arguments

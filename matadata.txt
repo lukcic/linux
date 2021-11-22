@@ -1,0 +1,4 @@
+file [FILENAME]                 -show file matadata, for jpg resolution, creation date, etc
+
+binwalk [FILENAME]              -checking every bit of binary files, will show layers 
+binwalk --dd='.*' [FILENAME]    -extract all layers from jpg file, saves data in [FILENAME].extracted directory, files will have name of addresses inside jpg, extension must be changed

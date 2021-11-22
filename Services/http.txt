@@ -1,0 +1,40 @@
+Http codes:
+200
+404
+
+Metods:
+-get -data limits, how to count them (headers included?)
+-post
+
+Cookies
+Flags: http ony, secure
+path
+time to use
+volume (1MB?), types of content? 
+
+Base 64 - encoding data (binary to text for sending), increase volume (1.33x) 
+graphics in css as base 64. Multiple sending the same data, if overhead (narzut: 1.33) is smaller than http headers its better to have graphics in css (small files)
+
+Security headers - give browser information how to handle my site
+-X-XSS-Protection - do not run scripts from outside 
+
+-X-Frame-Options do not put my site in iframe
+
+-Content-Security-Policy -use whitelist of elements and domains on my site
+
+-Strict-Transport-Security -do not go back from https to http (http is invisible for browser)
+
+-Secure -cookies are transported only using https
+
+-Httponly -Java Script do not see cookies (they are only for html)
+
+-Refferer-Policy - browser will not send refferer outside (refferer - address bar, domain and rest)
+
+-
+
+Cache headers 
+
+reverse proxy (how long collect data)
+
+
+
