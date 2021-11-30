@@ -48,11 +48,47 @@ Startup files:
 .profile        #search path, terminal type, environment
 .bash_profile   #aliases, search path, umask, chpath, PS1
 .bashrc         #terminal type, biff, mesg, env variables
+______________________________________________________________________________________________________________
+Modyfying users:
 
-useradd rozdz. 8.7 (p.301)
+useradd 
+
+Config file:
+/etc/login.defs         #passwords lifetime, pass encryption algoritms, UIDs and GIDs ranges 
+/etc/default/useradd    #home dirs location, default shell
+
+sudo useradd [USERNAME]         #add user
+-p [VALUE]                      #set password
+-c [TEXT]                       #GECOS field - Name and sername
+-d [PATH]                       #set home directory
+-g [NAME/GID]                   #set primary group of user
+-G [NAME/GID]                   #set additional group for user
+-m                              #create home directory
+-s [SHELL]                      #set user`s shell
+
+sudo useradd -D -s /bin/bash    #set bash as default shell for new users
+
+usermod [OPTIONS] [LOGIN]
+-L                              #lock users account
+-U                              #unlock
+
+Better options for locking is replacing users shell with script that print information about locking account.
+
+userdel [OPTIONS] [LOGIN]       #deleting user
+newusers - creating manyusers from txt file (better own script)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Debian/Ubuntu commands:
+
 adduser 
-usermod
-pw
+
+Config:
+/etc/adduser.conf
+-rules of creating home dirs
+-permissions for new home dirs
+-UID & GID ranges
+-usernames cration basen on regex
+
+deluser [OPTIONS] [LOGIN]     #deleting user
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -272,3 +308,7 @@ Apps without profie works the same like without AppArmor. Profiles are stored in
 They include files list, that daemon can work on with permissions. 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SSO systems:
+-JOSSO - open source (java)
+-CAS - Central Authentication System (java)
+-Shibboleth - Apache 2 license

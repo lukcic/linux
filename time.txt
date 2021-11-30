@@ -1,0 +1,6 @@
+Setting time (Debian):
+
+timedatectl
+timedatectl list-timezones
+sudo timedatectl set-timezone Europe/Warsaw
+timedatectl
