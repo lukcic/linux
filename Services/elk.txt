@@ -1,0 +1,15 @@
+ELK:
+
+Elasticsearch - Scalable database (written in Java) with search engine that use RESTful API. 
+Can store, search and analize logs from many hosts in thousands of messages per second.  
+
+Logstash - receives data from many sources, eg. syslog, tcp and udp sockets or querry systems as RabbitMQ or AWS SQS. 
+Can add or delete informations in message. Elasticsearch helper.
+
+Kibana - graphical frontend to Elastisearch. Can make graphs and visualisations. 
+
+
+Filebeat - ELK agent? Can send messages to Elasticsearch or Logstash.
+
+Graylog - can store data in Elasticsearch, can receive messages by himself or using Logstash.
+Have better GUI that ELK.  

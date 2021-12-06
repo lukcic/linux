@@ -1,10 +1,87 @@
-Http codes:
-200
-404
+URL Structure:
+protocol://[username:password@]hostname[:port][/path][?query][#fragment]
 
-Metods:
--get -data limits, how to count them (headers included?)
--post
+Protocol and hostname are obligatory, rest is optional.
+Hostname: domain, ip or hostname.
+Queries: key=value pairs divided by '&'
+protocols: http, https, ws (Websocket), wss (Websocket TLS), ftp, ldap etc.
+Sensitive data should be send in request body not in url!
+Fragment - part of given www site.
+
+user agent - http client (browser)
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Http transactions:
+
+1. Http requests 
+
+METHOD RESOURCE HTTP_VERSION
+GET /index.html HTTP/1.1
+
+Methods:
+-GET        -downloads given resorce, secure, have data limits, how to count them (headers included?)??
+-POST       -inserts data from query to given resource, unsecure
+-HEAD       -downloads metadata without payload, secure
+-DELETE     -deletes given resource, unsecure
+-PUT        -inserts data from query to given resource but overrides resource, unsecure
+-OPTIONS    -shows which methods can be accepted and resposed by server, secure
+
+Secure methods do not change server state.
+
+2. HTTP responses
+
+HTTP/1.1 200 OK
+HTTP_VERSION CODE STATUS
+
+
+Http response codes:
+-1xx    -request received, processing, eg. 101 SWITCHING PROTOCOLS
+-2xx    -success, eg. 200 OK, 201 CREATED
+-3xx    -redirection, eg. 301 MOVED PERMANENTLY, 302 FOUND (MOVED TEMPORARIRLY)
+-4xx    -client error, eg. 404 NOT FOUND, 403 FORIDDEN (zabroniony)
+-5xx    -server error, eg. 502 BAD GATEWAY, 503 SERVICE UNAVAILABLE
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+MESSAGE HEARERS
+Metadata of message: compression allowed, which types of content are accepted, how to use cache with data.
+Headers are separeted from message body using empty line.  
+In request olny host is obligatory (server service must know which domain we want to request).
+
+HEADER TYPES:
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+MESSAGE BODY
+In request body may incluse method parameters or file to send to server. 
+In response, body includes resource wanted by client (http file, picture, other binary data etc).
+May be empty (if response for get with error code). 
+
+______________________________________________________________________________________________________________
+HTTP/1.1
+Connection: Keep-Alive header. Clients and servers can send multiple request within one TCP connection (3 way handshake). 
+Virtual hosts -use "Host" header to send request go given domain on the server (one from many).
+
+HTTP/2
+MULTIPLEXATION - interlacement many transactions within one TCP connection. 
+______________________________________________________________________________________________________________
+CURL - commandline http client
+
+>               -request    
+<               -response
+Accept: */*     -client will accept any type of content as response
+
+curl -s -v -o /dev/null http://admin.com
+-v          -verbose
+-s          -silent mode: don`t show progress meter or error messages
+-o <file>   -output to file
+-H "HEADER" -send custom header
+-O <file>   -download file from server #curl -O https://curl.haxx.se/snapshots/curl-7.56.0-20170913.tar.xz
+
+curl -H "Host: www.admin.com" -s -v -o /dev/null 54.239.192.53      #will check if server will response the same from www.admin.com as admin.com
+
+cURL -copy as URL, Google chrome function that generates curl command whoch simulates browser work 
+______________________________________________________________________________________________________________
+
+______________________________________________________________________________________________________________
 
 Cookies
 Flags: http ony, secure
@@ -35,6 +112,8 @@ Security headers - give browser information how to handle my site
 Cache headers 
 
 reverse proxy (how long collect data)
+
+
 
 
 
