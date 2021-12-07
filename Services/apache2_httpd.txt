@@ -1,0 +1,188 @@
+
+httpd, apache2 -Apache web service
+
+Modular architecture. 
+Modules can handle diferrent programming languges, authentication methods, increasing security, expended options for handling URLs and many others. 
+
+Today MPM Event should be used instead Worker and Prefork. 
+MPM Prefork use processes for connections handling instead threads, it should be used with older software like mod_php.
+
+To operate on low ports (80 and 443) initial httpd process should be run with root priviledges. 
+This process runs additional childern processes (on local account) to operate on requests.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Debian/Ubuntu:  apache2
+CentOS/RHEL:    httpd
+
+
+Main configuration files:
+RHEL/CentOS:                        Debian/Ubuntu:
+/etc/httpd/conf/httpd.conf          /etc/apache2/apache2.conf
+
+Additional configurations:
+RHEL/CentOS:                        Debian/Ubuntu:
+/etc/httpd/conf.d                   /etc/apache2/conf-available
+                                    /etc/apache2/conf-enabled
+
+Modules configuration files:
+RHEL/CentOS:                        Debian/Ubuntu:
+/etc/httpd/conf.modules.d/          /etc/apache2/mods-available
+                                    /etc/apache2/mods-enabled
+
+Virtual hosts configuration files:
+RHEL/CentOS:                        Debian/Ubuntu:
+/etc/httpd/conf.d/                  /etc/apache2/sites-available
+                                    /etc/apache2/sites-enabled
+
+Log files:
+RHEL/CentOS:                        Debian/Ubuntu:
+/var/log/httpd                      /var/log/apache2
+
+Web pages location:
+RHEL/CentOS:                        Debian/Ubuntu:
+/var/www/html                       /var/www/html
+
+User:
+RHEL/CentOS:                        Debian/Ubuntu:
+apache                              www-data
+
+Additional configuration files must be added to main config file using "Include" directive.
+
+Config options:
+1. Global - like path to main server directory, run permissions, modules to activate and interfaces/ports for listening.
+2. VirtualHost section - defines how to operate given domain.
+3. Default requests instrutions -what to do with request that do not case any virtual host. 
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Debian/Ubuntu commands for enablind/disabling configuration:
+
+a2enmod/a2dismod [MODULE_NAME]          -enabling/disabling mode, command make/delete link from mods-available to mods-enabled
+a2enconf/a2disconf [CONFIG_FILE_NAME]   -enabling/disabling additional config, command make/delete link from conf-available to conf-enabled
+a2ensite/a2dissite [SITE_NAME]          -enabling/disabling site, command make/delete link from sites-available to sites-enabled
+
+mod.load - call directive LoadModule
+mod.conf - configure given module
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Virtual hosts config:
+When http request came, httpd read "Host" HTTP header and decide where (which VirtualHost) send the request.
+Next httpd check requested port and path and look for in in directives (Files, Directory or Location) inside VirtualHost configuration.
+
+<VirtualHost *:80>                                              #config for port 80
+    ServerName admin.com
+    ServerAlias www.admin.com
+    ServerAlias ulsah.admin.com
+    Redirect / https://admin.com/                               #redirect all htp to https
+</VirtualHost>
+
+<VirtualHost *:443>
+    ServerName admin.com
+    ServerAlias www.admin.com
+    ServerAlias ulsah.admin.com
+    DocumentRoot /var/www/admin.com/                            #html files directory
+    CustomLog /var/log/apache2/admin_com_access combined
+    ErrorLog /var/log/apache2/admin_com_error
+    SSLEngine on                                                #enable SSL
+    SSLCertificateFile "/etc/ssl/certs/admin.com.crt"
+    SSLCertificateKeyFile "/etc/ssl/private/admin.com.key"
+    <Directory "/var/www/admin.com">
+        Require all granted                                     #httpd must be root???
+    </Directory>
+    <Directory "/var/www/admin.com/photos">
+        Options +Indexes                                        #requests for admin.com/photos gets list of all files in this directory
+    </Directory>
+    <IfModule mod_rewrite.c>                                    #mod_rewrite == forwarding
+        RewriteEngine on
+        RewriteRule ^/(usah|lsah)$ /ulsah                       #rewrite mistakes
+    </IfModule>
+    ExtendedStatus On
+    <Location /server-status>                                   #admin.com/server-status is module that shows server statistics for monitoring tools
+        SetHandler server-status
+        Require ip 10.0.10.10/32                                #only this IP have access to server-status path
+    </Location>
+</VirtualHost>
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Basic HTTP Authorization:
+In this schema client sends username and password encoded by Base64 in HTTP header called "Authorization".
+This should be used only with https, because Base64 can be uncoded.
+
+This config creates basic HTTP authorization for accessing /server-status:
+
+<Location /server-status>
+    SetHandler server-status
+    Require ip 10.0.10.0/24
+    AuthType Basic
+    AuthName "Restricted"
+    AuthUserFile /var/www/.htpasswd
+    Require valid-user
+</Location>
+
+Account information are stored in secret file. To make it:
+
+htpasswd -c /var/www .htpasswd [USERNAME]
+chown www-data /var/www.htpasswd
+chmod 600 /var/www/.htpasswd
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+SSL config - (SSL name was leaved for compliance (save compatibility)):
+
+SSLEngine on
+SSLProtocol all -SSLv2 -SSLv3                                   #only TLS, only TLS 1.2 and higher should be used
+SSLCertificateFile "/etc/ssl/certs/admin.com.crt"               #444 permissions for cert (read everyone)
+SSLCertificateKeyFile "/etc/ssl/private/admin.com.key"          #400 permissions for key (only owner read)
+
+SSLCipherSuite -config ciphers (szyfry), some of them should`t be used.
+Check Server Side TLS by Mozilla.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Modules - by them programs written in different programming languages can be executed.
+Modules works inside Apache`s processes and have access to all request-response cycles.
+
+mod_php         -obsolete, use only with MPM Prefork
+mod_wsgi        -Web Server Gateway Interface used in Python
+mod_passenger   -mod that handles multiple languages as Ruby, Python and node.js
+mod_proxy_fcgi  -standard interface to work with any programming language
+mod_perl        -perl environment
+mod_ssl         -HTTPS fo Apache
+
+mod_wsgi for Python config:
+
+<VirtualHost *:443>
+    ServerName api.admin.com
+    CustomLog /var/log/apache2/api_admin_com_access combined
+    ErrorLog /var/log/apache2/api_admin_com_error
+    SSLEngine on
+    SSLCertificateFile "/etc/ssl/certs/api_admin.com.crt"
+    SSLCertificateKeyFile "/etc/ssl/private/api_admin.com.key"
+    WSGIDaemonProcess admin_api user=user1 group=group1 threads=5
+    WSGIScriptAlias / /var/www/api.admin.com/admin_api.wsgi         #file admin_api.wsgi includes Python code for WSGI
+    <Directory /var/www/api.admin.com>
+        WSGIProcessGroup admin_api
+        WSGIApplicationGroup %{GLOBAL}
+        Require all granted
+    </Directory>
+</VirtualHost>
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Logs:
+Httpd can write different logs for every VirtualHost.
+
+mod_log_config -here logging is configured
+
+Logs directory sholud have permissions to write only for user that handle main httpd process (root).
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+apachectl - shield script for httpd
+
+apachectl start
+apachectl status
+apachectl -f [CONFIG_FILE] -k start     #run apache2 with custom config file
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+SELinux context types:
+httpd_sys_content_t -System Web Pages
+httpd_sys_script_exec_t -System CGI Scripts or executables files
+httpd_user_content_t -User Web Pages
+httpd_user_script_exec_t -User CGI Scripts or executable files

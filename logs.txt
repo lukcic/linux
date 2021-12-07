@@ -1,19 +1,196 @@
-var/log -here system store logs
-______________________________________________________________________________________________________________
-dmesg -list the startup log from loading kernel (stored in "kernel ring buffer")
+Kernel (boot) logs
+Are stored in "kernel ring buffer" and received by systemd after system boots using /dev/kmsg (device file). 
+
+dmesg               #list the startup log from loading kernel (stored in "kernel ring buffer")
 -H  -paging the output
+journalctl -k       #the same        
+journalctl --dmesg  #the same
 
-journalctl  -shows system journal
+______________________________________________________________________________________________________________
+SYSTEMD-JOURNALD:
 
--k          -shows only kernel messages (--dmesg)
+Sources:
+-/dev/log socket (syslog compatibility)
+-/dev/kmsg device file (messages from kernel)
+-run/systemd/journal/stdout socket (services that sends logs to stdout)
+-run/systemd/journal/socket socket (services that use systemd API to sending logs)
+-control comunicates from auditd (kernel daemon)
+
+journalctl      -shows system journal
+-u [SERVICE]    -shows logs only from given service
+-k              -shows only kernel messages (--dmesg)
+-f              -live log
 
 journalctl -D [path to /log/journal] - reading logs from offline filesystem
 
+Config file:
+/etc/systemd/journald.conf  #do not modify
+
+Add file (.conf) in directory /etc/systemd/journald.conf.d
+
 Configure journalctl to save journal from past booting:
-/etc/systemd/journald.conf:
+/etc/systemd/journald.conf.d/somefile.conf:
 [Journal]
-Storage=persistent
+Storage=persistent      #auto - default value, save journal in /var/log/journal WITHOUT creation if no exists (by default it isn`t exist)
+                        #persistant - save journal in /var/log/journal WITH creation if no exists
+                        #volatile - save journal only in ramdisk
+                        #none -disable journal 
+
 
 journalctl --list-boots    #shows info of past boot logs
+journalctl --disk-usage    #show journal size on disk 
+journalctl --since=yesterday --until=now #show logs only from given time
 journalctl -b -1           #shows the information from previous boot (0 or nothing for actual)
 journalctl -u [service]    #shows only entries from given  service 
+
+To give normal users permission to read journal add user to group systemd-journal:
+sudo usermod -aG systemd-journal [USER]
+
+journald saves logs as binary files.
+
+______________________________________________________________________________________________________________
+
+SYSLOG
+
+Sorting communicates using:
+-facility (źródło)
+-severity level (poziom ważnośco)
+
+Severity level:
+emerg   -system failure, cannot be use
+alert   -situations where instant action is neede
+crit    -critical conditions
+err     -other errors
+warning -warning communicates
+notice  -situations where check is needed
+info    -information communicates
+debug   -only diagnostic purposes
+
+Syslog can send communicates to different places as: logfiles, users terminal, other hosts.
+Oryginal syslogd was replaced by new form: rsyslogd. It saves logs as text files.
+
+cat /var/log/syslog #will show logfile
+
+Config file:
+/etc/rsyslog.conf
+
+Additional congfig files:
+/etc/rsyslog.d/*.conf
+20-ufw.conf
+21-cloudinit.conf
+50-default.conf
+
+Modules:
+io - input modules
+om - output modules
+mm - modificating (messages) modules
+
+-imjournal - integration with systemd
+-imuxsock - read messages from unix socket (default if no systemd)
+-imklog - converts text file to syslog format (for software with own logging mechanism)
+-imtcp, imudp - receives messages from network
+-immark - sending messages in regular time stamps (will know when server fails)
+-omfwd - sends messages by network
+-omkafka - Apache Kafka module
+-omelasticsearch - Elasticsearch sending module
+-ommysql -sends messages to MySQL
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Config rsyslog sender for Apache2 logs:
+
+# Wysyłaj na serwer wszystkie komunikaty systemu syslog;
+# jest to składnia sysklogd
+*.*             @@logs.admin.com
+
+# imfile czyta komunikaty z pliku
+# inotify jest bardziej wydajny niż odpytywanie
+# To ustawienia domyślne, przedstawione tu dla zilustrowania
+module(load="imfile" mode="inotify")
+
+# Importuj dzienniki Apache poprzez moduł imfile
+input(type="imfile"
+    Tag="apache-access"
+    File="/var/log/apache2/access.log"
+    Severity="info"
+)
+input(type="imfile"
+    Tag="apache-error"
+    File="/var/log/apache2/error.log"
+    Severity="info"
+)
+
+# Wysyłaj dzienniki Apache do centralnego komputera rejestrującego
+if $programname contains 'apache' then {
+    action(type="omfwd"
+    Target="logs.admin.com"
+    Port="514"
+    Protocol="tcp"
+    )
+}
+
+Config rsyslog reciver server for Apache2 logs:
+
+# Załaduj moduł wejściowy TCP i nasłuchuj na porcie nr 514
+# Przyjmuj połączenia od maksymalnie 500 klientów równocześnie
+module(load="imtcp" MaxSessions="500")
+input(type="imtcp" port="514")
+
+# Zapisuj do różnych plików w oparciu o typ komunikatu
+if $programname == 'apache-access' then {
+    action(type="omfile" file="/var/log/site/apache/access.log")
+} else if $programname == 'apache-error' then {
+    action(type="omfile" file="/var/log/site/apache/error.log")
+} else {
+    # Wszystko inne będzie zapisywane w pliku syslog całego ośrodka
+    action(type="omfile" file="/var/log/site/syslog")
+}
+
+______________________________________________________________________________________________________________
+
+Logrotate 
+Runs every day by cron. 
+Config file:
+/etc/logrotate.conf
+or direcotry
+/etc/logrotate.d
+
+Options:
+compress                -compress all old versions of log files
+daily, weekly, monthly  -rotate log files with given parameter
+delaycompress           -will compress all versions excluding 2 last (actual and one more)
+endscript               -end of prerotate or postrotate script
+errors email_address    -sends notification of errors to given mail
+missingok               -do not notify if log file isn`t exists
+notifempty              -do not rotate if file is empty
+olddir dir              -older versions of file will be stored id 'dir' directory 
+postrotate              -run this script after rotating
+prerotate               -run this script before rotating
+rotate n                -will enable n-versions of file in rotating scheme
+sharedscripts           -run scripts only once for all log files group
+size logsize            -will do rotating if filesize > logsize (etc. 100K, 4M)
+
+
+# Global options, do this with all logs (log settings can be oveerided below)
+errors errors@book.admin.com
+rotate 5        #5 versions (week) 
+weekly
+# Definitions and options for rooting log files
+/var/log/messages {
+    postrotate
+        /bin/kill -HUP `cat /var/run/syslogd.pid`
+    endscript
+}
+/var/log/samba/*.log {
+    notifempty
+    copytruncate                                        #logs are copied and cuted
+    sharedscripts
+    postrotate
+        /bin/kill -HUP `cat /var/lock/samba/*.pid`      #samba daemons receives HUP signal after rotating all logs
+    endscript
+}
+
+Other options:
+savelog (Ubuntu)
+ELK
+Graylog

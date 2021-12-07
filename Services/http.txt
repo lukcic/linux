@@ -12,42 +12,77 @@ user agent - http client (browser)
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 Http transactions:
+HTTP is stateless - every request is completly independent (single transaction).
 
-1. Http requests 
+1. HTTP Requests 
 
 METHOD RESOURCE HTTP_VERSION
 GET /index.html HTTP/1.1
 
 Methods:
--GET        -downloads given resorce, secure, have data limits, how to count them (headers included?)??
--POST       -inserts data from query to given resource, unsecure
+-GET        -retrieves data (given resorce) from server, secure, have data limits, how to count them (headers included?)??
+-POST       -submits (inserts) data from query BODY to given resource on server, unsecure
 -HEAD       -downloads metadata without payload, secure
 -DELETE     -deletes given resource, unsecure
--PUT        -inserts data from query to given resource but overrides resource, unsecure
+-PUT        -inserts data from query to given resource but overrides resource (update data), unsecure
 -OPTIONS    -shows which methods can be accepted and resposed by server, secure
 
 Secure methods do not change server state.
+GET can be used to send data to server, but all data is visible in URL. Should be use for sending parameters like content filters  etc. 
 
-2. HTTP responses
+2. HTTP Responses
 
 HTTP/1.1 200 OK
 HTTP_VERSION CODE STATUS
 
 
 Http response codes:
--1xx    -request received, processing, eg. 101 SWITCHING PROTOCOLS
--2xx    -success, eg. 200 OK, 201 CREATED
--3xx    -redirection, eg. 301 MOVED PERMANENTLY, 302 FOUND (MOVED TEMPORARIRLY)
--4xx    -client error, eg. 404 NOT FOUND, 403 FORIDDEN (zabroniony)
--5xx    -server error, eg. 502 BAD GATEWAY, 503 SERVICE UNAVAILABLE
+-1xx    -INFORMATIONAL, request received, processing, eg. 101 SWITCHING PROTOCOLS
+-2xx    -SUCCESS, eg. 200 OK, 201 CREATED
+-3xx    -REDIRECT, eg. 301 MOVED PERMANENTLY, 304 NOT MODIFIED (site was cached at all)
+-4xx    -CLIENT ERROR, eg. 404 NOT FOUND, 403 FORIDDEN (zabroniony)
+-5xx    -SERVER ERROR, eg. 502 BAD GATEWAY, 503 SERVICE UNAVAILABLE
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-MESSAGE HEARERS
-Metadata of message: compression allowed, which types of content are accepted, how to use cache with data.
+MESSAGE HEADERS
+Metadata of message: compression allowed, which types of content are accepted, how to use cache with data, etc.
 Headers are separeted from message body using empty line.  
-In request olny host is obligatory (server service must know which domain we want to request).
+In request only host is obligatory (server service must know which domain we want to request).
 
 HEADER TYPES:
+1. GENERAL:
+-Request URL
+-Request Method
+-Status Code
+-Remote Address
+-Referrer Policy (go to page from other page, used link)
+
+2. REQUEST:
+-Cookies (sending your cookie to server)
+-Accept-xxx (xxx -encodings, language etc.)
+-Content-Type 
+-Content-Lenght
+-Authorization (token)
+-User-Agent (user software, browser etc)
+-Refferer
+
+3. RESPONSE:
+-Server (Apache, Nginx)
+-Set-Cookie (send cookie from server to client)
+-Content-Type (html, css, json etc.)
+-Content-Lenght 
+-Date
+
+SECURITY HEADERS            #give browser information how to handle my site
+-X-XSS-Protection           -do not run scripts from outside 
+-X-Frame-Options            -do not put my site in iframe
+-Content-Security-Policy    -use whitelist of elements and domains on my site
+-Strict-Transport-Security  -do not go back from https to http (http is invisible for browser)
+-Secure                     -cookies are transported only using https
+-Httponly                   -Java Script do not see cookies (they are only for html)
+-Refferer-Policy            -browser will not send refferer outside (refferer - address bar, domain and rest)
+
+Cache headers 
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 MESSAGE BODY
@@ -61,7 +96,7 @@ Connection: Keep-Alive header. Clients and servers can send multiple request wit
 Virtual hosts -use "Host" header to send request go given domain on the server (one from many).
 
 HTTP/2
-MULTIPLEXATION - interlacement many transactions within one TCP connection. 
+MULTIPLEXATION - interlacement many transactions within one TCP connection (two or more requests and two or more responses at the same time) 
 ______________________________________________________________________________________________________________
 CURL - commandline http client
 
@@ -81,6 +116,8 @@ curl -H "Host: www.admin.com" -s -v -o /dev/null 54.239.192.53      #will check 
 cURL -copy as URL, Google chrome function that generates curl command whoch simulates browser work 
 ______________________________________________________________________________________________________________
 
+Base 64 - encoding data (binary to text for sending), increase volume (1.33x) 
+graphics in css as base 64. Multiple sending the same data, if overhead (narzut: 1.33) is smaller than http headers its better to have graphics in css (small files)
 ______________________________________________________________________________________________________________
 
 Cookies
@@ -89,31 +126,14 @@ path
 time to use
 volume (1MB?), types of content? 
 
-Base 64 - encoding data (binary to text for sending), increase volume (1.33x) 
-graphics in css as base 64. Multiple sending the same data, if overhead (narzut: 1.33) is smaller than http headers its better to have graphics in css (small files)
+______________________________________________________________________________________________________________
+REST API
+HTTP conection between endpointa for exchanging data (in JSON as transport format).
+Use: GET, POST, PUT (edition, change whole object), PATCH (edition, change only part of object), DELETE.
 
-Security headers - give browser information how to handle my site
--X-XSS-Protection - do not run scripts from outside 
+request library in python
 
--X-Frame-Options do not put my site in iframe
+______________________________________________________________________________________________________________
 
--Content-Security-Policy -use whitelist of elements and domains on my site
-
--Strict-Transport-Security -do not go back from https to http (http is invisible for browser)
-
--Secure -cookies are transported only using https
-
--Httponly -Java Script do not see cookies (they are only for html)
-
--Refferer-Policy - browser will not send refferer outside (refferer - address bar, domain and rest)
-
--
-
-Cache headers 
 
 reverse proxy (how long collect data)
-
-
-
-
-

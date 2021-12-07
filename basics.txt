@@ -317,3 +317,7 @@ Encode:
 cat [ENCRYPTED TEXT] | base64 -d
 cat [ENCRYPTED TEXT] | base64 --decode
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+id -un  #show anme of logged user (like whoami)
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+lint - Unix program that analyse C code looking for mistakes like typos etc.
+This term is usually used to check files for mistakes (configuration files etc).
