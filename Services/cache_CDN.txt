@@ -1,0 +1,24 @@
+Caching servers
+
+Cachimg may bu used in:
+-browser cache
+-cache of proxy server in client network
+-cache of reverse-proxy server in server network
+
+HTTP Headers: Cache-Control, ETag, Expires. For disable caching set: Cache-Control: no-cache, no-store
+
+Softwae:
+-SQUID (TLS, Antyvirus)
+-Varnish (modular, multithread)
+-mod_cache (Apache2)
+-NGINX
+-Apache Trafiic Server
+
+______________________________________________________________________________________________________________
+
+Content Delivery Network
+Use dns to locate clients geographical position and sends requests to the nearest (geographically) server.
+
+AKAMAI
+CloudFlare
+CloudFront (AWS)

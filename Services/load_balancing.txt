@@ -1,0 +1,95 @@
+Load balancing request distribution:
+-round robin (działanie rotacyjne) - requests are divided to servers in specified order
+-load equalization (wyrównywanie obciążenia) - request are sent to server with (actual) the lowest load
+-partitioning (podział) - load balancer choose server using hash of IP address All request from specific client goes to the same server    
+
+Load balancer usually work in 4th layer of ISO OSI (IP + port) but may work in 7th layer (using URL, cookie or HTTP header).
+Load balancer may terminate TLS - trafiic from LB to server goes using HTTP. 
+LB may manager traffic to database servers (not only www servers).
+
+Nginx, HAProxy, ELB (AWS).
+
+__________________________________________________________________________
+HAPROXY
+
+Config file:
+/etc/haproxy/haproxy.cfg
+
+global
+    daemon
+    maxconn 5000            
+defaults
+    mode http
+    timeout connect 5000        # miliseconds
+    timeout client 10000
+    timeout server 10000
+frontend http-in                # frontedn is HAProxy server that listen on port 80
+    bind *:80
+    default_backend webservers
+backend webservers              # backend are www servers that listen on port 8080
+    balance roundrobin
+    server web1 10.0.0.10:8080
+    server web2 10.0.0.11:8080
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Health check:
+backend webservers
+    balance roundrobin
+    option httpchk GET /                            # for check HAProxy sends GET / request, if receives 200 OK then server is active
+    server web1 10.0.0.10:8080 check inter 30000    # check every 30seconds
+    server web2 10.0.0.11:8080 check inter 30000
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Statistics:
+
+listen stats :8000
+    mode http
+    stats enable
+    stats hide-version
+    stats realm HAProxy\ Statistics
+    stats uri /
+    stats auth [USER]:[PASSWORD]
+    stats admin if TRUE
+
+WWW interface that shows servers stats. With this you can turn on or off servers in pool.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Sticky sessions - connect given client always to the same server. 
+
+HTTP is stateless, client sessions are not connected. 
+Most www applications track state of client using cookies. 
+App is generating session identifier and store it as a cookie on client computer. 
+With every next request from this client, cookie with session id is sended with request. 
+With this way server can recover client context. 
+
+HAProxy can insert its own cookie to HTTP response, to "glue" client with server. 
+Next request from given client will include HAProxy cookie. 
+With this method Load balancer can send clients requests every time to exactly the same server.
+
+backend webservers
+    balance roundrobin
+    option httpchk GET /
+    cookie [SERVERNAME] insert httponly secure                  # with secure, cookie is sended only by TLS
+    server web1 10.0.0.10:8080 cookie web1 check inter 30000    # http only informs browsers to use it only by http
+    server web2 10.0.0.11:8080 cookie web2 check inter 30000
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+TLS termination
+
+TLC sonncetion will be finished on HAProxy server. Load balancer will communicate with backend servers using http. 
+Backend servers are not loaded by cryptography jobs and less servers need private key.
+
+If communication HAProxy - backend servers must be secure, then load balancer terminates TLS and creates new TLS connection. 
+The same cert may be used.
+
+frontend https-in
+    bind *:443 ssl crt /etc/ssl/private/admin.com.pem
+    default_backend webservers
+
+
+HAProxy need both cert and private key in one file:
+
+cat /etc/ssl/{private/admin.com.key,certs/admin.com.crt} > /etc/ssl/private/admin.com.pem
+chmod 400 /etc/ssl/private/admin.com.pem
+owner - account that rens HAProxy

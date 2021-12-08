@@ -4,22 +4,40 @@ https://www.tecmint.com/nginx-web-server-security-hardening-and-performance-tips
 
 Nginx has one master process and several worker processes. 
 Master process is responsible for reading and evaluating (ocenianie) configuration and it`s managing (maintaining) worker processes. 
-Worker processes are handling (processing) requests. Number of worker processes is defined in config file or can be adjusted to processor cores number. 
+Worker processes are handling (processing) requests. Number of worker processes is defined in config file or can be adjusted to processor cores number.
+Ubuntu and Debian use so many workers as cores server has. In RHEL by default is configured 1 worker. 
+Master process works with root priviledges to open low ports (under 1024) and workera use priviledges of normal user.
 
-nginx.conf -  configuration file
-/usr/local/nginx/conf
-/etc/nginx
-/usr/local/etc/nginx
+Daemon binary:
+/sbin/nginx       #RHEL
+/usr/sbin/nginx   #Debian/Ubuntu
+
+/etc/nginx/nginx.conf    - configuration file
+
+Virtual hosts config:
+/etc/nginx/conf.d/            #RHEL
+/etc/nginx/sites-available    #Debian/Ubuntu
+/etc/nginx/sites-enabled
+
+Default user:
+nginx       #RHEL
+www-data    #Debian/Ubuntu
 
 nginx -s [signalname]
 -stop - fast shutdown
 -quit - graceful shutdown (bezpieczne zamkniecie), waits for worker process to finish requests (kill -s QUIT [pid])
--reload - reload the configuration file, master process waits to workers finish requests and then reload the configuration
+-reload - reload the configuration file, master process waits to workers finish requests and then reload the configuration (nginx -t)
 -reopen - reopening the log files
+
+nginx -c [FILE] - start nginx with custom config file
 __________________________________________________________________________
-http {
-  server {
+events {}                   # events context congigures connections, if ommited, then default values  
+                            # one worker with low priviledges, port 80 if root, if not 8000, logs to /var/log/nginx
+
+http {                      # {} -block called context
+  server {                  # contexts called server define virtual hosta
       location / {
+          server_name admin.com www.admin.com       # server_name context defines aliases (subdomains), may be regex
           root /data/www;
       }
 
@@ -43,6 +61,42 @@ Request that are not starting with /images will be mapped on to /data/www direct
 http://localhost/some/example.html
 gives
 /data/www/some/exaplme.html
+
+__________________________________________________________________________
+Config with regex for virtual hosts:
+
+http {
+  server {
+    server_name ~^(www\.)?(?<domain>(example|admin).com)$;
+    root /var/www/$domain;
+  }
+}
+
+Regex thats starts with ~ match to example.com and admin.com (with optional www.). 
+Value of matched domain is stored in variable $domain, that is used for matching which directory should be used.
+In this case every request will be checked with regex that can affect on server load.
+__________________________________________________________________________
+Two versions of web page depends on which IP adrress receives request:
+
+server {
+  listen 10.0.10.10:80      #server network interface
+  server_name admin.com www.admin.com;
+  root /var/www/admin.com/site1;
+}
+  server {
+  listen 10.0.10.11:80
+  server_name admin.com www.admin.com;
+  root /var/www/admin.com/site2;
+}
+__________________________________________________________________________
+
+Setting config files:
+
+Default nginx.conf in Ubuntu:
+include /etc/nginx/conf.d/*.conf
+
+With this global config, all child configs inherrit global settings. 
+
 __________________________________________________________________________
 /etc/nginx/sites-available/default
 server {  
@@ -65,10 +119,18 @@ access.log or error.log in directory:
 __________________________________________________________________________
 SSL TLS certificates:
 
-Must include in config:
-listen 443 ssl;
-ssl_certificate /etc/nginx/ssl/nginx.crt;       #cert file
-ssl_certificate_key /etc/nginx/ssl/nginx.key;   #key file
+server {
+  listen 443;
+  ssl on;
+  ssl_certificate /etc/ssl/certs/admin.com.crt;           # permissions 444
+  ssl_certificate_key /etc/ssl/private/admin.com.crt;     # permissions 400
+  ssl_protocols TLSv1 TLSv1.1 TLSv1.2;                    # without SSL
+  ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:ECDHE...        # cutted (check Mozilla Server Side TLS), only strong ciphers (szyfry)
+  ssl_prefer_server_ciphers on;                           # rely only on server (not client) cipher list
+
+  server_name admin.com www.admin.com;
+  root /var/www/admin.com/site1;
+}
 __________________________________________________________________________
 Setting Up a Simple Proxy Server
 One of the frequent uses of nginx is setting it up as a proxy server, which means a server that receives requests, 
@@ -96,6 +158,31 @@ If there is a match with a regular expression, nginx picks this location or, oth
 This server will filter requests ending with .gif, .jpg, or .png and map them to the /data/images directory (by adding URI to the root directive’s parameter) 
 and pass all other requests to the proxied server configured above.
 __________________________________________________________________________
+
+Load balancing:
+
+upstream admin-servers {                      # define servers group
+  server web1.admin.com:8080 max_fails=2;     # max connection tries equal 2 
+  server web2.admin.com:8080 max_fails=2;
+}
+
+http {
+  server {
+    server_name admin.com www.admin.com;
+    location / {
+      proxy_pass http://admin-servers;      # traffic for (www.)admin.com is proxied for servers web1 and web2 with rotary method (round-robin)
+      health_check interval=30 fails=3 passes=1 uri=/health_check   # check servers every 30 seconds using /health_check
+      match=admin-health                                            # if 3 checks fails then nginx set server status as failed 
+    }                                                               # after 1 pased check nginx set server status as working again
+  }
+  match admin-health {                                              # "match" defines conditions to fulfill needed to pass test
+    status 200;
+    header Content-Type = text/html;
+    body ~ "Dowódca czerwonych gotowy";
+  }
+}
+
+
 Nginx uses the following load balancing methods:
 -round-robin (default method) – requests to the upstream servers are distributed in a round-robin fashion (in order of the list of servers in the upstream pool).
 -least-connected – here the next request is proxied to the server with the least number of active connections.

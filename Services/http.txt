@@ -127,13 +127,50 @@ time to use
 volume (1MB?), types of content? 
 
 ______________________________________________________________________________________________________________
-REST API
+API -Application Program Interface
+Structured request and structured response.
+API is like waiter in restaurant. You are client, and you place an order, waiter brings requested meal from kitchen (server).
+
+REST API (REpresentational State Transfer)
+-internet service that use HTTP methods to communicate with other serices
+-to locate content use structures similar to directories tree.
+-use JSON 
+
 HTTP conection between endpointa for exchanging data (in JSON as transport format).
 Use: GET, POST, PUT (edition, change whole object), PATCH (edition, change only part of object), DELETE.
 
-request library in python
+GET     - retrieve data from specified resource
+POST    - submit data to be processed to a specified resource
+PUT     - update a specified resource
+DELETE  -delete a specified rosource
+HEAD    -like GET but only response with header (no body)
+PATCH   -update partial resources
+
+GET https://mysite/api/users
+GET https://mysite/api/users/1
+POST https://mysite/api/users
+PUT https://mysite/api/users/1
+DELETE https://mysite/api/users/1
+
+Authentication:
+curl 'https://api.github.com/users/whatever?client_id=xxx&client_secret=yyy'   
+curl -H "Authorization: token OAUTH-TOKEN" https://api.github.com
+curl https://api.github.com/?access_token=OAUTH-TOKEN
+
+
+
+curl https://api.github.com/users/lukcic
+
+
+htps://developer.github.com/v3/users
+
+______________________________________________________________________________________________________________
+SOAP API
+-use XML
+-raw and complicated multilevel outlines for interaction between systems
+-all requests are processed using only few URLs
 
 ______________________________________________________________________________________________________________
 
 
-reverse proxy (how long collect data)
+request library in python
