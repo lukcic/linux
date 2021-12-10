@@ -13,6 +13,8 @@ SSL verification types:
 -OV -Organization Validation, make sure that company is valid, company name seeing in browser 
 -EV -Extended Validation, make sure that you are owner of trademark (uded  by banks etc.) 
 
+Mozilla SSL Config Generator
+https://ssl-config.mozilla.org
 
 openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj /CN=localhost -keyout files/nginx.key -out files/nginx.crt
 

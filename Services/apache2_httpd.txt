@@ -120,7 +120,7 @@ This config creates basic HTTP authorization for accessing /server-status:
 
 Account information are stored in secret file. To make it:
 
-htpasswd -c /var/www .htpasswd [USERNAME]
+htpasswd -c /var/www .htpasswd [USERNAME]       #htpasswd requires apache2-utils package
 chown www-data /var/www.htpasswd
 chmod 600 /var/www/.htpasswd
 
@@ -186,3 +186,7 @@ httpd_sys_content_t -System Web Pages
 httpd_sys_script_exec_t -System CGI Scripts or executables files
 httpd_user_content_t -User Web Pages
 httpd_user_script_exec_t -User CGI Scripts or executable files
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Exercises:
+https://www.linuxshelltips.com/install-apache-in-rhel-8/

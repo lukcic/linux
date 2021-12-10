@@ -17,9 +17,10 @@ HTTP is stateless - every request is completly independent (single transaction).
 1. HTTP Requests 
 
 METHOD RESOURCE HTTP_VERSION
+[METHOD] [URL] [HTTP_VERSION]
 GET /index.html HTTP/1.1
 
-Methods:
+Methods (verbs):
 -GET        -retrieves data (given resorce) from server, secure, have data limits, how to count them (headers included?)??
 -POST       -submits (inserts) data from query BODY to given resource on server, unsecure
 -HEAD       -downloads metadata without payload, secure
@@ -29,6 +30,7 @@ Methods:
 
 Secure methods do not change server state.
 GET can be used to send data to server, but all data is visible in URL. Should be use for sending parameters like content filters  etc. 
+
 
 2. HTTP Responses
 
@@ -58,19 +60,25 @@ HEADER TYPES:
 -Referrer Policy (go to page from other page, used link)
 
 2. REQUEST:
--Cookies (sending your cookie to server)
+-Cookie (sending your cookie to server)
 -Accept-xxx (xxx -encodings, language etc.)
 -Content-Type 
 -Content-Lenght
 -Authorization (token)
 -User-Agent (user software, browser etc)
--Refferer
+-X-Forwarded-For 
+-Refferer (address of site from client was forwarded)
+
+Refferer - if on my webstite is located external link, while clicking it my browser set Refferer 
+(addres of my site, that can include sensitive data in URL), so this external website server gets my URL with sensitive data (session ID etc).
+Use Reffere-Policy: no-refferer
 
 3. RESPONSE:
 -Server (Apache, Nginx)
 -Set-Cookie (send cookie from server to client)
 -Content-Type (html, css, json etc.)
 -Content-Lenght 
+-Location (forwards client to another address)
 -Date
 
 SECURITY HEADERS            #give browser information how to handle my site
@@ -81,6 +89,9 @@ SECURITY HEADERS            #give browser information how to handle my site
 -Secure                     -cookies are transported only using https
 -Httponly                   -Java Script do not see cookies (they are only for html)
 -Refferer-Policy            -browser will not send refferer outside (refferer - address bar, domain and rest)
+
+CRLF - line separator (Kszding) in hex: 0d0a0d0a
+One CRLF is needed after Host header, second after all headers. With only one CRLF http server will be waiting for another.
 
 Cache headers 
 
@@ -120,6 +131,15 @@ Base 64 - encoding data (binary to text for sending), increase volume (1.33x)
 graphics in css as base 64. Multiple sending the same data, if overhead (narzut: 1.33) is smaller than http headers its better to have graphics in css (small files)
 ______________________________________________________________________________________________________________
 
+% coding - is used to send charaters that are restricted in HTML (space, &, #)
+&       -%26
+space   -%20 (or +)
++       -%2b
+
+______________________________________________________________________________________________________________
+Coding with entities:
+ lt, &amp, etc. Used in HTML. Cannot be used in URLs.
+______________________________________________________________________________________________________________
 Cookies
 Flags: http ony, secure
 path
@@ -174,3 +194,6 @@ ________________________________________________________________________________
 
 
 request library in python
+
+Web Security academy:
+https://portswigger.net/web-security/learning-path

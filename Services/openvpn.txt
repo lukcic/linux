@@ -1,0 +1,149 @@
+The same binnary for server and client. Different configs.
+
+Modes:
+-point-to-point
+-server
+
+Server config:
+/etc/openvpn/server/vpn-stage.conf:
+mode    server      #mode
+local   vpn-stage   #address that server is listening (public IP of eth0)
+#port 1195
+proto   udp4        #udp, because inside (in tunel) is tcp
+server  192.168.119.0 255.255.255.0     #network for vpn
+dev     tun         #tune is interface device for tcp& upd (tap -copying everything from interface to interface) (tun0 has 192.168.119.1 ip address )
+persist-key         #do not remove private key from memory
+persist-tun         #do not close connection to tun device, while config reload
+
+user    nobody      #if remote code execution server works without permissions
+group   nogroup
+
+ca      /etc/ssl/private/vpn-stage/ca.crt           #cert authority (own)
+cert    /etc/ssl/private/vpn-stage/vpn-stage.crt    #server cert
+key     /etc/ssl/private/vpn-stage/vpn-stage.key    #server private key
+dh      /etc/ssl/private/vpn-stage/dh.pem           #diffie helman keys exchange params
+tls-crypt   /etc/ssl/private/vpn-stage/ta.key 0     #additional STATIC key, that allow to encrypt data once again (if ISP block VPN services), server 0, client 1 (symetric key)
+
+plugin  /usr/lib/x86_64-linux-gnu/openvpn/plugins/openvpn-plugin-auth-pam.so openvpn    # google authenticator, params: plugin location, file with definition of authorisation
+
+tls-version-min 1.3
+cipher          AES-256-GCM      #openvpn defines 2 channels: 1 for data, second for client-server communication
+auth            SHA512
+tls-cipher      ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384              # max 256 characters https://ssl-config.mozilla.org - openSSL current strong configuration
+
+keepalive   10 120      # because udp, client and servers must chech availlibility
+reneg-sec   86400       # regegotiate seconds every 24h (in seconds)
+
+push    "redirect-gateway def1 bypass-dhcp"      # push -everytime that clients connects, server will push them configuration, redirect-gateway -all client traffic will be send to internet using VPN, dhcp local
+#push "route 192.168.118.1 255.255.255.0"        # info to client that server have given network and client can connect with it (www server eg.)
+
+Enable IP forwarding between NICs:
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+IP tables:
+iptables -t nat -A POSTROUTING -s 192.168.119.0/24 -o eth0 -j MASQUARADE    #All packets that leaves VPN interface will have source addres of eth0 interface (external IP).
+iptables -P FORWARD DROP                    # drop all packets from ipv4 forwarding
+iptables -A FORWARD -s 192.168.11.0/24      # let packets from VPN interface go outside
+iptables -A FORWARD -d 192.168.119.0/24     # let packets get back to VPN interface
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Generating certs:
+Easy-rsa scripts that generates ca, cert and key in faster way that openssl.
+PKI should be build on host that is vpn server.
+
+cp -r /usr/share/easy-rsa/ /root/vpn-stage-easy-rsa     # copying scripts
+cd /root/vpn-stage-easy-rsa 
+cp vars.example vars                                    # variables for creating needed certificates
+vim vars:
+set_var EASYRSA_KEY_SIZE    4096                        # change size of key, rest is default
+
+./easyrsa init-pki                                      # initialization
+./easyrsa build-ca vpn-stage-CA nopass                  # build cerification authority, nopass - not password in privete ca key
+
+./easyrsa gen-dh                                        # diffie helman keys (10-30 min!)
+./easyrsa build-server-full vpn-stage nopass            # generating cerificates sighned by our ca
+./easyrsa build-client-full bob_vpn-stage nopass        # generating cert for client
+
+cd /etc/ssl/private/vpn-stage
+openvpn --genkey --secret ta.key                        # generating additional encryption key (static)
+
+ca.key -certificate of certification authority, with this file next certificates can be generated (clients & servers)
+
+Copy files from ~/vpn-stage-easy-rsa/pki to /etx/ssl/private/vpn-stage:
+ca.crt              # ca cert
+dh.pem              # df keys
+vpn-stage.crt       # server cert
+cpn-stage.key       # server private key
+
+Only root have permissions for read and write for all files.
+
+Right way to generate client cerificates is to generate by client CSR (Certificate Signing Request) file that don`t include client private key. 
+This CSR file should be sent to CA to sign.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Google authenticator:
+cd /etc/pam.d
+
+vim openvpn:
+auth    requisite   /lib/x86_64-linux-gnu/security/pam_google_authenticator.so secret=/etc/openvpn/server/otp/${USER} user=openvpn
+account required    pam_permit.so 
+
+Generating secret for client:
+apt install google-authenticator
+
+Make and go to directory:
+/etc/openvpn/server/otp/bob
+
+inside:
+google-authenticator -s ./bob -Q UTF8 -t -D -l "bob" -i "vpn-stage" -u -w 3 -f 
+
+Scan code in Google mobile App
+
+Create user that cannot login (for PAM):
+adduser --shell /usr/sbin/nologin --disabled-login openvpn
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+Run server:
+openvpn --config /etc/openvpn/server/vpn-stage.conf
+__________________________________________________________________________
+
+Client config:
+
+Install client.
+Windows C:\Users\USER\OpenVPN\config
+
+New text file: "vpn-stage.ovpn":
+client
+remote vpn-stage        # ip address
+dev tun
+
+ca      ca.crt
+cert    bob_vpn-stage.crt
+key     bob_vpn-stage.key
+
+remote-cert-tls server  # server certificate must have "server" parameter (then client will not run another openvpn server)
+
+cipher      AES-256_GCM
+auth        SHA512
+tls-crypt   ta.key 1
+
+auth-user-pass          # use login ad password too
+auth-nocache            # no chache login and pass
+reneg-sec   0
+mssfix 1200             # creates packagest that will not exceed maximum MTU (Ethernet param)
+
+Copy keys to config folder:
+ca.crt
+user cert
+user private key
+ta.key
+
+Restart VPN client. 
+Connect.
+User bob
+Password - one time password from google authenticator.
+
+ 
+

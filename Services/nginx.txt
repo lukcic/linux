@@ -157,6 +157,8 @@ If there is a match with a regular expression, nginx picks this location or, oth
 
 This server will filter requests ending with .gif, .jpg, or .png and map them to the /data/images directory (by adding URI to the root directive’s parameter) 
 and pass all other requests to the proxied server configured above.
+
+#Enable HTTP basic_auth between proxy and servers? 
 __________________________________________________________________________
 
 Load balancing:
