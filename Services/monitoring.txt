@@ -1,0 +1,14 @@
+Real time monitoring software (1st gen):
+Nagios, Icinga i Sensu Core 
+
+
+Numeric time-series data monitoring software:
+Graphite, Prometheus, InfluxDB i Munin
+
+Graphite - database engine for time-series (przebiegi czasowe) data.
+-Carbon
+-Whisper
+Used for collecting data (in clusters too).
+Grafana for visualization.
+
+Prometheus:

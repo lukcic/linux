@@ -1,8 +1,21 @@
 The same binnary for server and client. Different configs.
 
+https://github.com/OpenVPN/openvpn/blob/master/sample/sample-config-files/server.conf
+https://openvpn.net/community-resources/how-to/#routing-all-client-traffic-including-web-traffic-through-the-vpn
+https://community.openvpn.net/openvpn/wiki/BridgingAndRouting
+https://community.openvpn.net/openvpn/wiki/Openvpn23ManPage?__cf_chl_jschl_tk__=sR6iMeye0Pc2J1R46sDtTBQ2.RA8kuhp8o9sDs2hpLU-1639243878-0-gaNycGzNB_0#lbAZ
+
 Modes:
 -point-to-point
 -server
+
+https://community.openvpn.net/openvpn/wiki/OpenvpnSoftwareRepos
+Ubuntu install form repos:
+sudo -s
+wget -O - https://swupdate.openvpn.net/repos/repo-public.gpg|apt-key add -
+echo "deb http://build.openvpn.net/debian/openvpn/stable focal main" > /etc/apt/sources.list.d/openvpn-aptrepo.list
+sudo apt update
+sudo apt install openvpn
 
 Server config:
 /etc/openvpn/server/vpn-stage.conf:
@@ -38,14 +51,26 @@ push    "redirect-gateway def1 bypass-dhcp"      # push -everytime that clients 
 #push "route 192.168.118.1 255.255.255.0"        # info to client that server have given network and client can connect with it (www server eg.)
 
 Enable IP forwarding between NICs:
-echo 1 > /proc/sys/net/ipv4/ip_forward
+sudo echo 1 > /proc/sys/net/ipv4/ip_forward
+
+With systemd:
+https://linuxhint.com/enable_ip_forwarding_ipv4_debian_linux/
 
 IP tables:
-iptables -t nat -A POSTROUTING -s 192.168.119.0/24 -o eth0 -j MASQUARADE    #All packets that leaves VPN interface will have source addres of eth0 interface (external IP).
-iptables -P FORWARD DROP                    # drop all packets from ipv4 forwarding
-iptables -A FORWARD -s 192.168.11.0/24      # let packets from VPN interface go outside
-iptables -A FORWARD -d 192.168.119.0/24     # let packets get back to VPN interface
+"""
+sudo iptables -t nat -A POSTROUTING -s 192.168.119.0/24 -o ens3 -j MASQUERADE    #All packets that leaves VPN interface will have source addres of eth0 interface (external IP).
+sudo iptables -P FORWARD DROP                    # drop all packets from ipv4 forwarding
+sudo iptables -A FORWARD -s 192.168.119.0/24      # let packets from VPN interface go outside
+sudo iptables -A FORWARD -d 192.168.119.0/24     # let packets get back to VPN interface
+"""
 
+https://www.cyberciti.biz/faq/install-configure-openvpn-server-on-debian-9-linux/
+sudo iptables -F
+sudo iptables -I FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+sudo iptables -I FORWARD -s 192.168.119.0/24 -j ACCEPT
+sudo iptables -I INPUT -p udp --dport 1194 -j ACCEPT
+sudo iptables -t nat -A POSTROUTING -s 192.168.119.0/24 ! -d 192.168.119.0/24 -j SNAT --to 51.38.114.177
+sudo iptables-save
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 Generating certs:
@@ -70,11 +95,11 @@ openvpn --genkey --secret ta.key                        # generating additional 
 
 ca.key -certificate of certification authority, with this file next certificates can be generated (clients & servers)
 
-Copy files from ~/vpn-stage-easy-rsa/pki to /etx/ssl/private/vpn-stage:
+Copy files from ~/vpn-stage-easy-rsa/pki to /etc/ssl/private/vpn-stage:
 ca.crt              # ca cert
 dh.pem              # df keys
 vpn-stage.crt       # server cert
-cpn-stage.key       # server private key
+vpn-stage.key       # server private key
 
 Only root have permissions for read and write for all files.
 
@@ -94,16 +119,20 @@ Generating secret for client:
 apt install google-authenticator
 
 Make and go to directory:
-/etc/openvpn/server/otp/bob
+/etc/openvpn/server/otp/
 
 inside:
-google-authenticator -s ./bob -Q UTF8 -t -D -l "bob" -i "vpn-stage" -u -w 3 -f 
+sudo google-authenticator -s ./bob -Q UTF8 -t -D -l "bob" -i "vpn-stage" -u -w 3 -f 
 
 Scan code in Google mobile App
+
+
 
 Create user that cannot login (for PAM):
 adduser --shell /usr/sbin/nologin --disabled-login openvpn
 
+Change owner of /etc/openvpn/server/otp/bob file to openvpn
+sudo chown openvpn localadmin
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 Run server:
 openvpn --config /etc/openvpn/server/vpn-stage.conf

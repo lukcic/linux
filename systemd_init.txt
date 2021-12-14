@@ -131,7 +131,7 @@ ExecStart=/path/to/script/script.sh
 [Install]
 WantedBy=multi-user.target
 
-Add execute privilages to script!
+Add execute privilages to script and change owner to root!
 sudo systemctl start newservice
 sudo systemctl enable newservice
 

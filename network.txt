@@ -252,3 +252,6 @@ smnpget localhost -v 2c -c [PASSWORD] sysName.0
 snmpwalk localhost -v 2c -c [PASSWORD] system
 
 ______________________________________________________________________________________________________________
+
+Router:
+https://www.cyberciti.biz/tips/linux-as-router-for-dsl-t1-line-etc.html
