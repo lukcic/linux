@@ -1,0 +1,313 @@
+Process have one or more threads. Processes are created by clonning another process (fork function) and (not always) replacing program in this process.
+Parent process id is called PPID. Kernel is starting init or systemd (PID 1), that is parent of most processes. 
+If parrent process is killed, kernel gives child processes to init or systemd to managing. 
+
+UID - identify number of user who created process (parent UID copy). Process can be modyfied by his owner and superuser
+EUID - effective UID. EUID and UID are the same, excluding processes that used setuid. Differences between identity and permissions 
+
+GID and EGID - the same as above, but for groups (setgid)
+______________________________________________________________________________________________________________
+Jobs:
+[COMMAND] & -run process in background (unzip eg.)
+
+jobs - lists background processes with job ID
+-p -show process ID
+-r -how only running jobs
+-s -how only stopped jobs
+
++ -means current, default job (sended to backgruond last)
+%2 -select job #2
+%?[STRING] -job which name is [STRING]
+
+fg [JOB_ID] -takes process from background to foreground
+bg [JOB_ID] -takes process from foreground to background
+______________________________________________________________________________________________________________
+ps -list foreground processes (user only)
+ps aux -lists processes of all users
+a -show all processes (owned y other users too)
+u -show processes in format oriented to user
+x -show processes that are not attached to a tty terminal
+ww -unlimited column width
+
+Commands in [] are not processes, but kernel threads. 
+
+USER    -owner of process
+PID     -process identifier
+%CPU    -procentage usage of processor
+%MEM    -procenage usage of phisical memory
+VSZ     -virtual size of process
+RSS     -sites in memory 
+TTY     -steering terminal id
+STAT    -process status:    
+            R -running
+            D -uninterruply asleep
+            S -sleep (<20 seconds)
+            T -followed or stopped
+            Z -zombie
+            W -process is swapped (stronicowanie)
+            < -higher priority
+            N -lower priority
+            L -some pages are blocked in memory
+            s -process is a session leader
+TIME    -processor time used by process
+COMMAND -name of process and its arguments
+
+ps lax -more technical process info (l- long info)
+
+PPID    -parent process ID
+NI      -niece value
+WCHAN   -wait channel (type of resource that process is waiting)
+______________________________________________________________________________________________________________
+SIGNALS
+Signals are interrup requests (żadania przerwania) on processes.
+-can be send betweenn processes as communication form
+-can be send by terminal to kill, stop or hang program (CTRL +C, CTRL +D)
+-can be send by admin (kill)
+-can be send by kernel to cumminicate with process or when process try unallowable instruction (divide by 0)
+
+Process can handle signal (if it has this function) or kernel will do standard signal procedure.
+After capturing and handling, process will continue it`s work. 
+Processes can block or ignore signals (without KILL and STOP). 
+
+number  name    description             default action  captured    blocked     mem dump
+1       HUP     disconnectiing          termination     yes         yes         no
+2       INT     interruption            termination     yes         yes         no
+3       QUIT    quit                    termination     yes         yes         yes
+9       KILL    kill                    termination     no          no          no
+10      BUS     bus error               termination     yes         yes         yes      
+11      SEGV    segmentation error      termination     yes         yes         yes      
+15      TERM    program termiantion     termination     yes         yes         no
+17      STOP    termination             termination     no          no          no
+18      TSTP    stop from keybord       termiantion     yes         yes         no
+19      CONT    continue after stop     ignoring        yes         no          no  
+28      WINCH   change window size      ignoring        yes         yes         no
+30      USR1    user definied           termiantion     yes         yes         no   
+
+kill -l                 -list all signals
+
+kill -[SIGANL] [PID]    -sending signal to pid
+kill [PID]              -by default TERM signal is send
+
+TSTP - light STOP, sended by user (CTRL + Z), process is cleaning and sending STOP to himself
+
+KILL - is non blocked and kills process by kernel, cannot be captured and handled 
+kill -KILL [PID]
+kill -9 [PID] 
+
+INT - send by terminal (CTRL + C), process should stop actual operation. 
+If signal is captured, process should terminate himslef, if not process should let be killed (default action)
+Programs with commandline sholuld stop actual task and wait for new data input. 
+
+TERM -request of imidiatelly termination. Program shuold clean ant terminate himself.
+kill -TRM [PID]
+kill -15 [PID] 
+
+STOP -stopping the process till CONT signal comes 
+kill -STOP [PID] 
+
+CONT - awake process after STOP
+kill -CONT [PID]
+
+HUP -some deamons after this signal will reload configuration (reset).
+Hang up - reset of terminal. 
+
+QUIT - similar to TERM, but with mem dump
+
+pgrep [PROCESS_NAME]    -returns PID of process (pidof does the same)
+killall [PROCESS_NAME]  -kill all processes wtih given name
+pkill [PROCESS_NAME]    -kills process with given name
+pkill -u [USERNAME]     -kills all USER processes
+
+fuser [OPTIONS] [PATH]  -command shows which process is using file or directory (like lsof)
+-m [FILE]               -show which proces is using a file
+-v                      -verbose
+-n tcp 80               -show which process is using tcp socket (80)
+-c [MOUNTPOINT]         -shows all processes that use any file from this filesystem , then use 'ps up [PID]' to check name of process, or use -v
+______________________________________________________________________________________________________________
+watch [COMMAND] -runs command periodycally (2 seconds by default)
+-n X -time of repeating (default 2s)
+
+nohup [COMMAND] [OPTIONS] -no nahg up, run command immune to hangups (non tty output). Process works after closing your terminal.
+______________________________________________________________________________________________________________
+TOP
+
+M -sort by memmory usage    #use Uppercase!
+N -sort by process ID
+T -sort by running time
+P -sort by % of CPU usage
+R -reverse sorting
+V -forest hierarchy of processes
+1 -show processesonly for 0 processor core
+
+k -kill process
+f -renice (change a priority of process) ?????????????????
+u -show processes of given user (all by default)
+
+HTOP #################################
+______________________________________________________________________________________________________________
+Priorities:
+0-99    -real time processes
+100-139 -normal processes, lower value, higher priority
+
+Standard priority of normal process: 120.
+
+/proc/[PROCESS_ID]/sched  -file that contains info about process, for example static priority (prio)
+
+ps -el  -list priorities of all processes (PRI column), ps -Al works similar
+Priorities listed that way have priority values reduced (always -40) for historical reasons!
+
+Priorities viewed by top command have priority value substracted by 100 (-100), so real time processes have negative value.
+Normal processes have value 0 - 39.
+
+Nice:
+Nice of process - value that inform kernel how process will be regarded in relation to other processes that compete for processor time.
+0                 -default process starts with nice 0 (priority 120).
+from -20 to 19    -nice values, -20 -less nice process (higher priority), 19 -more nice process (lower priority)
+
+nice [PROCESS_NAME] - start process with non standard priority (default 10)
+-n [X]  -specific nice value
+nice -n 5 ~/bin/longtask
+
+renice [PROCESS_NAME] -change nice of running process
+-X      -specific nice value
+-p [PID] -specific PID
+-u [USERNAME] -specific processes of given user
+-g [GROUPNAME] -specific processes of given group
+sudo renice -5 8829
+______________________________________________________________________________________________________________
+VMSTAT - statistics of processors, processes and memory
+
+vmstat [TIME_BETWEEN_MEASSURE] [AMMOUT_OF_MEASURRES]    -time in seconds, if without second paramter, then vmstat works utils stopped 
+us -user space, time useb by users processes
+sy -system time, time used by system processes (kernel)
+id -idle time
+wa -wait, time for i/o waiting
+st- stolen, parameter of stolen processor cycles in % (system is ready to work, but hypervisor do not allocate processor time for this vm)
+
+Userspace time and system time should by 50% (every). Idle time should be larger than 0. 
+If server is used for one application that use a lot of processor, then most processor time should be used for userspace.
+
+cs -context switching, how many times processor switched working processes
+
+procs:
+-r -running processes 
+-b -processes blocked in i/o operations (waiting)
+-swpd -processes running with memmory swapped to disk (if too large, then more RAM needed)??
+-si -swapped in to RAM from disk
+-so -swapped out from RAM to disk
+
+memmory:
+-avm -active virtual memmory (used)
+-fre -free virtual memmory
+-page -
+
+MPSTAT - Multiprocessor stat. Shows statistics for every processor (thread).
+
+mpstat -P ALL - parameter -p set processor for view
+______________________________________________________________________________________________________________
+STRACE - show wtah process is doing
+sudo strace -p [PID]
+______________________________________________________________________________________________________________
+iostat - hard disk performance monitoring
+#sudo apt-get install sysstat -y
+
+avg-cpu - statistics until boot
+
+iostat [TIME_FOR_NEXT_MEASURE] [HOW_MANY_MEASURES]
+iostat 5 5      -five reports every after 5 sec
+
+tps         -transfers per second
+kB_read/s   -kilobytes readed per second
+kB_wrtn/s   -kilobytes written per second
+kB_read     -kilobytes read 
+kB_wrtn     -kilobytes written
+
+TIP: Application logs and database logs should be written on different phisical disks (2 processes writes on the same time).
+______________________________________________________________________________________________________________
+Disks i/o planner:
+-Completely Fair Queuing - parrell access to i/o resources, the best for mechanical disks
+-Deadline -the lowest latencies, changes requests order to increase performance
+-NOOP -basic FIFO queue, givesuse managing of device, the best for SSD drives
+
+ /sys/block/[DISK]/queue/scheduler:
+ [noop] deadline cfq        # choosen is selected by brackets []
+
+ For persist change use kernel parameter in GRUB:
+ elevator=algoritm
+______________________________________________________________________________________________________________
+
+fio - testing i/o performance
+
+/usr/share/doc/fio/examples -scripts for testing different cases
+
+fio /usr/share/doc/fio/examples/fio-seq-read.fio 
+______________________________________________________________________________________________________________
+ionice -set priority of using i/o by processes
+
+ionice -c 3 -p pid #process can only work with i/o operations when any other process isn`t using it
+______________________________________________________________________________________________________________
+sar - testing performance with historic data
+sar -d -disks
+sar -n DEV -network interface DEV
+______________________________________________________________________________________________________________
+perf - tool for analising performance in linux (perf.wiki.kernel.org)
+
+Installation:
+sudo apt-get install linux-tools-common linux-tools-generic linux-tools-`uname -r`
+
+sudo perf top
+overhead - % of time when processor ran given function
+shared object - component where given function is allocated
+symbol - function name
+______________________________________________________________________________________________________________
+lsof - list of open files
+COMMAND    PID      USER   FD      TYPE     DEVICE  SIZE/OFF       NODE NAME
+
+File descriptor:
+cwd -current working directory
+rtd -root directory
+txt -program text (code and data)
+mem -memory-mapped file
+r   -for read access.
+w   -for write access.
+u   -for read and write access
+
+TYPE – of files and it’s identification:
+-DIR     – Directory
+-REG    – Regular file
+-CHR    – Character special file.
+-FIFO   – First In First Out
+
+lsof -i             -list all network connections
+lsof -p [PID]       -show process with given PID
+lsof -u [USER]      -files opened by specified user
+lsof -i -u [USER]   - check which files opened given user
+lsof -i TCP:22      -processes that are using port tcp 22
+lsof -i 4           -processes that works with IPv4
+lsof -t -u [USER]   -show PIDS of processes for given user, may be used with kill -9 (kill -9 `lsof -t -u debian`)
+______________________________________________________________________________________________________________
+
+Memory
+Kernel manages memory in units called virtual pages (strony) - 4KiB and larger. 
+Every page is mapped to phisical memory (RAM od virtual memory on disk). Page tables is kernel tool for managing pages.
+Kernel may allocate more memory than phisical RAM using swap space. 
+Paging (stronicowanie) - process of swapping data from SWAP (disk) memory to phisical RAM.
+Kernel is managing pages and decide which of them are used rarely. This ones are swapped to disk memory. 
+
+virtual memory = phisical memory + ammount of used swap
+
+swapon -s       #check how many swap memmory is currently used
+
+ulimit -m 32000000 -set memmory limit (32MiB) for processes that run in this shell (setrlimit function)
+______________________________________________________________________________________________________________
+Performance problems:
+-check using top which process takes 50% of cpu or more
+-if no one large process, then check processes that uses more than 10%
+-check average load using uptime
+-check using vmstat if processor goes to idle
+-check how often system pages cache memmory, if often then RAM must be added 
+-if no cache paging but and a lot of i/o operations on disk then some process takes too much disk usage
+-search this process using top and kill it for check
+-if helped, then set lower priority (renice) 
+-if not, check network use of process and network latency 
+-DNS queries (it`s response time) very often caused problems

@@ -246,7 +246,9 @@ enter text
 HISTIGNORE in .bashrc - add ls and similar commands
 export HISTIGNORE="ls:ps:history"
 
-bash -will start new bash session that is chaild of main bash process
+bash -will start new bash session that is child of main bash process
+
+https://www.tecmint.com/history-command-examples/
 ______________________________________________________________________________________________________________
 Variables:
 set can see shell-local variables, env cannot.

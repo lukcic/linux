@@ -31,10 +31,15 @@ Parameters are stored in /etc/modprobe.confor in individual files with the exten
 
 modprobe -r [module name] -unload module (--remove) 
 - - - - - - - - - - - - - - - - - - 
-cat /proc/cpuinfo - detailed information about the CPUs stored by os
-cat /proc/interrupts -number of interrupts per IO device for each CPUs
-cat /proc/ioports -list of registered input and output ports in use
-cat /proc/dma - list of registered DMA (Direct Memory Access) channels in use
+cat /proc/cpuinfo       - detailed information about the CPUs stored by os
+cat /proc/meminfo       - detailed information about memory
+cat /proc/diskstats     - detailed information about disk devices
+cat /proc/interrupts    - number of interrupts per IO device for each CPUs
+cat /proc/ioports       - list of registered input and output ports in use
+cat /proc/dma           - list of registered DMA (Direct Memory Access) channels in use
+
+dmidecode               - SMBIOS info
+-t [PARAMETER]
 _____________________________________________________________________
 uname -a -system version info
 uname -redhat -check kernel
