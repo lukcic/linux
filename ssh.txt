@@ -1,7 +1,15 @@
+Applications:
+ssh                 - client
+sshd                - server daemon
+ssh-keygen          - generating key pairs
+ssh-add, ssh-agent  - tools for keys management
+ssh-keyscan         - downloading public keys from servers
+sftp-server         - server for sftp file transer
+sftp, scp           - clients for sending files
+
 Debian installation:
 apt install openssh-server
 systemctl status ssh
-
 
 Packages:
 openssh             -tools like ssh-keygen
@@ -15,13 +23,48 @@ rsync               -synchronize data between 2 machines using ssh
 ~/.ssh/known_hosts      -stores the accepted remote server keys
 
 /etc/ssh/sshd_config:
-PermitRootLogin no
+PermitRootLogin no          # cannot connect as root (be suoder)
 Port 2222
 PasswordAuthentication no
 PubkeyAuthentication yes
-X11Forwarding no -GUI exporting
+X11Forwarding no            #GUI exporting
 
-systemctl restart sshd.service
+AllowUsers foo bar hsolo    # allowed users
+AllowGroups admins
+Banner /etc/banner          # display banner
+
+ChallengeResponseAuthentication no  # Allowed authentication forms
+PasswordAuthentication no
+RSAAuthentication no
+GSSAPIAuthentication no
+HostbasedAuthentication no
+PubkeyAuthentication yes
+
+ClientAliveInterval 300     # inactive clients disconnection
+ClientAliveCountMax 1
+
+LogLevel VERBOSE            # register failed login attemps
+MaxAuthTries 3              # 6 by deafult
+
+SSHD works as root, for every connected client creates child process (non-priviledged) with permissions of connected user.
+
+systemctl restart sshd.service      # cnnected users will not disconnect - works in old settings until new connection
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+/etc/ssh/ssh_config:                # different settings of client to connection with different servers using aliases
+PasswordAuthentication no           # ssh web or ssh debian
+VerifyHostKeyDNS yes                # check for sshfp entries (DNS)
+Host web
+    HostName 54.84.253.153
+    User han
+    IdentityFile /home/han/.ssh/id_ecdsa
+    ForwardAgent yes
+    Port 2222
+Host debian
+    Hostname debian.admin.com
+    User hsolo
+    PasswordAuthentication yes
 ______________________________________________________________________
 Keys:
 ~/.ssh/id_rsa (Private key)
@@ -31,33 +74,50 @@ Public key goes into server ".ssh/authorized_keys" file
 Generating keys:
 ssh-keygen -t rsa
 ssh-keygen -t ed25519
+ssh-keygen -t ecdsa -b 384
 
 Adding generated private key to local repository:
-eval 'ssh-agent -s'     
+ 
 ssh-add [keyfile]
 
-Private key must be 0700!
+Private key must be 0600! (644 for public)
+.ssh directory - 0700
 
 Sending generated public key to server:
 cat ~/.ssh/id_rsa.pub | ssh user@server "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >>  ~/.ssh/authorized_keys"
-
 or:
-ssh-copy-id -instalation public keys on the server 
+ssh-copy-id -i ~/.ssh/mykey user@host
+______________________________________________________________________
+SSH Agent
+Daemon that stores private keys to use it to connection. 
+eval 'ssh-agent -s'         # starting agent
 
-Storing local session paraphrase:
-ssh-agent bash          #https://www.ssh.com/ssh/agent
-ssh-add
+ssh-add [private_key_file]  # adding private key to agent
+ssh-add -l                  # list stored keys
+ssh-add -D                   # clearing stored keys
+
+SSH Agent can send keys for remote servers to login from remote server to other remote servers.
+"ForwardAgent yes" option must be enabled in ~/.ssh/config
+
+#https://www.ssh.com/ssh/agent
+______________________________________________________________________
+Creating public key from private:
+key=/home/ben/.ssh/id_ecdsa
+ssh-keygen -yf $key > $key.pub
+
+Private key file stores both keys.
 ______________________________________________________________________
 Connection:
 ssh user@host
 
 ssh -i 'private_key_path' user@host
-______________________________________________________________________
+-vvv    -verbose
+
 Executing command:
 ssh name@server 'command'
 ______________________________________________________________________
 Copying files by ssh:
-scp [file] [user}@[server]:[location]
+scp [file] [user]@[server]:[location]
 
 SFTP:
 sftp [user]@[server]
@@ -70,7 +130,19 @@ tar cvfz - [DIRECTORY] | ssh [HOSTNAME] "tar xvfz - [PATH]"
 tar cvfz - [DIRECTORY] | ssh [HOSTNAME] "cat >[FILE].tar.gz"
 
 rsync -avz -e ssh [HOSTNAME]:[REMOTEPATH] [LOCALPATH]
+
+Port forwarding - TCP connections can be tunneled securerly using ssh.
+Option of sshd: AllowTCPForwarding yes/no
+
+In case when firewall blocks http ports (intranet http server) but no ssh port (22): 
+ssh -L 8000:webserver:80 server.admin.com
+
+User connects port 8000 on localhost, that is tunneled to ssh and connects ssh server, ssh server forwards this connection to port 80 on webserver.
+
 ______________________________________________________________________
 
+SSHFP - DNT record type that include fingerprint of ssh server
 
+sshfp server.admin.com # generating sshfp (DNS) entry for servername
 
+Output should be added to domain dns configuration ($ORIGIN directive), reload domain.

@@ -60,6 +60,7 @@ Systemd units -objects that systemd can manage, consists of a name, a type and a
 systemctl list-units            -list active units
 --type=service                  -list only services
 --type=target                   -list only targets
+--state=running                 -only running services
 
 systemctl list-unit-files       -list all units
  

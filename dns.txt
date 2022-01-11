@@ -1,0 +1,76 @@
+DNS
+/etc/hosts        # hostanames
+/etc/networks     # networknames
+
+
+/etc/resolv.conf      # name service config
+search [yourdomain]   # this domain name will be added to short hostnames for resolving, max 6
+nameserver 8.8.8.8    # max 3
+
+
+/etc/nsswitch.conf  # name resolving method config
+hosts: files dns    # default config, first /etc/hosts, later DNS
+hosts: dns [!UNAVAIL=return] files      #config if nsswitch.conf file is absent, do not use /etc/hosts if DNS is unavailable
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Forward resolving - names to IP                 
+Most significant part starts on right side:         nubark.atrust.com. to 63.173.189.1
+
+Reverse resolving - IP to names
+Most significant site starts on left side:          1.189.173.63.in-addr.arpa. to nubark.atrust.com.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+FQDN needs "." at the end.
+ccTLD - country code Top Level Domains (.pl)
+gTLD - generic Top Level Domains (.org)
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Name Server:
+-answers users (domain to IP)
+-resolves users local queries
+-buffer responses
+-communicate with other servers to synchronize database
+
+NS types:
+-authoritative      -officaial zone representative (master and slaves), authorative response guarantee correct data
+-nonauthoritative   -answers with buffered data, do not know if data is still correct
+
+-master (primary)   -main server for this zone, stores zones config files
+-slave (secondary)  -copies zone data from master, must be minimum 1
+
+-stub               -slave that copies only nameservers entries for zone
+-distribution       -server is visible olny in given domain range
+
+-caching            -buffers data from last requests, do not have own zones (nonauthorative)
+-forwareder         -send requests for many clients, creates large buffer
+
+-recursive          -ask all severs in path to get full answer for client
+-nonrecursive       -if can`t respond, sent in request address of another DNS server, client must handle this
+
+Servers accessile from internet must be nonrecursive - avoid cache poisoning.
+Name severs form resolv.conf must be reccursive - browsers libraries do not handle DNS references (odesłania).
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Resources records - records about hosts in zone:
+
+atrust.com (forward resolving:)
+nubark  IN A 63.173.189.1
+        IN MX 10 mailserver.atrust.com.     # name can be empty if it`s the same as above
+
+ 63.173.189.rev (reverse resolving):
+1 IN PTR nubark.atrust.com.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+HOST - resolves domain name to IPv4 & IPv6 (A record), also show some DNS entries (MX) if available.
+host [DOMAIN_NAME]
+
+DIG - Domain Information Grouper. 
+dig [DOMAIN_NAME]
+
+NSLOOKUP forward and reverse resolving
+nslookup [DOMAIN_NAME]
+nslookup [IP]
+______________________________________________________________________________________________________________

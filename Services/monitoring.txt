@@ -12,3 +12,9 @@ Used for collecting data (in clusters too).
 Grafana for visualization.
 
 Prometheus:
+
+
+Cacti:
+https://hub.docker.com/r/quantumobject/docker-cacti
+
+Smokeping - used to store historical ping data

@@ -44,7 +44,7 @@ chmod +x [FILENAME] -add execution permission for file (for all 755)
 
 sh scriptname.sh           #will run script in new instance of sh
 
-source scriptname.sh       #will run script in actual instance of sh
+source scriptname.sh       #will run script in actual instance of sh, source command runs script in CURRENT shell
 ___________________________________________________________________________
 
 INPUT/OUTPUT:

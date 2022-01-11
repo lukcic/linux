@@ -41,7 +41,7 @@ http {                      # {} -block called context
           root /data/www;
       }
 
-      location /images/ {
+      location /images/ { # paths in context location MUST ends with /!!!! Othercase PathTraversal vulnerability 
           root /data;
       }
   }

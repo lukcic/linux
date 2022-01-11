@@ -15,6 +15,12 @@ Dates are written as amount of days (not seconds!) until 1970.
 
 Password are encrypted with salt (random values). If two users have the same password, encrypted representation in /etc/shadow will be different.
 
+chage - set password validity time
+sudo chage -m 2 -M 90 -E 2017-07-31 -W 14 [USERNAME]
+-m  -minumum password validity time (in days) 
+-M  -maximum password validity time (in days) 
+-E  -expiration date 
+-W  -when prompt (in days) 
 chage -d O username     #block user password for change
 
 Password rules:

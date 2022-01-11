@@ -16,6 +16,10 @@ SSL verification types:
 Mozilla SSL Config Generator
 https://ssl-config.mozilla.org
 
+Openssl:
+openssl s_client -connect google.com:443            # checking server TLS cert info
+openssl x509 -noout -text -in localadmin.pl.pem     # info about cert file
+
 openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj /CN=localhost -keyout files/nginx.key -out files/nginx.crt
 
 SNI (server Name Indication) - client sends virtual host name in the beginning of TLS connection, to check which domain is request for, before http header decryption.   

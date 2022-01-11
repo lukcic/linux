@@ -1,3 +1,14 @@
+DHCP server
+
+ISC implemantation (Internet Systems Consortium isc.org)
+ISCv2 - default
+ISCv3 - redundant servers
+ISCv4 - IPv6
+
+Packages:
+dhcp    #RHEL
+isc-dhcp-server #Debian
+
 Ports 68 and 67 UDP.
 
 Messages:
@@ -6,23 +17,36 @@ Messages:
 -REQUEST
 -ACKNOWLEDGE
 
-Directories:
-/etc/dhcp -dhcpd conf files
-/etc/sysconfig/network-scripts/ifcfg-eth0 -information about interface configuration
-/var/lib/dhcpd/dhcpd.leases -DHCP leases information
-
-/etc/dhcp/dhcp.conf
+Config files:
+/etc/dhcpd.conf
+/etc/dhcp/dhcpd.conf
+/etc/dhcp3/dhcpd.conf
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 option domain-name "example.com";
-option domain-name-servers 8.8.8.8;
-default-lease-time 300;
-max-lease-time 1200;
+option domain-name-servers 8.8.8.8;     # FQDN may be used instead IP
+option subnet-mask 255.255.0.0;
+default-lease-time 600;
+max-lease-time 7200;
 subnet 10.10.0.0 netmask 255.255.0.0. {
     range 10.10.0.100 10.10.0.150;
-    option routers 10.10.0.1;
+    option routers 10.10.0.1;           # FQDN may be used instead IP
 }
 
-Reservations:
+#Reservations:
 host pronter [
     hardware ethernet 00:11:22:33:44:55;
-    fixed-address 10.10.10.10;
+    fixed-address 10.10.10.10;          # FQDN may be used instead IP
 ]
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DHCP leases information:
+/var/lib/dhcpd/dhcpd.leases
+
+dhcrelay - agent of DHCP relay. Do not have own config file, listen for dhcp requests and forward them to configured servers. 
+Used for dhcp centralisation in many networks or for redundancy.
+
+Client
+/var/lib/dhcp/  #directory with taken leases for every NIC
+
+______________________________________________________________________________________________________________
+Dnsmasq - DHCP with forward DNS

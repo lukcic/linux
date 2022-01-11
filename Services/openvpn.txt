@@ -5,6 +5,8 @@ https://openvpn.net/community-resources/how-to/#routing-all-client-traffic-inclu
 https://community.openvpn.net/openvpn/wiki/BridgingAndRouting
 https://community.openvpn.net/openvpn/wiki/Openvpn23ManPage?__cf_chl_jschl_tk__=sR6iMeye0Pc2J1R46sDtTBQ2.RA8kuhp8o9sDs2hpLU-1639243878-0-gaNycGzNB_0#lbAZ
 
+https://drive.google.com/drive/folders/1xz6Ek2ZE3YwkUUoR2qot3849PjT3b8Rm
+
 Modes:
 -point-to-point
 -server
