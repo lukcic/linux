@@ -8,7 +8,7 @@ stat [FILE] -shows information about file (disk usage, timestamps, access)
 Filetypes:
 -       -normal file (text, binary, library)
 d       -direcory
-c       -sign device (eg. pseudoterminal file /dev/tty)
+c       -character device (eg. pseudoterminal file /dev/tty)
 b       -block device (eg. disk file /dev/sda), this files are only contactpoints, not drivers
 s       -socket file - connections between processes to give them communicate, many types (most use network) and local Unix sockets  
 p       -stream (potok) - FIFO files, communication between processes on local machine (like local sockets used today)
@@ -41,7 +41,7 @@ ________________________________________________________________________________
 ls
 -l -shows properties
 -a -show all files (with hidden)
--h -show size in humar readable format
+-h -show size in human readable format
 -d -shows only directories
 -r -show files in reverse
 -i -shows inode number
@@ -71,7 +71,7 @@ Linux main directories:
 /etc                -editable configuration files and other files that system need to start
 /boot               -files needed to boot the system (kernel etc)
 /dev                -device files
-/opt                -optional software pachages
+/opt                -optional software packages
 /var                -variable files (logs, cache)
 /proc               -files created by kernel in fly to manage processes
 /tmp                -temporary files deleted after reboot (/var/tmp - that doesn`t)
@@ -157,10 +157,13 @@ tar [OPTIONS] [ARCHIVE] [FILES]
 -t -list table of contents 
 -p -extracted files have own permissions (not umask)
 
-tar -czvf archive.tar.gz [FILES] -archive files with compression
-tar -xzvf archive.tar.gz -C [LOCATION] -decompress files
+tar czvf archive.tar.gz [FILES] -archive files with compression     # do not use -  !!!
+tar xzvf archive.tar.gz -C [LOCATION] -decompress files             # do not use -  !!!
 
-gzip [FILE-TO-COMPRESS]
+gzip [FILE-TO-COMPRESS]     #will delete input file after compression
+-k                          #leave the input
+-r recursive
+
 gunzip [FILE-TO-DECOMPRESS]
 
 ls | cpio -o > archive.cpio -archive listed files 
@@ -187,7 +190,7 @@ unlink [FILE]           -deletes link
 Hard link points to the same address of memmory (inode - disk place) of target file, 
 symbolic link points to filename of target file.
 
-Aninodeis a data structure that stores attributes for an object (like a file or directory) on a filesystem. 
+An inode is a data structure that stores attributes for an object (like a file or directory) on a filesystem. 
 Among those attributes are permissions, ownership and on which blocks of the disk the data for the object is stored. 
 Think of it as an entry on an index, hence the name, which comes from “index node”.
 
@@ -264,8 +267,8 @@ env -lists environment variables
 printenv -lists environment variables
 cat $PATH   -show value of PATH variable
 
-[VAR_NAME]=[VALUE]      -saving shell environment
-export [VAR_NAME]=[VALUE] -saving new environment variable 
+[VAR_NAME]=[VALUE]          -saving shell environment
+export [VAR_NAME]=[VALUE]   -saving new environment variable 
 set - 
 unset [var name] -deleting variable
 

@@ -24,7 +24,7 @@ bg [JOB_ID] -takes process from foreground to background
 ______________________________________________________________________________________________________________
 ps -list foreground processes (user only)
 ps aux -lists processes of all users
-a -show all processes (owned y other users too)
+a -show all processes (owned by other users too)
 u -show processes in format oriented to user
 x -show processes that are not attached to a tty terminal
 ww -unlimited column width
@@ -93,6 +93,8 @@ TSTP - light STOP, sended by user (CTRL + Z), process is cleaning and sending ST
 KILL - is non blocked and kills process by kernel, cannot be captured and handled 
 kill -KILL [PID]
 kill -9 [PID] 
+
+Ctrl + D is not a signal, it`s EOF (End-Of-File). It closes the stdin pipe.
 
 INT - send by terminal (CTRL + C), process should stop actual operation. 
 If signal is captured, process should terminate himslef, if not process should let be killed (default action)

@@ -29,7 +29,7 @@ day of a week 0-6 or names (sunday is 0 and 7)
 
 *       -any value
 12      -normal value
-1-7     -rabge
+1-7     -range
 1-30/2  -range with jump value
 1,2,3   -lisy of values
 
@@ -39,7 +39,7 @@ Examples:
 45 10 * * 1-5                                                                   #from monday to friday at 10:45
 0 4 * * Sun (/usr/bin/mysqlcheck -u maintenance --optimize --all-databases)     #run mysql check every sunday at 4:00 AM
 20 1 * * * find /tmp -mtime +7 -type f -exec rm -f { } ';'                      #everydat at 1:20 AM delete from /tmp files that wasn't modified in last 7 days (;is needeb dy exec of find, means end)
-4 25 * * /usr/bin/mail -s "Czas zabrać się za raporty TPS" owen@atrust.com%Raporty TPS muszą być gotowe do końca miesiąca! Weź się do roboty!%%Z poważaniem,%cron #every 25th of month at 4;30 send email
+30 4 25 * * /usr/bin/mail -s "Czas zabrać się za raporty TPS" owen@atrust.com%Raporty TPS muszą być gotowe do końca miesiąca! Weź się do roboty!%%Z poważaniem,%cron #every 25th of month at 4;30 send email
 ______________________________________________________________________________________________________________
 Systemd timers:
 Mechanism similar to cron relised by systemd. Timers can be writen like crond (eg. every sunday at 7 AM) and with coordination with other tasks (eg. 30s after system starts).

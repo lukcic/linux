@@ -20,6 +20,8 @@ Reverse resolving - IP to names
 Most significant site starts on left side:          1.189.173.63.in-addr.arpa. to nubark.atrust.com.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
+"." - main domain (start of dns tree)
+
 FQDN needs "." at the end.
 ccTLD - country code Top Level Domains (.pl)
 gTLD - generic Top Level Domains (.org)
@@ -62,15 +64,109 @@ nubark  IN A 63.173.189.1
  63.173.189.rev (reverse resolving):
 1 IN PTR nubark.atrust.com.
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+One record may have multiple records:
+www     IN A 192.168.0.1
+        IN A 192.168.0.2
+        IN A 192.168.0.3
+
+It can be used for round robin load-balancing - server every time request this data in random order.
+
+______________________________________________________________________________________________________________
 
 HOST - resolves domain name to IPv4 & IPv6 (A record), also show some DNS entries (MX) if available.
 host [DOMAIN_NAME]
 
-DIG - Domain Information Grouper. 
-dig [DOMAIN_NAME]
+host wp.pl
+wp.pl has address 212.77.98.9
+wp.pl mail is handled by 0 mx.wp.pl.
+wp.pl mail is handled by 5 mx5.wp.pl.
 
-NSLOOKUP forward and reverse resolving
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+NSLOOKUP - forward and reverse resolving
 nslookup [DOMAIN_NAME]
-nslookup [IP]
+
+nslookup wp.pl
+Server:         213.186.33.99
+Address:        213.186.33.99#53
+
+Non-authoritative answer:
+Name:   wp.pl
+Address: 212.77.98.9
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DIG - Domain Information Grouper. Detailed information about DNS entries.    # apt install dnsutils
+aa -authorative answer
+ad - DNSSEC used
+AUTHORITY: 1  # request has beed forwarded to another DNS server
+ANSWER: 1     # direct answer (authorative server fo)
+
+dig [DOMAIN_NAME]
+-x                     # reverse search
+dig @1.1.1.1 wp.pl     # @IP - will use given DNS server for name resolving
+
+dig wp.pl
+'''
+; <<>> DiG 9.11.5-P4-5.1+deb10u6-Debian <<>> wp.pl
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 35101
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 1232
+;; QUESTION SECTION:
+;wp.pl.                         IN      A
+
+;; ANSWER SECTION:
+wp.pl.                  271     IN      A       212.77.98.9
+
+;; Query time: 0 msec
+;; SERVER: 213.186.33.99#53(213.186.33.99)
+;; WHEN: Thu Jan 13 14:11:54 CET 2022
+;; MSG SIZE  rcvd: 50
+'''
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DRILL - more detailed answers, used for DNSSEC chains check.    # apt install ldnsutils
+
+drill [DOMAIN_NAME]
+-x                     # reverse search
+-T                     # trace search
+dig @1.1.1.1 wp.pl     # @IP - will use given DNS server for name resolving
+
+drill wp.pl
+'''
+;; ->>HEADER<<- opcode: QUERY, rcode: NOERROR, id: 45021
+;; flags: qr rd ra ; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0 
+;; QUESTION SECTION:
+;; wp.pl.       IN      A
+
+;; ANSWER SECTION:
+wp.pl.  48      IN      A       212.77.98.9
+
+;; AUTHORITY SECTION:
+
+;; ADDITIONAL SECTION:
+
+;; Query time: 0 msec
+;; SERVER: 213.186.33.99
+;; WHEN: Thu Jan 13 14:15:37 2022
+;; MSG SIZE  rcvd: 39
+'''
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+DELV - will exchenge DRILL. 
 ______________________________________________________________________________________________________________
+
+Checking every step of name resolving:
+dig @a.root-servers.net wp.pl           # asking root server of wp.pl SOA 
+dig @a-dns.pl wp.pl SOA                 # asking .pl root servers for wp.pl SOA record
+dig @ns1.wp.pl wp.pl                    # authorative answer: www.wp.pl. 300 IN A 212.77.98.9
+
+______________________________________________________________________________________________________________
+
+16.5
+

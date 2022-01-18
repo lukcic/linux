@@ -23,6 +23,8 @@ df -h [DIRECTORY] - shows used and free space of directory
 -T - shows filesystem type
 
 df -hx tmpfs        -show disk free space excluding temp filesystems
+
+df -i       # shows inodes info (file metadata)
 ______________________________________________________________________________________________________________
 
 quota -shows disks limits
@@ -64,8 +66,8 @@ Creating partition table:
 mklabel msdos   -create MBR
 mklabel gpt     -create GPT
 
-Creating partiotin:
-mkpart [PARTTYPE] [FSTYPE] [START] [END]
+Creating partition:
+mkpart [PART_TYPE] [FSTYPE] [START] [END]
 eg. 
 (parted) mkpart primary ext4 1m 100m
 
@@ -81,7 +83,7 @@ Filesystems:
 mkfs.[TYPE] [PARTITION] -format partition in specific filesystem type, eg.: 
 mkfs.ext4 /dev/sdb1
 or
-mke2fs-t ext4 /dev/sdb1
+mke2fs -t ext4 /dev/sdb1
 -L [LABEL]   -add label to partition
 
 ls -l /sbin/mkfs.* -list available filesystem types
@@ -91,13 +93,23 @@ Mounting:
 Mounting is a process that assign mount point directory (in host filesystem) to root directory of connected filesystem.
 Mount is mostly alias of specific commands as mount.ntfs or mount.ext4.
 
-mount   -list mounted filesystems with  options
+mount           -list mounted filesystems with  options
 mount [DEVICE] [MOUNT_POINT] -mounting partition, when is in fstab, only one parameter
 -t [TYPE]       -specific type of fs
 -a              -will mount all filesystem stored in fstab
 -o [OPTIONS]    -mount fs with specified options   
 -r              -mount fs as read olny
 -w              -mount fs as writable
+
+Options:
+-noatime        -do not refresh access time (better performance)
+-async          -asynchronized i/o (better performance)m default option
+-sync           -synchronized i/o (more secure, system slows)
+-exec           -execution of binary files
+-noexec         -sidabled execution of binary files
+-remount        -mount again (with changed options)
+-ro             -read only
+-rw             -read/write
 
 unmnount [DEVICE/MOUNT_POINT] -unmounting partition
 -l          #lazy unmount, filesystem will be unmounted when all programs ends interactions with files, no new files are accessed
@@ -117,7 +129,7 @@ Add swap file to /etc/fstab.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 fsck [FILESYETEM] -check filesystem integrity, UNMOUNT FIRST!!!
-This utylity check teh filesystem type and run corresponding check
+This utylity check the filesystem type and run corresponding check
 -A  -check all filesystem listed in /etc/fstab
 -C  -show progress bar
 -R  -used with -A will skip the root filesystem
@@ -154,7 +166,7 @@ DEVICE - the device  containing the filesystem to be mounted. Instead of the dev
 MOUNT_POINT - Where the filesystem will be mounted.
 TYPE - The filesystem type.
 OPTIONS - Mount options that will be passed to mount.
-DUMP - Indicates  whether  any  ext2,  ext3  or  ext4  filesystems  should  be  considered  for  backup  by thedumpcommand. Usually it is zero, meaning they shouldbe ignored.
+DUMP - Indicates  whether  any  ext2,  ext3  or  ext4  filesystems  should  be  considered  for  backup  by the dump command. Usually it is zero, meaning they shouldbe ignored.
 FSCK - When non-zero, defines the order in which the filesystems will be checked on bootup. Usually it is zero.
 
 OPTIONS:
@@ -162,7 +174,7 @@ atime and noatime - by  default,  every  time  a  file  is  read  the  access  t
 auto and noauto - whether the filesystem can (or can not) be mounted automatically withmount -a.
 defaults - this will pass the options rw,suid,dev,exec,auto,nouser and async to mount.
 dev and nodev - whether character or block devices in the mounted filesystem should be interpreted.
-exec andn oexec - allow or deny permission to execute binaries on the filesystem.
+exec andn noexec - allow or deny permission to execute binaries on the filesystem.
 user and nouser - allows (or not) an ordinary user to mount the filesystem.
 group - allows a user to mount the filesystem if the user belongs to the same group which owns the device containing it.
 owner - allows a user to mount a filesystem if the user owns the device containing it.

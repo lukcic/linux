@@ -43,7 +43,7 @@ File /boot/grub/grub.cfg is automaticaly generated.
 #Kernel parameters:
 
 -debug          -enable kernel debug
-single          -boot in single user mode
+-single          -boot in single user mode
 -acpi           -ACPI support, for example: 'acpi=on'
 -init           -sets the alternative system initiator, for example 'init=/bin/bash', usefull when fuckup
 -systemd.unit   -systemd target, for example: 'systemd.unit=graphical.target', may be runlevel number

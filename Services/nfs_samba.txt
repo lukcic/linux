@@ -37,3 +37,5 @@ printable = no
 Samba SELinux context:
 chcon -t samba_share_t [FILENAME]
 ______________________________________________________________________________________________________________
+
+https://www.golinuxcloud.com/nfs-exports-options-examples/

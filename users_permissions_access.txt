@@ -48,14 +48,14 @@ sudo passwd [USER_NAME] #set password for new user
 Startup files:
 .rc (runn command) startup files 
 
-/etc/skel   #default startup files, after modification write them to /usr/local/etc/skel
+/etc/skel       #default startup files, after modification write them to /usr/local/etc/skel
 /etc/profile    #system startup files, later user startup files with lower priority
 
 .profile        #search path, terminal type, environment
 .bash_profile   #aliases, search path, umask, chpath, PS1
 .bashrc         #terminal type, biff, mesg, env variables
 ______________________________________________________________________________________________________________
-Modyfying users:
+Modifying users:
 
 useradd 
 

@@ -36,7 +36,6 @@ Storage=persistent      #auto - default value, save journal in /var/log/journal 
                         #volatile - save journal only in ramdisk
                         #none -disable journal 
 
-
 journalctl --list-boots    #shows info of past boot logs
 journalctl --disk-usage    #show journal size on disk 
 journalctl --since=yesterday --until=now #show logs only from given time

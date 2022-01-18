@@ -4,3 +4,5 @@ Turning off cursor:
 /etc/lightdm/lightdm.conf
 
 xserver-command=X -nocursor
+
+https://www.howtoraspberry.com/2020/04/disable-ipv6-on-raspberry-pi/
