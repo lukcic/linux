@@ -33,7 +33,7 @@ set -ueo pipefail   #some commands after pipe (etc. sort) returns 0 even if has 
 set -x              #debug every line 
 
 trap read debug     #with this command every line in script is executed only after acceptation: you see the line and accept it with enter (used with set -x)
-                    #cript may be stopped using CTRL+C (^C)
+                    #script may be stopped using CTRL+C (^C)
 
 Running bash scripts:
 chmod +x [FILENAME] -add execution permission for file (for all 755)

@@ -146,3 +146,8 @@ SSHFP - DNT record type that include fingerprint of ssh server
 sshfp server.admin.com # generating sshfp (DNS) entry for servername
 
 Output should be added to domain dns configuration ($ORIGIN directive), reload domain.
+
+https://www.tecmint.com/block-ssh-server-attacks-brute-force-attacks-using-denyhosts/
+
+SSH honeypot:
+https://www.youtube.com/watch?v=SKhKNUo6rJU

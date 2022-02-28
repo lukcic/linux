@@ -1,0 +1,49 @@
+https://niebezpiecznik.pl/post/jak-zaczac-branza-bezpieczenstwo-it/
+https://www.tecmint.com/linux-server-hardening-security-tips/
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+1. Unattended upgrades
+sudo apt install unattended-upgrades    # installation
+
+sudo dpkg-reconfigure --priority=low unattended-upgrades    # enable 
+
+Creates 2 config files in /etc/apt/apt.conf.d:
+20auto-upgrades
+50unattended-upgrades
+
+sudo unattended-upgrade --dry-run --debug   # will simulate working
+
+Watchtower to update Docker containers!
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+2. Adding administrative user:
+useradd andrzej -m -s /bin/bash -c "Administrative user"
+usermod -aG sudo,adm,docker andrzej
+passwd andrzej
+
+ssh-keygen -b 4096 -C "andrzej@dupa.pl"
+
+Disable root user login and password authentication.
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+3. Enabling firewall
+sudo ufw allow 22
+sudo ufw allow 443
+sudo ufw enable
+sudo ufw status
+
+sudo iptables -L    # docker has own chains!
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+4. Fail2ban
+
+sudo apt install fail2ban
+sudo systemctl enable fail2ban --now
+
+sudo fail2ban-client status
+sudo fail2ban status sshd
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

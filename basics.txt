@@ -174,7 +174,7 @@ cpio -id < archive.cpio -unarchive files
 ______________________________________________________________________________________________________________
 mkdir [NAME]
 -p -creates directories recursively
--m 777 -creates direcotry with specified permissions
+-m 777 -creates directory with specified permissions
 
 
 rm [FILE/DIR]
@@ -331,3 +331,6 @@ This term is usually used to check files for mistakes (configuration files etc).
 hash  vs encrpt
 hash - cannot reverse data from hash
 encrypt - can be decrypted using keys
+
+Webadmin:
+https://www.tecmint.com/install-webmin-in-linux/

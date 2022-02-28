@@ -213,6 +213,8 @@ ________________________________________________________________________________
 iostat - hard disk performance monitoring
 #sudo apt-get install sysstat -y
 
+https://www.tecmint.com/linux-performance-monitoring-with-vmstat-and-iostat-commands/
+
 avg-cpu - statistics until boot
 
 iostat [TIME_FOR_NEXT_MEASURE] [HOW_MANY_MEASURES]

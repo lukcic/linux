@@ -15,7 +15,7 @@ Ctrl+b i bez puszczania tej kombinacji strzałki – zmiana wymiarów paneli
 Ctrl+b d – uśpienie danej sesji (przywołanie przez polecenie tmux attach)
 
 tmux ls - listowanie sesji
-tmux attach -t [nazwa_sesji] - podłączenie sesjin
+tmux attach -t [nazwa_sesji] - podłączenie sesji
 - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 /dev/tty1 -first virtual console

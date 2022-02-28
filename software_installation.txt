@@ -21,7 +21,9 @@ dpkg-reconfigure [PACKAGE_NAME] -make post-install package again (reinstall)
 _____________________________________________________________________________
 APT - Advanced Package Tool
 Highlevel package installation tool. Builded for easy managing packages with dependencies using repositories. 
-Apt con handel rpm packages!
+Apt can handle rpm packages!
+
+https://www.tecmint.com/useful-basic-commands-of-apt-get-and-apt-cache-for-package-management/
 
 apt-get     -used to downoad, install, upgrade or remove packages 
 apt-cache   -used to perform operations, like searches in the package index

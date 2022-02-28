@@ -57,7 +57,7 @@ Sorting communicates using:
 
 Severity level:
 emerg   -system failure, cannot be use
-alert   -situations where instant action is neede
+alert   -situations where instant action is needeD
 crit    -critical conditions
 err     -other errors
 warning -warning communicates
