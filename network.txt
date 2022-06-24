@@ -295,12 +295,17 @@ FIREWALLD - pilot for linux Firewall (Netfilter). In new RHEL firewalld replace 
 Stores xml service description in /usr/lib/firewalld/services.
 Zones (describes accepted services for incoming connection) are stored in /etc/firewalld.
 
+systemctl enable firewalld
+systemctl start firewalld
+
 firewall-cmd --list-all
 firewall-cmd --add-service=[SERVICENAME] -adding service temporarly
 firewall-cmd --add-service=[SERVICENAME] --permanent -adding service permanently
 firewall-cmd --remove-service=[SERVICENAME] --permanent -deletes service permanently
 firewall-cmd --get-services -list known services
 firewall-cmd --add-port=[PORT/tcp] --permanent -adding open port permanently
+
+firewalld-cmd --reload
 
 https://www.tecmint.com/firewalld-rules-for-centos-7/
 https://www.tecmint.com/configure-firewalld-in-centos-7/

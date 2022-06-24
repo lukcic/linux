@@ -88,3 +88,7 @@ tabnew - new tab
 
 ZZ - close & save
 ZQ - close and not save
+
+
+
+ESC : set number #enabling line numbers

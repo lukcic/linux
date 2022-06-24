@@ -192,6 +192,48 @@ Nginx uses the following load balancing methods:
 -Generic hash – under this method, the system administrator specifies a hash (or key) with the given text, variables of the request or runtime, or their combination. For example, the key may be a source IP and port, or URI. Nginx then distributes the load amongst the upstream servers by generating a hash for the current request and placing it against the upstream servers.
 -Least time (Nginx Plus) – assigns the next request to the upstream server with the least number of current connections but favors the servers with the lowest average response times.
 __________________________________________________________________________
+
 Reinstall:
 -remove  with purge nginx-common
 -remove nginx-core
+
+__________________________________________________________________________
+
+Nginx Proxy Manager
+https://www.the-digital-life.com/nginx-proxy-manager/
+
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+docker-compose.yml
+
+version: '3'
+services:
+  app:
+    image: 'jc21/nginx-proxy-manager:latest'
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    environment:
+      DB_MYSQL_HOST: "db"
+      DB_MYSQL_PORT: 3306
+      DB_MYSQL_USER: "npm"
+      DB_MYSQL_PASSWORD: "npm"
+      DB_MYSQL_NAME: "npm"
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+  db:
+    image: 'jc21/mariadb-aria:latest'
+    environment:
+      MYSQL_ROOT_PASSWORD: 'npm'
+      MYSQL_DATABASE: 'npm'
+      MYSQL_USER: 'npm'
+      MYSQL_PASSWORD: 'npm'
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+http://localhost:81/login
+Login:  admin@example.com
+Pass:   changeme
+#- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

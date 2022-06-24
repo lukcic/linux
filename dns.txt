@@ -106,6 +106,10 @@ dig [DOMAIN_NAME]
 -x                     # reverse search
 dig @1.1.1.1 wp.pl     # @IP - will use given DNS server for name resolving
 
+~ dig bright.global txt +short  # will return only short content
+
+dig wp.pl txt           # will show all txt records of domain
+
 dig wp.pl
 '''
 ; <<>> DiG 9.11.5-P4-5.1+deb10u6-Debian <<>> wp.pl

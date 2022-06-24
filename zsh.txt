@@ -1,0 +1,25 @@
+Oh My ZSH - open -source framework for zsh. 
+
+vi ~/.zshrc
+plugins= (space sepparated)
+
+brew install zsh-autosuggestionsś
+
+ZSH Autosuggestions: 
+plugins=zsh-autosuggestions
+
+exec zsh #restart zsh
+
+type and ->
+type and Tab - list of suggestions
+
+Sudo plugin - type ESC twice and we will repeat last command with sudo on the beginning.
+Web-search - "google [looked sentence]"   - will open browser and search in google page looked sentence
+
+copypath - copy PWD to system clipboard. 
+Copyfile - copy content of the file int clipboard.
+Copybuffer - CTLR+O copies text currently typed in terminal to clipboard. 
+DirHistory - shorcuts for navigationg directory history and hierarchy.
+Json Tools 
+
+macos - a lot of macos tools TRY!!!

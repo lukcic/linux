@@ -24,3 +24,5 @@ openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj /CN=localhost -keyout
 
 SNI (server Name Indication) - client sends virtual host name in the beginning of TLS connection, to check which domain is request for, before http header decryption.   
 
+openssl:
+https://www.ibm.com/support/pages/openssl-commands-check-and-verify-your-ssl-certificate-key-and-csr

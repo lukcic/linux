@@ -111,9 +111,19 @@ sed -i.backup s/[PATTERN]/[NEW_PATTERN]/ [FILE.txt] -replacing PATTERNS with mak
 -i.backup -sed will make a backup file
 
 sed -e "/^#/d" [FILENAME]] -shows the contents of the file without the lines beginning with #(comment lines).
+
+______________________________________________________________________________________________________________
+
+AWK
+
+awk '{print $1}'    # will cut firsth column only
+aws s3 ls s3://bit-dev-bright-www-backup/2022-06 | awk '{print $4}'
+
 ______________________________________________________________________________________________________________
 
 CUT - divide text for columns separated by given character (Tab delault)
+
+cut -c 32-  # cut characters from 32 to end
 
 cut -d[SEPARATOR] -f[COLUMNS]
 cut -d: -f1,6 /etc/passwd      #show column 1 and 6 (: is separator), will show usename and home direcotry of users

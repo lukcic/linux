@@ -315,3 +315,6 @@ Performance problems:
 -if helped, then set lower priority (renice) 
 -if not, check network use of process and network latency 
 -DNS queries (it`s response time) very often caused problems
+______________________________________________________________________________________________________________
+Understanding /etc/security/limits.conf file:
+https://www.thegeekdiary.com/understanding-etc-security-limits-conf-file-to-set-ulimit/

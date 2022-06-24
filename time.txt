@@ -4,3 +4,11 @@ timedatectl
 timedatectl list-timezones
 sudo timedatectl set-timezone Europe/Warsaw
 timedatectl
+
+
+Timezone:
+TZ='Europe/Warsaw'; export TZ
+
+Timezone:
+cd /usr/share/zoneinfo
+tzselect 

@@ -1,3 +1,12 @@
+
+sudo fdisk /dev/xvdb
+sudo parted /dev/xvdb
+mklabel msdos
+sudo mkfs.xfs /dev/xvdb1 
+sudo mount /dev/xvdb1 /var/jenkins_home
+(parted) mkpart primary xfs 1m 8G
+
+
 lsscsi - lists scsi devices
 
 lsblk -list block devices (disks with partitions)
