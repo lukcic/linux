@@ -30,6 +30,7 @@ nginx -s [signalname]
 -reopen - reopening the log files
 
 nginx -c [FILE] - start nginx with custom config file
+/etc/nginx/nginx.conf IN_MODIFY /etc/init.d/nginx reload
 __________________________________________________________________________
 events {}                   # events context congigures connections, if ommited, then default values  
                             # one worker with low priviledges, port 80 if root, if not 8000, logs to /var/log/nginx

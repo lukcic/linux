@@ -66,6 +66,7 @@ parted -text programm for MBR & GPT partition tables
 gparted -GUI programm for MBR & GPT partition tables
 
 parted /dev/sda -editing disk
+print devices
 select /dev/sdb -changing disk to edit
 print       -information about selected disk
 print devices  -information about all block devices

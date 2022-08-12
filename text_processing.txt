@@ -119,6 +119,10 @@ AWK
 awk '{print $1}'    # will cut firsth column only
 aws s3 ls s3://bit-dev-bright-www-backup/2022-06 | awk '{print $4}'
 
+https://www.howtogeek.com/562941/how-to-use-the-awk-command-on-linux/
+
+awk '{print $(NF)}' # will print last column
+
 ______________________________________________________________________________________________________________
 
 CUT - divide text for columns separated by given character (Tab delault)

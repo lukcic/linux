@@ -26,3 +26,18 @@ SNI (server Name Indication) - client sends virtual host name in the beginning o
 
 openssl:
 https://www.ibm.com/support/pages/openssl-commands-check-and-verify-your-ssl-certificate-key-and-csr
+
+
+Lets encrypt in Amazon Linux:
+sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo yum-config-manager --enable epel
+sudo yum install certbot
+
+Certbot with DNS challenge:
+sudo certbot -v -a manual --email 'lukasz.cichecki@bright.global' -d 'portainer.dev.bright.global' --preferred-challenges dns --agree-tos certonly
+
+Add DNS record. 
+
+Add renew command to crontab
+sudo crontab -e
+0 12 * * * /usr/bin/certbot renew --quiet

@@ -132,6 +132,9 @@ yum-config-manager --add-repo [https://url/name.repo]       -adding repo to yum
 yum-config-manager --enable/disable [repo id firsth part]   -enable/disable repo
 
 yum clean packages/metadata -clean packages or metadata sotred in /var/cache/yum
+
+Looking for available versions of given software:
+yum --showduplicates list git | expand
 ________________________________________________
 EPEL (Extra Packages for Enterprise Linux) is an open-source and free community-based repository project from Fedora team, 
 which provides 100% high-quality add-on software packages for Linux distribution including RHEL, CentOS, and Scientific Linux.
