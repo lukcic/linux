@@ -112,6 +112,7 @@ _____________________________________________________________________________
 YUM - YellowDog Updater Modified
 High-level package manager for RPM based systems.
 
+yum list installed - list installed software
 yum search [PATTERN] - search for package with particular pattern
 yum install [PACKAGE_NAME] -installation of package with dependencies
 yum check-update [PACKAGE_NAME] -check if there in a newer version of package, without PACKAGE_NAME it check all installed packages (like apt update!)

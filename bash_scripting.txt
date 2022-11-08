@@ -45,6 +45,12 @@ chmod +x [FILENAME] -add execution permission for file (for all 755)
 sh scriptname.sh           #will run script in new instance of sh
 
 source scriptname.sh       #will run script in actual instance of sh, source command runs script in CURRENT shell
+
+Exporting script as a command:
+
+source ~/.scripts/aws_secrets.sh    # main function in script: "aws_secret"
+aws_secret
+
 ___________________________________________________________________________
 
 INPUT/OUTPUT:
@@ -196,6 +202,10 @@ esac
 ___________________________________________________________________________
 
 FOR LOOP:
+
+IFS - Internal Field Separator
+Used to decide which character will create new array position
+
 
 NAMES="Brad Kevin Alice Mark"
 for NAME in $NAMES

@@ -25,6 +25,9 @@ du -h [DIRECTORY] -disk usage of files in directory and subdirectories in readab
 -m -disk usage  in MB
 --exclude="*PATTERN*" - excludes files with given pattern (eg. "**.tmp*")
 --time - shows modification time
+
+Find the biggest directories:
+sudo du -hs /* | sort -rh | head -5
 ______________________________________________________________________________________________________________
 
 df -h [DIRECTORY] - shows used and free space of directory

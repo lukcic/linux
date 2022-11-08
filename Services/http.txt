@@ -192,7 +192,47 @@ SOAP API
 
 ______________________________________________________________________________________________________________
 
+Event-driven APIs
 
+Event driven means, that client don`t need to ask server all time about task status. 
+Instead server can inform client when state of task changes.
+
+1. Webhooks
+Client must register itself on server with 2 informations: events that client is interested and callback URL, 
+where server can send information.
+Client exposes endpoint. Server (API provider) sends request (usually post) with informations that client needed.
+
+Problems:
+* failueres - needed retry process, API provider must implements retry policies
+* firewalls - apps running behind firewalls can send information to the internet, but receiving may be hard
+* noise - multiple events can be noisy
+
+2. Websockets
+Clinet sends handshake to server, server responds with websocket upgrade which is allow to long-live BIDIRECTIONAL communication.
+Both then can send informations to each other. Use case - messagig applications.
+Pros: bidorectional low latency communication, reduced overhead of HTTP requests.
+Cons: Clients are responsible for connections (reconnections), scalability challenges. 
+
+
+3. HTTP streaming
+
+Typical server`s HTTP response has a finite lenght. With HTTP streaming response can be INFINITE.
+Clients sends one request. The server continues to push data in a single long-lived connection,
+for as long as client needed. 
+
+Response can be set as stream in 2 ways:
+1. Transfer Encoding header: chunked
+Client then knows that data will be arrived in chunks.
+Common for non-browser clients (2 backend servers communicating with each other).
+
+2. Server side events
+For a clients who consume data through browser. Standarized event source API web interface. 
+Ex: twitter pushes new tweets over a single HTTP connection to the API consumers.
+This method saves resources on both sides.
+Pros: streaming over simple HTTP, native browser support.
+Cons: bidirectional communiation is challenging, buffering problems.
+
+______________________________________________________________________________________________________________
 request library in python
 
 Web Security academy:
