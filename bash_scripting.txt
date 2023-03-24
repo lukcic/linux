@@ -1,3 +1,6 @@
+
+https://mywiki.wooledge.org/BashPitfalls !!!
+
 Scripting rules:
 -on the beginning of every script write description with informations needen (arguments, needed libraries etc.);
 -in case of no or wrong arguments, script should finish working and give feedback about proper use;
@@ -106,8 +109,36 @@ if [ $? -ne 0 ]; then           #$? -last command
     exit;
 fi
 ___________________________________________________________________________
+Checking previous command state:
+
+#!/bin/bash
+
+echo "this will work"
+RESULT=$?
+if [ $RESULT -eq 0 ]; then
+  echo success
+else
+  echo failed
+fi
+
+if [ $RESULT == 0 ]; then
+  echo success 2
+else
+  echo failed 2
+fi
+
+
+# OR:
+command && echo "OK" || echo "NOK"
+
+# Command result into variable without fail (||:):
+IMAGE_META="$( aws ecr describe-images --repository-name=$1 --image-ids=imageTag=$2 ||: )" 
+
+___________________________________________________________________________
 
 IF statement:
+# Oneline
+if echo "$SERVICE" | grep -q "FrontendStack-Preview"; then echo "MATCH"; else echo "FAIL"; fi
 
 if [ "$NAME" == "Brad"]
 then

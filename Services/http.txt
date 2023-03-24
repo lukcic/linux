@@ -1,5 +1,5 @@
 URL Structure:
-protocol://[username:password@]hostname[:port][/path][?query][#fragment]
+"protocol://[username:password@]hostname[:port][/path][?query][#fragment]"
 
 Protocol and hostname are obligatory, rest is optional.
 Hostname: domain, ip or hostname.
@@ -116,10 +116,27 @@ CURL - commandline http client
 Accept: */*     -client will accept any type of content as response
 
 curl -s -v -o /dev/null http://admin.com
--v          -verbose
+-v          -verbose, 
+-I          -curl by default pront only response body, use -I to see metadata
+-i          - show body and metadata (headers)
+-L          -follow redirect locations
+-k          -ignore SSL errors
+-A          -change user agent
+    -A 'Internet Explorer'
+-X          - change method
+    -X POST
+-d "key=value"  -send DATA using POST methd
+--referer "hostname.com"    -set custom referer 
+--cookie "name=peter"       -send custom cookie 
+    -b "name=peter"         -shorter version
+--cookie-jar file.txt       -cookie jar store all cookies sent from server
+    -b file.txt             -sending cookies stored in cookie jar to use the same session 
 -s          -silent mode: don`t show progress meter or error messages
--o <file>   -output to file
--H "HEADER" -send custom header
+-o <file>   -output response to file
+-H "header: value" -send custom header
+    -H 'Content-type: appplication/json'
+-m 3            -set response timeout to 3s
+--retry 3       -set 3 retireos
 -O <file>   -download file from server #curl -O https://curl.haxx.se/snapshots/curl-7.56.0-20170913.tar.xz
 
 curl -H "Host: www.admin.com" -s -v -o /dev/null 54.239.192.53      #will check if server will response the same from www.admin.com as admin.com
@@ -237,3 +254,77 @@ request library in python
 
 Web Security academy:
 https://portswigger.net/web-security/learning-path
+
+______________________________________________________________________________________________________________
+
+The most common types are:
+
+Type application:
+
+ application/java-archive
+ application/EDI-X12   
+ application/EDIFACT   
+ application/javascript   
+ application/octet-stream   
+ application/ogg   
+ application/pdf  
+ application/xhtml+xml   
+ application/x-shockwave-flash    
+ application/json  
+ application/ld+json  
+ application/xml   
+ application/zip  
+ application/x-www-form-urlencoded  
+Type audio:
+
+ audio/mpeg   
+ audio/x-ms-wma   
+ audio/vnd.rn-realaudio   
+ audio/x-wav   
+Type image:
+
+ image/gif   
+ image/jpeg   
+ image/png   
+ image/tiff    
+ image/vnd.microsoft.icon    
+ image/x-icon   
+ image/vnd.djvu   
+ image/svg+xml    
+Type multipart:
+
+ multipart/mixed    
+ multipart/alternative   
+ multipart/related (using by MHTML (HTML mail).)  
+ multipart/form-data  
+Type text:
+
+ text/css    
+ text/csv    
+ text/html    
+ text/javascript (obsolete)    
+ text/plain    
+ text/xml    
+Type video:
+
+ video/mpeg    
+ video/mp4    
+ video/quicktime    
+ video/x-ms-wmv    
+ video/x-msvideo    
+ video/x-flv   
+ video/webm   
+Type vnd:
+
+ application/vnd.android.package-archive
+ application/vnd.oasis.opendocument.text    
+ application/vnd.oasis.opendocument.spreadsheet  
+ application/vnd.oasis.opendocument.presentation   
+ application/vnd.oasis.opendocument.graphics   
+ application/vnd.ms-excel    
+ application/vnd.openxmlformats-officedocument.spreadsheetml.sheet   
+ application/vnd.ms-powerpoint    
+ application/vnd.openxmlformats-officedocument.presentationml.presentation    
+ application/msword   
+ application/vnd.openxmlformats-officedocument.wordprocessingml.document   
+ application/vnd.mozilla.xul+xml   

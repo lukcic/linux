@@ -8,4 +8,4 @@ Postfix is default installed in CentOS, it is listening localy. Using TCP port 2
 /etc/postfix.main.cfg
 inet_interfaces = all
 
-
+https://mailtrap.io/blog/embedding-images-in-html-email-have-the-rules-changed/
