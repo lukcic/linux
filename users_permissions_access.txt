@@ -98,6 +98,8 @@ deluser [OPTIONS] [LOGIN]     #deleting user
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+Binary program can be run without permissions for read (just execute) 
+
 Permissions in directories:
 -file`s write permission let user to change or delete content of file.
 -deleting and changing name of file depends of directory permissions.
@@ -108,9 +110,11 @@ Permissions in directories:
 9-bit permissions are mostly overrided by: ACLs, SELinux module or additiona permissions bits:
 
 setuid & setgid
+Run program with permissions of it`s owner, not user that runs the binary file.
 Set user id (4000), set group id (2000), mode (s- special bit, replace x in permissions) used to giving programs (executable files) higher priviledges, than their user have, 
 for example: sudo, passwd (setting uid of user who password must be changed). 
-If setgid is given to directory, then files created inside have group owner of directory group owner (not file creator`s group). It is used to work of directory as a group of users.
+If setgid is given to directory, then files created inside have group owner of directory group owner (not file creator`s group). 
+It is used to work of directory as a group of users.
 setuid & setgig may be disable with mount option: nosuid.
 
 SUID (set Used ID) - +s on user x, octal value 4.

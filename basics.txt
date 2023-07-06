@@ -112,6 +112,11 @@ command1 | command2
 ls -ly > log.txt 2>&1
 
 sort < [FILE] > [SORTED FILE]
+
+```
+program < infile
+```
+If program is reads from STDIN (terminal), it also can be redirected to read from file instead STDIN.  
 ______________________________________________________________________________________________________________
 
 XAGRS - this command takes output list returned by one command (or from file) and send it as arguments of another command. 
@@ -177,6 +182,33 @@ cpio -id < archive.cpio -unarchive files
 -o -create output file
 -i -extract
 -d -create destination directory
+
+Encrypting archive using PGP:
+```
+tar czvpf - file1.txt file2.pdf file3.jpg | gpg --symmetric --cipher-algo aes256 -o myarchive.tar.gz
+```
+
+Decrypting:
+```
+gpg -d myarchive.tar.gz.gpg | tar xzvf -
+```
+
+Encrypting archive using OpenSSL:
+```
+tar -cO a/ | openssl enc -aes-256-cbc  -md md5 -pass pass:mypassword > a.bin
+```
+
+Decrypt:
+```
+openssl enc -d -aes-256-cbc  -md md5 -pass pass:mypassword -in a.bin  | tar -x
+```
+
+If you want to store a password in a file, use the command below. 
+You should change -pass pass:derp into -pass file:my.key in the commands above.
+
+```
+openssl rand -out my.key 128
+```
 ______________________________________________________________________________________________________________
 mkdir [NAME]
 -p -creates directories recursively
@@ -342,3 +374,22 @@ encrypt - can be decrypted using keys
 
 Webadmin:
 https://www.tecmint.com/install-webmin-in-linux/
+
+______________________________________________________________________________________________________________
+
+Wywołania systemowe
+
+```c
+fd = creat(filename, permissions)
+fd = open(filename, mode)
+nread = read(fd, buf,n)
+nwrite = write(fd, buf, n)
+status - close(fd)
+```
+
+fd - file descriptor, niewielka nieujemna liczba całkowita, wykorzystywana przy kojelnych operacjach odczytu.zapisu.
+n - n bajtów do zapisu/odczytu
+
+
+
+

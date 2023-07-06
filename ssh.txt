@@ -76,6 +76,8 @@ ssh-keygen -t rsa
 ssh-keygen -t ed25519
 ssh-keygen -t ecdsa -b 384
 
+openssl genrsa -passout pass:[PASSPHRASE] -out [FILENAME].pem 4096
+
 Adding generated private key to local repository:
  
 ssh-add [keyfile]

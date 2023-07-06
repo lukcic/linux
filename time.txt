@@ -1,3 +1,10 @@
+UTC = 17
+
+CEST = UTC +2 = 19
+
+CET - Central Europe Time
+CEST - Central Europe Summer Time
+- - - - - - - - - - - - - - - - - - - - - - - - 
 Setting time (Debian):
 
 timedatectl
