@@ -143,6 +143,38 @@ User connects port 8000 on localhost, that is tunneled to ssh and connects ssh s
 
 ______________________________________________________________________
 
+Multiple GH accounts
+
+~/.ssh/config:
+```
+# Personal GitHub account
+Host github.com-personal
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_rsa_personal
+
+# Work GitHub account
+Host github.com-work
+  HostName github.com
+  User git
+  IdentityFile ~/.ssh/id_rsa_work
+```
+
+Project`s config
+.git/config:
+```
+[remote "origin"]
+  url = git@github.com-personal:YourUsername/YourRepo.git
+```
+
+Clonning new repos:
+```
+git clone git@github.com-personal:YourUsername/YourRepo.git
+git clone git@github.com-work:WorkOrg/WorkRepo.git
+```
+
+______________________________________________________________________
+
 SSHFP - DNT record type that include fingerprint of ssh server
 
 sshfp server.admin.com # generating sshfp (DNS) entry for servername

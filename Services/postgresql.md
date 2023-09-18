@@ -52,3 +52,14 @@ where pid = '611';
 
 select * from pg_stat_activity;
 ```
+
+## Read only user
+
+```sql
+CREATE ROLE readaccess;
+GRANT CONNECT ON DATABASE postgres TO readaccess;
+GRANT USAGE ON SCHEMA public TO readaccess;
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess;
+CREATE USER read_user WITH PASSWORD 'password';
+GRANT readaccess TO read_user;
+```
