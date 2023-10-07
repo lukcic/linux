@@ -1,4 +1,5 @@
 #!/bin/bash
+# https://www.tecmint.com/bash-for-loop-linux
 
 x=("ala" "ma kota" "test 1 2 3")
 
