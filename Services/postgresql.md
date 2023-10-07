@@ -1,3 +1,5 @@
+https://www.avestura.dev/blog/explaining-the-postgres-meme
+
 Reset user's password:
 
 ```sql
