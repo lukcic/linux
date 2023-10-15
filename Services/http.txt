@@ -248,6 +248,17 @@ Ex: twitter pushes new tweets over a single HTTP connection to the API consumers
 This method saves resources on both sides.
 Pros: streaming over simple HTTP, native browser support.
 Cons: bidirectional communiation is challenging, buffering problems.
+______________________________________________________________________________________________________________
+
+Simple HTTP load test
+
+Apache Bench - package https-tools
+
+```sh
+ab -n 500000 -c 15 -t 300 -s 120 -r www.example.pl 
+```
+
+Will send 500k requests with 15 threads. Test will take 600sec with 120s connection. time limit.
 
 ______________________________________________________________________________________________________________
 request library in python
