@@ -3,7 +3,7 @@ Oh My ZSH - open -source framework for zsh.
 vi ~/.zshrc
 plugins= (space sepparated)
 
-brew install zsh-autosuggestionsś
+brew install zsh-autosuggestions
 
 ZSH Autosuggestions: 
 plugins=zsh-autosuggestions
@@ -23,3 +23,6 @@ DirHistory - shorcuts for navigationg directory history and hierarchy.
 Json Tools 
 
 macos - a lot of macos tools TRY!!!
+
+ALT + arrows in the iterm2
+https://coderwall.com/p/h6yfda/use-and-to-jump-forwards-backwards-words-in-iterm-2-on-os-x

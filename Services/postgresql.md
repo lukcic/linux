@@ -65,3 +65,8 @@ GRANT SELECT ON ALL TABLES IN SCHEMA public TO readaccess;
 CREATE USER read_user WITH PASSWORD 'password';
 GRANT readaccess TO read_user;
 ```
+
+## Calculate DB size
+```sql
+select pg_size_pretty( pg_database_size('postgres'));
+```
