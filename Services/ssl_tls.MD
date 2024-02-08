@@ -1,3 +1,5 @@
+https://kbrzozova.medium.com/all-you-need-to-know-about-ssl-certificates-part-1-1f6f9b665650
+
 # HTTP with TLS
 TLS (Transport Security Layer) - independent layer between HTTP and TCP (TLS is not interfering in HTTP). 
 Used because HTTP do not handle security - messages are send in plain text. 
