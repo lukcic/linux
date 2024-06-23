@@ -168,6 +168,8 @@ root user with 'su - username' can log on any account without usng password!
 sudo
 /etc/suoders
 
+root    ALL=(ALL:ALL) NOPASSWD:ALL
+
 sudo visudo                                      #command must be used to edit suoders!
 Host_Alias  SERVERS = srv1, srv2, srv3      #Host groups Alias definition
 Host_Alias  PCs = PC01, PC02, PC03

@@ -69,6 +69,15 @@ ${[NAME]} - variable
 
 read -p "Text" [VARIABLE] -prompt user for input data to variable NAME
 
+String methods
+
+/ podmienia
+# wycina z przodu
+% wycina z końca
+//  podmienia wszystkie wystąpienia
+##  wycina z przodu zachłannie (najdłuszy pasujący)
+%%  wycina z końca zachłannie (najdłuszy pasujący)
+
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Echo vs printf:

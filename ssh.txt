@@ -88,7 +88,7 @@ Private key must be 0600! (644 for public)
 Sending generated public key to server:
 cat ~/.ssh/id_rsa.pub | ssh user@server "mkdir -p ~/.ssh && chmod 700 ~/.ssh && cat >>  ~/.ssh/authorized_keys"
 or:
-ssh-copy-id -i ~/.ssh/mykey user@host
+ssh-copy-id -f -i ~/.ssh/mykey user@host
 ______________________________________________________________________
 SSH Agent
 Daemon that stores private keys to use it to connection. 
