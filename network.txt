@@ -319,33 +319,9 @@ ufw status              #check firewall status
 ufw enable/disable      #enaling/disabling ufw firewall
 
 https://www.tecmint.com/setup-ufw-firewall-on-ubuntu-and-debian/
-______________________________________________________________________________________________________________
 
-SNMP -Simple Network Managment Protocol
-Ports 161 and 162 UDP.
 
-Managment Information Base (MIB)
-OID - Object Identifier. Adress of each individual element of information, hierarchial, dotted decimal numner.
 
-OID have names, eg. hostname: 1.3.6.1.2.1.1.5.0 = system.sysName.0
-
-comunity string -password needed to access information.
-public -for read only information
-private -for read-write
-
-Packages:
-net-snmp -server
-net-snmp-utils -utilities for performing queries and making changes
-
-/etc/snmp/snmpd.conf
-
-com2sec notConfigUser default public
-change to:
-com2sec notConfigUser default [PASSWORD]
-
-Commands:
-smnpget localhost -v 2c -c [PASSWORD] sysName.0
-snmpwalk localhost -v 2c -c [PASSWORD] system
 
 ______________________________________________________________________________________________________________
 
