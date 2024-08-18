@@ -7,7 +7,10 @@ ifconfig #show interfaces
 -a       #show disabled
 
 ifconfig [UP/DOWN] [INTERFACE]  #enabling/disabling given interface, needs sudo
-ifconfig up eth0   
+ifconfig up eth0  
+
+ifconfig eth0 allmulti # enabling all multicast
+ifconfig eth0 multicast # enabling multicast
 
 arp     #show arp table
 

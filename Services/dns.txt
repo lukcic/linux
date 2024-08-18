@@ -54,5 +54,27 @@ $ORIGIN 0.168.192.in-addr.arpa.
 0   IN  PTR     network.domain.ext.
 1   IN  PTR     gateway.domain.ext.
 
+@ - variable with zone name (domain name, example.com) taken from `named.conf`:
 
+```
+zone "example.com" {
+    type master;
+    file "/etc/bind/zones/db.example.com";
+};
+```
 
+$ORIGIN example.com. - variable which value will be added to all shortened entries:
+
+```
+ns1 IN  A   192.0.2.1
+ns2 IN  A   192.0.2.2
+www IN  A   192.0.2.3
+
+```
+instead:
+```
+ns1.example.com IN  A   192.0.2.1
+ns2.example.com IN  A   192.0.2.2
+www.example.com IN  A   192.0.2.3
+
+```
