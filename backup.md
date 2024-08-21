@@ -1,14 +1,19 @@
+# Links
 
 https://www.linuxshelltips.com/remote-linux-backup/
+
 https://www.linuxshelltips.com/backup-linux-filesystem-using-dump-command/
+
 https://www.linuxshelltips.com/clone-linux-partition-with-dd-command/
+
 https://www.tecmint.com/how-to-clone-linux-systems/
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-Duplicati
+# Duplicati
+
 https://docs.linuxserver.io/images/docker-duplicati
 https://www.youtube.com/watch?v=JoA6Bezgk1c&list=WL&index=4&t=9s
 
+```sh
 docker run -d \
   --name=duplicati \
   -e PUID=0 \
@@ -21,9 +26,11 @@ docker run -d \
   -v </path/to/source>:/source \
   --restart unless-stopped \
   lscr.io/linuxserver/duplicati
+```
 
+```yaml
 ---
-version: "2.1"
+version: '2.1'
 services:
   duplicati:
     image: lscr.io/linuxserver/duplicati
@@ -40,23 +47,27 @@ services:
     ports:
       - 8200:8200
     restart: unless-stopped
+```
 
+---
 
+## DB Container Backup Script Template
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-DB Container Backup Script Template
-
+```sh
 #!/bin/bash
 
 # DB Container Backup Script Template
+
 # ---
+
 # This backup script can be used to automatically backup databases in docker containers.
+
 # It currently supports mariadb, mysql and bitwardenrs containers.
-# 
+
+#
 
 DAYS=2
 BACKUPDIR=/home/xcad/backup
-
 
 # backup all mysql/mariadb containers
 
@@ -65,7 +76,7 @@ CONTAINER=$(docker ps --format '{{.Names}}:{{.Image}}' | grep 'mysql\|mariadb' |
 echo $CONTAINER
 
 if [ ! -d $BACKUPDIR ]; then
-    mkdir -p $BACKUPDIR
+mkdir -p $BACKUPDIR
 fi
 
 for i in $CONTAINER; do
@@ -80,8 +91,8 @@ for i in $CONTAINER; do
     if [ $OLD_BACKUPS -gt $DAYS ]; then
         find $BACKUPDIR -name "$i*.gz" -daystart -mtime +$DAYS -delete
     fi
-done
 
+done
 
 # bitwarden backup
 
@@ -95,13 +106,17 @@ for i in $BITWARDEN_CONTAINERS; do
     if [ $OLD_BITWARDEN_BACKUPS -gt $DAYS ]; then
         find $BACKUPDIR -name "$i*.gz" -daystart -mtime +$DAYS -delete
     fi
+
 done
 
 echo "$TIMESTAMP Backup for Databases completed"
+```
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-db-container-backup.service:
+---
 
+### db-container-backup.service:
+
+```toml
 [Unit]
 Description=DB Container Backup Script
 Wants=db-container-backup.timer
@@ -113,10 +128,13 @@ User=xcad
 
 [Install]
 WantedBy=default.target
+```
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-db-container-backup.timer:
+---
 
+### db-container-backup.timer:
+
+```toml
 [Unit]
 Description=DB Container Backup Daily Job
 
@@ -127,3 +145,4 @@ Unit=db-container-backup.service
 
 [Install]
 WantedBy=timers.target
+```
