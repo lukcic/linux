@@ -4,17 +4,25 @@ CEST = UTC +2 = 19
 
 CET - Central Europe Time
 CEST - Central Europe Summer Time
-- - - - - - - - - - - - - - - - - - - - - - - - 
-Setting time (Debian):
 
+---
+
+## Setting time (Debian):
+
+```sh
 timedatectl
 timedatectl list-timezones
 sudo timedatectl set-timezone Europe/Warsaw
 timedatectl
+```
 
-Timezone:
+## Timezone:
+
+```
 TZ='Europe/Warsaw'; export TZ
+```
 
-Timezone:
+```
 cd /usr/share/zoneinfo
 tzselect
+```

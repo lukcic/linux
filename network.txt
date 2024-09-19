@@ -1,3 +1,9 @@
+NC
+Check connection on given port:
+nc -zv 172.16.34.136 1514 1515 55000
+Connection to 172.16.34.136 1514 port [tcp/*] succeeded!
+Connection to 172.16.34.136 1515 port [tcp/*] succeeded!
+______________________________________________________________________________________________________________
 BOUNDING
 TUNNELING -ASI movies
 
