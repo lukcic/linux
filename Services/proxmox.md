@@ -1,3 +1,5 @@
+# Proxmox
+
 ## Resize VM Proxmox
 
 ```sh
@@ -14,4 +16,22 @@ pvesm add nfs true-backups --path /mnt/pve/true-backups  --server <Server IP> --
 pvesm add nfs true-backups --path /mnt/pve/true-backups  --server <Server IP> --options vers=4.2,nolock,tcp --export /mnt/main/Backup/pve2 --content backup
 
 pvesm add nfs iso-images --path /mnt/pve/iso  --server <Server IP> --options vers=4.2,nolock,tcp --export /mnt/main/iso --content iso
+```
+
+## Changing cluster nodes IP
+
+All nodes must be updated!
+
+```sh
+systemctl stop pve-cluster
+systemctl stop corosync
+pmxcfs -l
+
+vim /etc/network/interfaces
+vim /etc/hosts
+
+# update IP and config version
+vim /etc/pve/corosync.conf
+
+reboot
 ```
