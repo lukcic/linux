@@ -1,3 +1,6 @@
+Cert browser:
+crt.sh
+
 https://kbrzozova.medium.com/all-you-need-to-know-about-ssl-certificates-part-1-1f6f9b665650
 
 # HTTP with TLS
