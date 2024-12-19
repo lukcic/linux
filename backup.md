@@ -8,7 +8,7 @@ https://www.linuxshelltips.com/clone-linux-partition-with-dd-command/
 
 https://www.tecmint.com/how-to-clone-linux-systems/
 
-# Duplicati
+## Duplicati
 
 https://docs.linuxserver.io/images/docker-duplicati
 https://www.youtube.com/watch?v=JoA6Bezgk1c&list=WL&index=4&t=9s
@@ -146,3 +146,38 @@ Unit=db-container-backup.service
 [Install]
 WantedBy=timers.target
 ```
+
+## Copy linux disk with dd
+
+The following example will create a drive image of /dev/sda, the image will be backed up to an external drive, and compressed. For example, one may use bzip2 for maximum compression:
+
+```sh
+sudo dd if=/dev/sda status=progress | bzip2 > /media/usb/image.bz2
+```
+
+### Restoring a drive image
+
+To restore a drive image, one will want to boot into a live environment. Restoration is quite simple, and really just involves reversing the if and of values. This will tell dd to overwrite the drive with the data that is stored in the file. Ensure the image file isn't stored on the drive you're restoring to. If you do this, eventually during the operation dd will overwrite the image file, corrupting it and your drive.
+
+To restore the drive above with dd:
+
+```sh
+bzcat /media/usb/image.bz2 | sudo dd of=/dev/sda status=progress
+```
+
+When restoring the whole drive, the system will not automatically create the devices (/dev/sda1, /dev/sda2, etc.). Reboot to ensure automatic detection.
+
+If you restored Ubuntu to a new drive, and the UUIDs (see UsingUUID for more) changed, then you must change the bootloader and the mount points. One will want to edit the following via a terminal:
+
+```sh
+sudo nano /boot/grub/menu.lst
+sudo nano /etc/fstab
+```
+
+To know what the new UUIDs for your drives are, use the following command:
+
+```sh
+sudo blkid
+```
+ 
+From this list, you can cross-reference the information with that of fdisk to know which drive is which. Then simply update the UUIDs in both GRUB and fstab files.
