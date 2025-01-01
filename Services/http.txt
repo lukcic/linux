@@ -117,8 +117,8 @@ Accept: */*     -client will accept any type of content as response
 
 curl -s -v -o /dev/null http://admin.com
 -v          -verbose, 
--I          -curl by default pront only response body, use -I to see metadata
--i          - show body and metadata (headers)
+-I          -curl by default prints only response body, use -I to see metadata
+-i          -show body and metadata (headers)
 -L          -follow redirect locations
 -k          -ignore SSL errors
 -A          -change user agent
@@ -136,12 +136,12 @@ curl -s -v -o /dev/null http://admin.com
 -H "header: value" -send custom header
     -H 'Content-type: appplication/json'
 -m 3            -set response timeout to 3s
---retry 3       -set 3 retireos
+--retry 3       -set 3 retries
 -O <file>   -download file from server #curl -O https://curl.haxx.se/snapshots/curl-7.56.0-20170913.tar.xz
 
 curl -H "Host: www.admin.com" -s -v -o /dev/null 54.239.192.53      #will check if server will response the same from www.admin.com as admin.com
 
-cURL -copy as URL, Google chrome function that generates curl command whoch simulates browser work 
+cURL -copy as URL, Google chrome function that generates curl command which simulates browser work 
 ______________________________________________________________________________________________________________
 
 Base 64 - encoding data (binary to text for sending), increase volume (1.33x) 

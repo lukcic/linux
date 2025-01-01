@@ -190,3 +190,10 @@ httpd_user_script_exec_t -User CGI Scripts or executable files
 
 Exercises:
 https://www.linuxshelltips.com/install-apache-in-rhel-8/
+
+Apache Benchmark:
+
+ab -n 10000 -c 2000 http://localhost
+
+-n - 10k request
+-c 2k parallel connections

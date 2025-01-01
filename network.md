@@ -13,7 +13,7 @@ ifconfig #show interfaces
 -a       #show disabled
 
 ifconfig [UP/DOWN] [INTERFACE]  #enabling/disabling given interface, needs sudo
-ifconfig up eth0  
+ifconfig up eth0
 
 ifconfig eth0 allmulti # enabling all multicast
 ifconfig eth0 multicast # enabling multicast
@@ -25,18 +25,18 @@ iproute2 (actual)
 ip [COMMAND] list|show      #show details
 
 ip link set [INTERFACE] [UP/DOWN]                 # enabling/disabling interface
-ip link set dev [INTERFACE] address [MAC_ADDRESS] # adding MAC address
-ip link set dev eth0 promisc on                   # enabling promiscous mode
+ip link set dev [INTERFACE] address [MAC_ADDRESS] # adding MAC addres
+ip link set dev eth0 promisc on                   # enebling promiscous mode
 ip neigh                                          # show arp table
 man ip-link                                       # man page
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ip address      #shows all network interfaces
-ip a            #short version   
+ip a            #short version
 ip addr [ADD/DEL] [IP_ADDRESS] dev [INTERFACE]  #adding/removing ip address
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 ip route show   #show routing table
 ip route add [NETWORK_IP]/[MASK] via [GATEWAY_IP] dev [LOCAL_INTERFACE]   # adding static route for given network
@@ -61,11 +61,11 @@ iface eth0 inet static              # inet = IPv4, inet6 = IPv6
         gateway 192.0.2.254
         dns-nameservers 8.8.8.8
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Ubuntu 20.04
 /etc/netplan/00-installer-config.yaml
 
-Ubuntu 18.04 
+Ubuntu 18.04
 /etc/netplan/01-netcfg.yaml
 
 network:
@@ -96,11 +96,11 @@ auto lo eth0
 iface lo inet loopback
 iface eth0 inet dynamic     # or: iface eth0 inet dhcp
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Ubuntu 20.04
 /etc/netplan/00-installer-config.yaml
 
-Ubuntu 18.04 
+Ubuntu 18.04
 /etc/netplan/01-netcfg.yaml
 '''
 network:
@@ -129,7 +129,7 @@ RHEL and CentOS:
 NETWORKING=yes
 NETWORKING_IPV6=no
 HOSTNAME=redhat.toadranch.com
-DOMAINNAME=toadranch.com #optional                
+DOMAINNAME=toadranch.com #optional
 GATEWAY=192.168.1.254
 
 /etc/sysconfig/network-scripts/ifcfg-[INTERFACE]    # IP, mask
@@ -164,7 +164,7 @@ netstat -ltnp | grep -w ':80' - shows which process listning on port 80
 
 netstat -rn # show routing table, -n will not use DNS
 
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 SS - Socket Statiscics (actual):
 
@@ -219,15 +219,14 @@ cncli dev status  #show connections on all devices
 
 ______________________________________________________________________________________________________________
 
-NC (NetCat) also referred to as the “Network Swiss Army knife”, is a powerful utility used for almost any task related to TCP, UDP, or UNIX-domain sockets. 
+NC (NetCat) also referred to as the “Network Swiss Army knife”, is a powerful utility used for almost any task related to TCP, UDP, or UNIX-domain sockets.
 It is used to open TCP connections, listen on arbitrary TCP and UDP ports, perform port scanning plus more.
 
-You can also use it as a simple TCP proxy, for network daemon testing, to check if remote ports are reachable, and much more. 
+You can also use it as a simple TCP proxy, for network daemon testing, to check if remote ports are reachable, and much more.
 Furthermore, you can employ nc together with pv command to transfer files between two computers.
 ______________________________________________________________________________________________________________
 
-
-TCPDump - commandline network sniffer. Stores packets in libpcap format. 
+TCPDump - commandline network sniffer. Stores packets in libpcap format.
 
 tcpdump -i [INTERFACE]  #listening on given interface
 -n                      #do not use DNS
@@ -245,7 +244,7 @@ $ sudo tcpdump host bull
 .domain - service name (DNS)
 
 Filtering:
-tcpdump src net 192.168.1.0/24 and dst port 80  
+tcpdump src net 192.168.1.0/24 and dst port 80
 ______________________________________________________________________________________________________________
 
 BMON - commandline graph of network interface usage
@@ -272,7 +271,7 @@ ________________________________________________________________________________
 
 iperf3 - network bandwidth measuring tool
 
-iperf -s -p [PORT_NUMBER] 
+iperf -s -p [PORT_NUMBER]
 # server
 
 iperf -c [SERVER_IP] -p [SERVER_PORT]
@@ -301,7 +300,7 @@ ossec.github.io/docs/manual/monitoring/index.html#configuration-options.
 
 ______________________________________________________________________________________________________________
 
-IPTABLES - pilot for Linux Firewall (Netfilter). 
+IPTABLES - pilot for Linux Firewall (Netfilter).
 
 /etc/services - file with services and ports definition
 
@@ -309,7 +308,7 @@ https://www.tecmint.com/basic-guide-on-iptables-linux-firewall-tips-commands/
 https://www.tecmint.com/linux-iptables-firewall-rules-examples-commands/
 https://www.tecmint.com/configure-iptables-firewall/
 https://www.tecmint.com/block-ping-icmp-requests-to-linux/
-______________________________________________________________________________________________________________ 
+______________________________________________________________________________________________________________
 
 FIREWALLD - pilot for linux Firewall (Netfilter). In new RHEL firewalld replace iptables.
 Stores xml service description in /usr/lib/firewalld/services.
@@ -333,15 +332,12 @@ https://www.tecmint.com/start-stop-disable-enable-firewalld-iptables-firewall/
 https://www.tecmint.com/setup-samba-file-sharing-for-linux-windows-clients/
 ______________________________________________________________________________________________________________
 
-UFW - Uncomplicated Firewall. Debian & Ubuntu firewall software 
+UFW - Uncomplicated Firewall. Debian & Ubuntu firewall software
 
 ufw status              #check firewall status
 ufw enable/disable      #enaling/disabling ufw firewall
 
 https://www.tecmint.com/setup-ufw-firewall-on-ubuntu-and-debian/
-
-
-
 
 ______________________________________________________________________________________________________________
 
@@ -354,7 +350,7 @@ Kernel:
 
 Setting network variables (temporary):
 sudo sh -c "echo 1 > icmp_echo_ignore_broadcasts"   # -c menas taka command form string not from stdin
-sysctl net.ipv4.icmp_echo_ignore_broadcasts=1 
+sysctl net.ipv4.icmp_echo_ignore_broadcasts=1
 
 sudo echo 1 > icmp_echo_ignore_broadcasts - will not work because file will be opened before "sudo echo"
 

@@ -16,7 +16,9 @@ Linux Machines
 * enable Qemu Guest Agent (IP address, ballooning, etc)
 * set VirtIO-GPU graphics card for GUI virtual machines
 * for older machines use Machine (System) as `i440fx` and `SeaBios`
-* when `PCI-Passthrough` used, set Machine type (System) as `q35` (PCI Express support) and `OVMF` UEFI instead legacy BIOS
+* when `PCI-Passthrough` used, set Machine type (System) as `q35` (PCI Express support) and `OVMF` UEFI instead legacy
+  BIOS
+* disable 'use tablet for pointer' if no gui
 
 ## Resize VM Proxmox
 
@@ -24,6 +26,12 @@ Linux Machines
 qm shutdown 190 && qm wait
 qm resize 190 scsi0 +8G
 qm start 190
+```
+
+## Disable zfs atime
+
+```sh
+zfs set atime=off $POOL_NAME
 ```
 
 ## Add NFS storage
