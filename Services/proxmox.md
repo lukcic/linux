@@ -100,7 +100,7 @@ chronyc sources list
 
 Use cluster network.
 
-8. Quorum:
+8. Quorum
 
 * if 3 nodes, one can be offline
 * if 4 nodes, one can be offline
