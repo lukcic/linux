@@ -1,21 +1,35 @@
-System managing daemon sysV or systemd has always PID = 1.
+# Init and systemd
 
-sysV (init) - only one process at once while booting, obsolte, now used systemd. Program: /sbin/init
-Each service has a number and this number indicates order of starting services. 
-In systemd order is written in startscripts (services can start simultaneously).
-init is still used in distros focesed on small size.
+## Init
 
-runlevel - shows current runlevel (0-6), N- runlevel was not changed since the system was booted
-runlevel [0-6]  -changes the actualrunlevel
+System managing daemon `sysV` or `systemd` has always PID = 1.
+
+sysV (init) - only one process at once while booting, obsolete, replaced by systemd.
+
+Program: /sbin/init
+
+Each service has a number and this number indicates order of starting services.In systemd order is written in
+start-scripts (services can start simultaneously).
+
+init is still used in distributions focused on small size.
+
+`runlevel` - shows current runlevel (0-6)
+
+N- runlevel was not changed since the system was booted
+
+```sh
+runlevel [0-6]  -changes the actual runlevel
 
 0- halt
-1- single user (text) mode (s or single) without network or other non-essential capabilites (maintenance mode)
+1- single user (text) mode (s or single) without network or other non-essential capabilities (maintenance mode)
 2- not used (user definable)
 3- full multi-user text mode, users can log in by network or console, all filesystems are mounted, alle services are started, no GUI
 4- not used (user definable)
 5- full multi-user graphical mode, like 3 but with GUI
 6- reboot
+```
 
+```sh
 Init supervise many startup porcesses:
 -setting hostname
 -setting locales
@@ -25,18 +39,22 @@ Init supervise many startup porcesses:
 -setting networking
 -applying firewall rules
 -starting daemons and other services.
+```
 
-/etc/inittab - stored definition of runlevels and default runlevel
+`/etc/inittab` - stored definition of runlevels and default runlevel
+
 id:runlevels:action:process
 
-The action term defines how init will execute the process indicated by the term process. 
+The action term defines how init will execute the process indicated by the term process.
+
 The available actions are:
--boot       -The process will be executed during system initialization. The field runlevelsis ignored.
--bootwait   -The process will be executed during system initialization and init will  wait  until  it  finishes  to continue. The field runlevels is ignored.
--sysinit    -The process will be executed after system initialization, regardless of runlevel. The field runlevels is ignored.
--wait       -The process will be executed for the given runlevels and init will wait until it finishes to continue.
--respawn    -The process will be restarted if it is terminated.
--ctrlaltdel -The process will be executed when the init process receives the SIGINT signal, triggered when the key sequence of Ctrl+Alt+Del is pressed.
+
+- `boot` - the process will be executed during system initialization. The field runlevelsis ignored.
+- `bootwait`   -The process will be executed during system initialization and init will  wait  until  it  finishes  to continue. The field runlevels is ignored.
+- `sysinit`    -The process will be executed after system initialization, regardless of runlevel. The field runlevels is ignored.
+- wait       -The process will be executed for the given runlevels and init will wait until it finishes to continue.
+- `respawn`    -The process will be restarted if it is terminated.
+- `ctrlaltdel` -The process will be executed when the init process receives the SIGINT signal, triggered when the key sequence of Ctrl+Alt+Del is pressed.
 
 telinit [runlevel number] -set the actual runlevel (telinit 0 makes poweroff)
 telinit q   -reload init configuration (after any changes in /etc/inittab)
@@ -46,9 +64,9 @@ Every runlevel has an associated directory in /etc/, named /etc/rc0.d/, /etc/rc1
 with the scripts that should be executed when the corresponding runlevel starts. 
 As the same script can be used by different runlevels, the files in those directories are just symbolic links to the actual scripts in/etc/init.d/. 
 
-______________________________________________________________________________________________________________
-systemd
-Init dont have services dependencies management. All scripts that starts and stops dervices must be runned in order given by administrator.
+## systemd
+
+Init don`t have services dependencies management. All scripts that starts and stops services must run in order given by administrator.
 New tasks must started when last task ends. They cant start simultaneously.
 
 Systemd manages: processes, network connections (networkd), kernel journal entries (journald) and loggins (logind).
@@ -63,8 +81,8 @@ systemctl list-units            -list active units
 --state=running                 -only running services
 
 systemctl list-unit-files       -list all units
- 
-Unit files in case of service includes: path to daemon binary, informs how to start and stop service, defines all other services dependencies.   
+
+Unit files in case of service includes: path to daemon binary, informs how to start and stop service, defines all other services dependencies.
 
 Configuration files location depends of distro:
 /etc/systemd/system     #your local unit files, the highest priority
@@ -121,7 +139,9 @@ systemctl daemon-reloaded                       -reload unit files nad systemd c
 systemctl add-wants multi-user.target my-local-service.service  #adding my-local-srvice to multi-user target
 
 New service:
-/etc/systemd/system/newservice.service
+
+```sh
+#/etc/systemd/system/newservice.service
 
 [Unit]
 Description=Service name
@@ -131,10 +151,14 @@ ExecStart=/path/to/script/script.sh
 
 [Install]
 WantedBy=multi-user.target
+```
 
 Add execute privilages to script and change owner to root!
+
+```sh
 sudo systemctl start newservice
 sudo systemctl enable newservice
+```
 
 [Unit] section in target files (dependencies):
 Wants       -units, that should be started with our service (but not required to start)
@@ -186,3 +210,25 @@ ________________________________________________________________________________
 
 /etc/sysctl.conf -changes written here will be done while booting
 sysctl -p -lists commands written in sysctl.conf
+
+### systemd user mode
+
+systemctl --user
+
+Requirements:
+
+- the user systemd daemon must be started
+- systemctl must be able to find it
+
+when you log in to a shell, both of these things happen. systemd hooks the log in process to start the user daemon and
+the paths systemctl needs are set in shell variables. It's also possible to set a user to permit lingering and allow the
+user's systemd daemon to keep running even when the user isn't logged in to the shell. `su`, even when you `su -` or
+`su--login`, does not set the variables for systemctl to find the user daemon. They get unset when `su` is executed ,
+and it will result in `systemctl --user` completely failing.
+
+How to work around this? You need to log in to the user via a process that creates a clean login environment. Classic
+way is to SSH as the user. However, there's a newer and more direct way to do it. If your system is sufficiently up to
+date to support systemd's `machinectl` command, you can `machinectl shell [username]@host`. This is kind of the "new su"
+that is systemd aware and takes care of the background things that just running su can miss.
+
+<https://www.reddit.com/r/linuxadmin/comments/rxrczr/in_interesting_tidbit_i_just_learned_about_the/>
