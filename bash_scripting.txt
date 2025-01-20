@@ -24,7 +24,7 @@ cat > superskrypt.sh << EOF ???????????????????????????????????/
 
 Bash - Bourne Again Shell - writed again, because original bash is still under closed AT&T license.
 
-schellcheck [file]  -command to check if script is written properly
+shellcheck [file]  -command to check if script is written properly
 
 #!/bin/bash -shebang for bash (check 'which bash')
 
