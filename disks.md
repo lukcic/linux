@@ -38,7 +38,7 @@ du -h [DIRECTORY]
 # --time - shows modification time
 ```
 
-### Find the biggest directories:
+### Find the biggest directories
 
 `sudo du -hs /* | sort -rh | head -5`
 
@@ -67,77 +67,6 @@ df -i
 
 `extended partition` - container for logical partitions (MBR)
 `primary partition` - bootable disk, first partition in MBR must be primary, max 4 primary partitions (MBR)
-
-### fdisk
-
-`fdisk` - text program, only MBR partition tables
-
-```sh
-fdisk -l 
-# list disks
-
-fdisk /dev/sda  
-# edit first disk
-```
-
-Commands:
-q   -quit witout saving changes
-w   -write changes
-p   -print current partition table
-F   -check unallocated space
-n   -create partition (eg.: +300G)
-d   -delete partition
-t   -change partition type (not filesystem type!), 83 - Linux, 82 - Linux SWAP
-
-### gdisk
-
-`gdisk` -text version of fdisk with only GPT support (commands are the same)
-s   -sort partition numbers
-
-### parted
-
-`parted` - text program for MBR & GPT partition tables
-
-### gparted
-
-`gparted` - GUI program for MBR & GPT partition tables
-
-```sh
-parted /dev/sda 
-# editing disk
-
-print devices
-select /dev/sdb 
-# changing disk to edit
-
-print           # information about selected disk
-print devices   # information about all block devices
-print free      # show free space
-```
-
-#### Creating partition table
-
-```sh
-mklabel msdos   # create MBR
-mklabel gpt     # create GPT
-```
-
-#### Creating partition
-
-```sh
-mkpart [PART_TYPE] [FSTYPE] [START] [END]
-
-# Example:
-(parted) mkpart primary ext4 1m 100m
-
-# PARTTYPE: primary, logical, extended
-# FSTYPE: parted will only make a flag, not create the filesystem, here should be SWAP (linux-swap) assigned too
-# START: beginning of the partition in s(sectors), m(megabytes), B(bytes), %
-# END: end of partition in s(sectors), m(megabytes), B(bytes), %
-
-rm [number] 
-# delete a partition with selected number
-```
 
 ## Filesystems
 
@@ -201,6 +130,58 @@ unmnount [DEVICE/MOUNT_POINT]
 
 `lsof [PARTITION]`  - list open files from specific partition
 
+### fstab
+
+File System Table
+
+`/etc/fstab`:
+
+```sh
+[DEVICE] [MOUNT_POINT] [TYPE] [OPTIONS] [DUMP] [FSCK]
+```
+
+- `DEVICE` - the device  containing the filesystem to be mounted. Instead of the device, you can specify the UUID or label of the partition.
+
+- `MOUNT_POINT` - Where the filesystem will be mounted.
+
+- `TYPE` - The filesystem type.
+
+- `OPTIONS` - Mount options that will be passed to mount.
+
+- `DUMP` - Indicates  whether  any  ext2,  ext3  or  ext4  filesystems  should  be  considered  for  backup  by the dump command. Usually it is zero, meaning they should be ignored.
+
+- `FSCK` - When non-zero, defines the order in which the filesystems will be checked on boot-up. Usually it is zero.
+
+Options:
+
+- `atime and noatime`  - by  default,  every  time  a  file  is  read  the  access  time  information  is  updated.
+  Disabling  this (with noatime)  can  speed up  disk  I/O.  Do  not  confuse  this with the modification  time,  which
+  is updated every time a file is written to.
+
+- `auto and noauto` - whether the filesystem can (or can not) be mounted automatically withmount -a.
+defaults - this will pass the options rw,suid,dev,exec,auto,nouser and async to mount.
+
+- `dev and nodev` - whether character or block devices in the mounted filesystem should be interpreted.
+
+- `exec andn noexec` - allow or deny permission to execute binaries on the filesystem.
+
+- `user and nouser` - allows (or not) an ordinary user to mount the filesystem.
+group - allows a user to mount the filesystem if the user belongs to the same group which owns the device containing it.
+
+- `owner` - allows a user to mount a filesystem if the user owns the device containing it.
+
+- `suid and nosuid` - allow, or not, SETUID and SETGID bits to take effect.
+ro and rw - mount a filesystem as read-only or writable.
+
+- `remount` - this will attempt to remount an already mounted filesystem. This is not used on /etc/fstab, but as a
+  parameter to mount -o. For example, to remount the already mounted partition /dev/sdb1 as read-only, you could use the
+  command mount -o remount,ro /dev/sdb1. When remounting, you do not need to specify the filesystem type, only the
+  device name or the mount point.
+
+- `sync and async` - whether  to  do  all  I/O  operations  to  the  filesystem  synchronously  or  asynchronously.
+  async is usually  the  default.  The  manual  page  for mount warns  that  using sync on  media  with  a  limited
+  number of write cycles (like flash drives or memory cards) may shorten the life span of the device.
+
 ## SWAP
 
 ```sh
@@ -217,6 +198,77 @@ mkswap myswap
 ```
 
 ## Tools
+
+### fdisk
+
+`fdisk` - text program, only MBR partition tables
+
+```sh
+fdisk -l 
+# list disks
+
+fdisk /dev/sda  
+# edit first disk
+```
+
+Commands:
+q   -quit without saving changes
+w   -write changes
+p   -print current partition table
+F   -check unallocated space
+n   -create partition (eg.: +300G)
+d   -delete partition
+t   -change partition type (not filesystem type!), 83 - Linux, 82 - Linux SWAP
+
+### gdisk
+
+`gdisk` -text version of fdisk with only GPT support (commands are the same)
+s   -sort partition numbers
+
+### parted
+
+`parted` - text program for MBR & GPT partition tables
+
+### gparted
+
+`gparted` - GUI program for MBR & GPT partition tables
+
+```sh
+parted /dev/sda 
+# editing disk
+
+print devices
+select /dev/sdb 
+# changing disk to edit
+
+print           # information about selected disk
+print devices   # information about all block devices
+print free      # show free space
+```
+
+#### Creating partition table
+
+```sh
+mklabel msdos   # create MBR
+mklabel gpt     # create GPT
+```
+
+#### Creating partition
+
+```sh
+mkpart [PART_TYPE] [FSTYPE] [START] [END]
+
+# Example:
+(parted) mkpart primary ext4 1m 100m
+
+# PARTTYPE: primary, logical, extended
+# FSTYPE: parted will only make a flag, not create the filesystem, here should be SWAP (linux-swap) assigned too
+# START: beginning of the partition in s(sectors), m(megabytes), B(bytes), %
+# END: end of partition in s(sectors), m(megabytes), B(bytes), %
+
+rm [number] 
+# delete a partition with selected number
+```
 
 ### fsck
 
@@ -251,6 +303,10 @@ e2fsck [FILESYETEM] # check ext2-4 filesystems
 -j [FILESYSTEM]   # convert ext2 to ext3 (add journal)
 ```
 
+### cfdisk
+
+Quick way to manage partitions.
+
 ## Device files
 
 Device files:
@@ -262,58 +318,6 @@ Device files:
 - `p -pipe device`  - works on strings, but on the end there is another process not device.
 
 - `s -socket device` - interface to make communication between two processes (programs).
-
-## fstab
-
-File System Table
-
-`/etc/fstab`:
-
-```sh
-[DEVICE] [MOUNT_POINT] [TYPE] [OPTIONS] [DUMP] [FSCK]
-```
-
-- `DEVICE` - the device  containing the filesystem to be mounted. Instead of the device, you can specify the UUID or label of the partition.
-
-- `MOUNT_POINT` - Where the filesystem will be mounted.
-
-- `TYPE` - The filesystem type.
-
-- `OPTIONS` - Mount options that will be passed to mount.
-
-- `DUMP` - Indicates  whether  any  ext2,  ext3  or  ext4  filesystems  should  be  considered  for  backup  by the dump command. Usually it is zero, meaning they should be ignored.
-
-- `FSCK` - When non-zero, defines the order in which the filesystems will be checked on boot-up. Usually it is zero.
-
-### OPTIONS
-
-- `atime and noatime`  - by  default,  every  time  a  file  is  read  the  access  time  information  is  updated.
-  Disabling  this (with noatime)  can  speed up  disk  I/O.  Do  not  confuse  this with the modification  time,  which
-  is updated every time a file is written to.
-
-- `auto and noauto` - whether the filesystem can (or can not) be mounted automatically withmount -a.
-defaults - this will pass the options rw,suid,dev,exec,auto,nouser and async to mount.
-
-- `dev and nodev` - whether character or block devices in the mounted filesystem should be interpreted.
-
-- `exec andn noexec` - allow or deny permission to execute binaries on the filesystem.
-
-- `user and nouser` - allows (or not) an ordinary user to mount the filesystem.
-group - allows a user to mount the filesystem if the user belongs to the same group which owns the device containing it.
-
-- `owner` - allows a user to mount a filesystem if the user owns the device containing it.
-
-- `suid and nosuid` - allow, or not, SETUID and SETGID bits to take effect.
-ro and rw - mount a filesystem as read-only or writable.
-
-- `remount` - this will attempt to remount an already mounted filesystem. This is not used on /etc/fstab, but as a
-  parameter to mount -o. For example, to remount the already mounted partition /dev/sdb1 as read-only, you could use the
-  command mount -o remount,ro /dev/sdb1. When remounting, you do not need to specify the filesystem type, only the
-  device name or the mount point.
-
-- `sync and async` - whether  to  do  all  I/O  operations  to  the  filesystem  synchronously  or  asynchronously.
-  async is usually  the  default.  The  manual  page  for mount warns  that  using sync on  media  with  a  limited
-  number of write cycles (like flash drives or memory cards) may shorten the life span of the device.
 
 ## dd
 
@@ -343,7 +347,7 @@ btrfs subvolume snapshot /mnt/disk /mnt/disk/snap
 btrfs subvolume show /mnt/disk/BKP/
 ```
 
-### Loop disk
+## Loop disk
 
 `loop` - filesystem type that can mount single file as device file (dvd iso eg.)
 
@@ -354,4 +358,106 @@ mount /tmp/disk /mnt/experiment
 
 df -h
 # /dev/loop0    93MB /mnt/experiment
+```
+
+## RAW disk file
+
+```sh
+file [FILENAME]
+# check file type and details like amount of partitions
+
+fdisk -l [FILENAME]
+# list disk details
+
+losetup -f -P --show [FILENAME]
+# create loopback disk (virtual disk device)
+# -f - find free disk number
+# -P - partition - find partitions in disk file
+# --show - verbose
+
+ls -al /dev
+...
+/dev/loop0
+/dev/loop0p1
+/dev/loop0p2
+/dev/loop0p3...
+
+mount /dev/loop0p1 /mnt/tmp1
+# mount partition
+```
+
+## RAID disks
+
+`Linux RAID autodetect (fd)` - filesystem type.
+
+```sh
+cat /proc/mdstat
+# mdadm automatically creates RAID disk form existing RAID partitions
+
+mount /dev/md0 /mnt/tmp
+```
+
+```sh
+partprobe 
+# shows existing partitions
+```
+
+Adding third disk to 2-disk RAID1 will create spare device in RAID array.
+
+### mdadm
+
+```sh
+mdadm -E /dev/loop0p1
+# -E - examine - show RAID partition details
+# check RAID array UUID
+
+mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sda5 /dev/sda6
+# create raid device - RAID1
+cat /proc/mdstat
+mkfs.ext4 /dev/md0
+mount /dev/md0 /mnt/test
+
+mdadm --create /dev/md0 --level=1 --raid-devices=2 /dev/sda5 missing
+# missing - instead second disk, wil create degraded RAID volume
+
+mdadm /dev/md0 -a /dev/sda6
+# add new disk to RAID device
+
+mdadm -S /dev/md0
+# disable array in OS
+```
+
+Replacing (upgrade) disk:
+
+```sh
+mdadm /dev/md0 --fail /dev/sda5
+# set one disk as failed
+
+mdadm /dev/md0 --remove /dev/sda5
+# remove disk from array
+
+mdadm /dev/md0 -a /dev/sda7
+# add new disk, sync will happen
+
+cat /proc/mdstat
+# check status
+
+mdadm --grow /dev/md0 --size=max
+# update RAID device size
+
+resize2fs /dev/md0
+# update filesystem size (not every fs works with live resizing)
+
+mdadm --detail --scan > /etc/mdadm/conf
+# show RAID device config and
+# make changes persistent
+```
+
+Recreate RAID array from existing partitions:
+
+```sh
+mdadm -A --scan --uuid=[UUID]
+# -A - add RAID device
+# --scan - search for member partitions
+# --uuid - UUID taken from -E
 ```
