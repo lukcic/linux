@@ -275,6 +275,8 @@ find [where] -iname [name] -exec grep -i -n [text] {} + | tee [file]
 tee - print output on the screen and stores in file (duplicates output)
 
 ______________________________________________________________________________________________________________
+history -c - cleaning history
+______________________________________________________________________________________________________________
 
 ^R (CTRL+R) - searching in bash history
 

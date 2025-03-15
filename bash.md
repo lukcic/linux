@@ -1,5 +1,13 @@
 # bash
 
+## Command history
+
+Equivalent of `zsh_stats`:
+
+```sh
+history | awk '{CMD[$2]++;count++;}END { for (a in CMD)print CMD[a] " " CMD[a]/count*100 "% " a;}' | grep -v "./" | column -c3 -s " " -t | sort -nr | nl | head -n10
+```
+
 ## Constructions
 
 ### hashmaps
@@ -68,6 +76,10 @@ if [ -z "$1" ]; then
     echo "Installation directory haven't been set!"
     exit
 fi
+```
+
+```sh
+cd /tmp/directory || { echo "ERROR! No /tmp/directory found!"; exit 1; }
 ```
 
 ### lock

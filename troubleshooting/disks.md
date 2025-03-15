@@ -54,7 +54,7 @@ During filesystem creation, some disk space is allocated for:
 - superblock data
 - filesystem
 
-In ext filesystems root user has `reserved block count`. 
+In ext filesystems root user has `reserved block count`.
 
 ```sh
 tune2fs -l /dev/sda1 | grep -i 'reserved block count'
@@ -88,12 +88,11 @@ inodes (already created). Filename is saved in `directory entry`. Directory conn
 file with physical data.
 
 `inode` - data structure used for storing information about files and directories (inode number, filetype, permissions,
-size, modification time, creation time, access time). Stores also links amount and data pointer. Everything except name
-- name is inside catalog.
+size, modification time, creation time, access time). Stores also links amount and data pointer. Everything except name- name is inside catalog.
 
 `ls -i` -inode listing
 
-```
+```sh
 root@pve1:/proc# df -i /
 Filesystem            Inodes IUsed   IFree IUse% Mounted on
 /dev/mapper/pve-root 4554752 84723 4470029    2% 
@@ -135,7 +134,7 @@ data
 
 Copying - changes file content, inode remains the same.
 
-Moving (renaming) - new filename is assigned to old inode number. Overridden file inode is removed. 
+Moving (renaming) - new filename is assigned to old inode number. Overridden file inode is removed.
 
 In linux while opening file, syscall `open` creates file descriptor. App works then on descriptors located in
 `/proc/PID_ID/fd`. `/proc` is a bridge between kernel and user space, virtual filesystem.
@@ -280,3 +279,120 @@ What to remember about limits:
 
 - proxy services need limit x2 (inbound and outbound)
 - `open()` with `close()`
+
+## Restoring deleted files
+
+Unmount volume as fast as possible to avoid override disk space!
+
+```sh
+sync # save all data from buffers to persistent storage
+```
+
+Make a copy of disk:
+
+```sh
+dd if=/dev/sda1 of=/tmp/disk.backup
+```
+
+Check deleted files:
+
+```sh
+testdisk /tmp/disk.backup
+# list, then red marked files are deleted
+```
+
+### ext4magic
+
+```sh
+ext4magic -f /tmp/dick.backup
+# -f -preview files
+```
+
+`<` - deleted file
+
+```sh
+ext4magic -m -d /tmp/restored /tmp/disk.backup
+# -m -restore all deleted files 
+# -M -restore all files 
+```
+
+### photorec
+
+```sh
+photorec /tmp/disk.backup
+# proceed, search, free space
+# restored files will have different names than original
+```
+
+### extundelete
+
+To test.
+
+### strings - searching for strings in disk-file
+
+```sh
+strings /tmp/disk.backup | grep searched-string
+# beginning of the text file
+
+strings /tmp/disk.backup | grep searched-string -A100
+# print 100 lines starting on searched-string
+# increase length of grep if needed
+```
+
+## RAW image of disk
+
+Check file metadata
+
+```sh
+file backup
+# dos/mbr boot sector... partition1... partition2...
+
+fdisk -l backup
+# shows all details about disk and partitions
+```
+
+### Create loopback disk
+
+Loopback disk - virtual device which represents data from file as normal disk.
+
+```sh
+losetup -f -P --show backup
+
+# -f - find free loopback device (counter)
+# -P - fid partitions in given file
+# --show - verbose
+
+ls -l /dev/loop0 # [Tab]
+# brw-rw----... block device
+
+/dev/loop0
+/dev/loop0p1
+/dev/loop0p2
+/dev/loop0p3
+
+# all partitions represented as virtual devices
+```
+
+Mount partition:
+
+```sh
+mount /dev/loop0p1 /mnt/test
+```
+
+Linux raid member error means, that partition is element of RAID array:
+
+```sh
+mdadm -E /dev/loop0p2
+# -E -examine
+```
+
+Check all partitions from backup, compare `Array UUID` and `raid level`.
+
+`mdadm` creates raid device while using:
+
+```sh
+cat /proc/mdstat
+
+mount /dev/md0
+# md0 - name of automatically created raid device
+```

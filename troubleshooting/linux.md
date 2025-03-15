@@ -75,3 +75,24 @@ algorithm. -500 means reduce memory used by process by 50% before calculation.
 ```sh
 choom -p [PID]
 ```
+
+## compilation errors
+
+Standard compilation
+
+```sh
+./configure
+make
+make install
+```
+
+Lack of `configure` (executable) or `makefile`:
+
+- `autogen.sh` is used for generation of `configure` file
+- install `build-essentials` - basic tools for building packages
+- install `autoconf` - package for `autogen.sh`
+- run `./autogen.sh`
+- configure generates `makefile`
+- if `configure` throw error and some developer libraries have been installed, re-run `autogen.sh`
+- if pakage was installed in `/usr/local/bin` add prefix to configure: `./configure --prefix=/usr` (romove local form
+  path)
