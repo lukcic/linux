@@ -96,3 +96,30 @@ Lack of `configure` (executable) or `makefile`:
 - if `configure` throw error and some developer libraries have been installed, re-run `autogen.sh`
 - if pakage was installed in `/usr/local/bin` add prefix to configure: `./configure --prefix=/usr` (romove local form
   path)
+
+## large amount of files
+
+```sh
+seq 1 1000 | xargs touch
+# create 1000 empty files
+
+time seq 1 1000 | xargs touch
+# as above, but time measurement
+```
+
+```sh
+ls -lU | grep "file100000"
+# disable sorting for faster ls
+
+# argument list is too long:
+
+ls -U | xargs rm
+# deleting huge amount of files
+
+mkdir empty_dir
+cd ..
+rsync -a --delete empty_dir/ full_dir/
+# deleting huge amount of files
+
+
+```

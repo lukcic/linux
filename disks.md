@@ -199,6 +199,25 @@ mkswap myswap
 
 ## Tools
 
+### cfdisk
+
+Quick way to manage partitions - Text GUI.
+
+### sfdisk
+
+Command line tool.
+
+Copy partition table from one disk to other:
+
+```sh
+sfdisk /dev/sda -d  | sfdisk /dev/sdb
+# -d -dump
+```
+
+Filesystems must vbe created on destination disk (tool only creates partition tables).
+
+Dump can be saved to file to edit (if different disk sizes).
+
 ### fdisk
 
 `fdisk` - text program, only MBR partition tables
@@ -302,10 +321,6 @@ e2fsck [FILESYETEM] # check ext2-4 filesystems
 -e [BEHAVIOR]   # defines the kernel behavior, when the error is found (continue, remount-ro, panic)
 -j [FILESYSTEM]   # convert ext2 to ext3 (add journal)
 ```
-
-### cfdisk
-
-Quick way to manage partitions.
 
 ## Device files
 
@@ -460,4 +475,110 @@ mdadm -A --scan --uuid=[UUID]
 # -A - add RAID device
 # --scan - search for member partitions
 # --uuid - UUID taken from -E
+```
+
+## LVM
+
+Local Volume Manager - layered volume abstraction.
+
+`[LV LV [VG [PV (/dev/sda1) + PV (/dev/sda2) + PV(/dev/sda3) ]]]`
+
+PV - physical volume\
+VG - volume group (physical volume group)\
+LV - logical volume (created on VG)
+
+lvs - local volume show
+vgs - volume group show
+pvs - physical volume show
+
+## Mounting lv
+
+```sh
+mount /dev/volume_group_name/logical_volume_name /mnt/test
+
+df -h
+...
+/dev/mapper/vg_name/lv_name
+```
+
+## Extend volume size
+
+```sh
+pvcreate /dev/sda2
+# create physical volume from new disk (also empty space on existing disk can be used)
+
+vgs
+# list groups
+
+vgextend group_name /dev/sda2
+# extend group with new disk (physical volume)
+
+lvresize -L200M /dev/group_name/logical_volume_name
+# extend logical volume with 200M
+# broken snapshots must be removed before!
+
+resize2fs /dev/group_name/logical_volume_name
+# resizing filesystem, fs type must allow on-flight resize (without unmounting)!
+```
+
+## Snapshots
+
+```sh
+lvcreate -s -n snapshot_name -L 15M volume_group_name/logical_volume_name
+# -s -create snapshot
+# -L -allocate space for snapshots
+```
+
+Size of the snapshot - snapshot stores differential data - difference between actual state of files and state saved in
+moment of snapshot creation. Size must be larger that difference. If not enough space,
+snapshot lvm will be unusable.
+
+```sh
+lvs # list logical volumes + snapshots
+```
+
+To restore data lvm snapshot must be mounted in a directory. Mounted snapshot is read only volume.
+
+```sh
+lvremove /dev/volume_group_name/logical_volume_name
+# deleting lvm (snapshot)
+```
+
+## disk load
+
+`iostat` - in idle show average load (not current)
+
+```sh
+iostat -x 1
+# refresh current usage every 1s (extended stats)
+```
+
+`iotop` - top for disk usage
+
+left/right arrows change sorting
+
+`pidstat` - show pid details
+
+```sh
+pidstat -dl 1
+# -d -disk operations
+# -l -list
+# 1s
+```
+
+Find process details:
+
+```sh
+ps auxf | less
+:ESC :/ process name
+```
+
+Change disk priority for a process:
+
+```sh
+ionice -p [PID_ID]
+# show IO priority, 0 means neutral priority
+
+ionice -c 3 -p [PID_ID]
+# set class 3 for the process (run when disk idle), the lowest priority
 ```

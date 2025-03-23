@@ -148,7 +148,7 @@ C -B - turn off copy-on-write upgrade
 c -B - compress file
 D -BE - synchronized saving directories upgrade
 d -XBE - do not archive file (backup software should leave this file)
-i -XBE - file is unchangable and cannot be deleted (Windows read-only)
+i -XBE - file is unchangeable and cannot be deleted (Windows read-only), immutable
 J -E - save data change journal wit metadata
 S -XBE - synchronized saved changes (without buffering)
 X -X - do not compress data if it used by default
@@ -156,6 +156,9 @@ X -X - do not compress data if it used by default
 
 lsattr -list special file attributes
 chattr -change special file attributes
+
+chattr +a /path?to/file
+chattr -i /path?to/file
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 su user         #will run ~/.bashrc

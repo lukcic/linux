@@ -224,35 +224,60 @@ It is used to open TCP connections, listen on arbitrary TCP and UDP ports, perfo
 
 You can also use it as a simple TCP proxy, for network daemon testing, to check if remote ports are reachable, and much more.
 Furthermore, you can employ nc together with pv command to transfer files between two computers.
-______________________________________________________________________________________________________________
 
-TCPDump - commandline network sniffer. Stores packets in libpcap format.
+## tcpdump
 
+Commandline network sniffer. Stores packets in `libpcap` format.
+
+```sh
 tcpdump -i [INTERFACE]  #listening on given interface
 -n                      #do not use DNS
 -v                      #verbosity
 -c 5                    #packet limit (5)
 -w [FILENAME]           #save output to file, only headers by default
 -r [FILENAME]           #read file with saved packets
+```
 
-tcpdump host [HOSTNAME] #list only pachages for given host (sended. received)
-$ sudo tcpdump host bull
+```sh
+tcpdump host [HOSTNAME] 
+# list only pachages for given host (sended. received)
+
+tcpdump host bull
 12:35:23.519339 bull.41537 > nubark.domain: A? atrust.com. (28) (DF)
 12:35:23.519961 nubark.domain > bull.41537: A 66.77.122.161 (112) (DF)
 
-41537 - local port
-.domain - service name (DNS)
+# 41537 - local port
+# .domain - service name (DNS)
+```
 
-Filtering:
+### Filtering
+
+```sh
 tcpdump src net 192.168.1.0/24 and dst port 80
-______________________________________________________________________________________________________________
 
-BMON - commandline graph of network interface usage
+
+tcpdump -n port not 22
+# exclude port 22
+
+tcpdump -n port not 22 and host wp.pl
+# chaining conditions
+
+tcpdump -n port not 22 -A -s0
+# show all packets content
+# -A -ASCII
+# -s0 -show full packets (all bytes)
+```
+
+## BMON
+
+commandline graph of network interface usage
+
+```sh
 sudo apt install bmon
 bmon
-______________________________________________________________________________________________________________
+```
 
-NMAP:
+## NMAP
 
 nmap localhost -list all open ports on localhost
 nmap [IP_ADDRES] -shows open ports from outside

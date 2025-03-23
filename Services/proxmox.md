@@ -34,6 +34,15 @@ qm start 190
 zfs set atime=off $POOL_NAME
 ```
 
+## Container mount-points
+
+On PVE host:
+
+```sh
+pct set [CONTAINER_ID] --mpX [HOST_DIR],mp=[CONTAINER_DIR]
+#pct set 33200 --mp6 /main/Archive,mp=/mnt/Archive
+```
+
 ## Add NFS storage
 
 ```sh
