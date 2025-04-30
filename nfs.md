@@ -39,8 +39,22 @@ exportfs -vr
 # -v -verbose
 ```
 
-## Options
+## Common NFS Export Options
 
+- `rw` - Allow both read and write requests on the NFS volume
+- `ro` - Allow only read requests on the NFS volume
+- `sync` - Reply to requests only after changes are written to disk (safer but slower)
+- `async` - Reply to requests before changes are written to disk (faster but riskier)
+- `no_subtree_check` - Disable subtree checking (recommended, improves reliability)
+- `subtree_check` - Enable subtree checking (can cause issues with file renames)
+- `root_squash` - Map requests from uid/gid 0 to anonymous uid/gid (default)
+- `no_root_squash` - Don't map root user (INSECURE - gives root access)
+- `all_squash` - Map all user requests to the anonymous uid/gid
+- `anonuid=UID` - Set the uid for anonymous user
+- `anongid=GID` - Set the gid for anonymous user
+- `secure` - Require requests from ports below 1024 (default)
+- `insecure` - Allow requests from ports above 1024
+---
 - `ro` - read only
 - `rw` - read/write
 - `async` - server can buffer transactions before save confirmation, better performance

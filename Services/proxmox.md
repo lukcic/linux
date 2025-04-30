@@ -121,3 +121,10 @@ Use cluster network.
 ## Templates
 
 <https://gist.github.com/zidenis/dfc05d9fa150ae55d7c87d870a0306c5>
+
+## Encrypted storage
+
+```sh
+zsf load-key -a
+# type passphrase
+```
