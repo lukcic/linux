@@ -1,6 +1,10 @@
-Oh My ZSH - open -source framework for zsh. 
+# Oh My ZSH 
 
-vi ~/.zshrc
+Open -source framework for zsh. 
+
+`vim ~/.zshrc`
+
+```
 plugins= (space sepparated)
 
 brew install zsh-autosuggestions
@@ -21,8 +25,8 @@ Copyfile - copy content of the file int clipboard.
 Copybuffer - CTLR+O copies text currently typed in terminal to clipboard. 
 DirHistory - shorcuts for navigationg directory history and hierarchy.
 Json Tools 
-
-macos - a lot of macos tools TRY!!!
+```
 
 ALT + arrows in the iterm2
+
 https://coderwall.com/p/h6yfda/use-and-to-jump-forwards-backwards-words-in-iterm-2-on-os-x
