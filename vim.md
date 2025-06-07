@@ -13,14 +13,14 @@ https://stackoverflow.com/questions/2600783/how-does-the-vim-write-with-sudo-tri
 ## Modes
 
 - normal mode
-- insert mode (i)
-- replace mode (r)
-- command-line mode (:)
+  - insert mode (i)
+  - replace mode (r)
+  - command-line mode (:)
 
-SELECTION modes:
-- visual mode  (v)
-- visual line (Shift+v)
-- visual block (Ctrl + v)
+- selection modes
+  - visual mode  (v) - works the same as selecting text with a mouse,
+  - visual line (Shift+v)
+  - visual block (Ctrl + v) - helps selecting text as a block
 
 `~/.vimrc` - vim`s config file
 
@@ -30,11 +30,15 @@ SELECTION modes:
 
 ```sh
 j - down
-k- up
+5j - 5 ines down
+
+k - up
 h - left
 l - right
 
 w - next word
+5w - 5 words forward
+B - previous word
 b - beggining of word
 e - end of the word
 
@@ -53,6 +57,7 @@ gg -  beginning of document
 G - end of document
 
 f + letter - moves for first appearance (wystąpienie) of letter (F - the same but left)
+f. - moves to the next dot
 , and ; - navigating matches
 
 / + [word] - search, ? - backwards?
